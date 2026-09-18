@@ -1,0 +1,143 @@
+/** data model types, limited to what the UI layer needs. */
+
+export type ImageFormat = "png" | "jpeg" | "bmp" | "gif" | "webp"
+
+export type ToolId =
+	| "pencil"
+	| "fill"
+	| "text"
+	| "eraser"
+	| "picker"
+	| "magnifier"
+	| "brush"
+	| "shape"
+	| "select-rect"
+	| "select-free"
+
+export type BrushKind =
+	| "brush"
+	| "calligraphy1"
+	| "calligraphy2"
+	| "airbrush"
+	| "oil"
+	| "crayon"
+	| "marker"
+	| "natural-pencil"
+	| "watercolor"
+
+export type ShapeKind =
+	| "line"
+	| "curve"
+	| "oval"
+	| "rect"
+	| "rounded-rect"
+	| "polygon"
+	| "right-triangle"
+	| "triangle"
+	| "diamond"
+	| "pentagon"
+	| "hexagon"
+	| "arrow-right"
+	| "arrow-left"
+	| "arrow-up"
+	| "arrow-down"
+	| "star-4"
+	| "star-5"
+	| "star-6"
+	| "callout-rounded"
+	| "callout-oval"
+	| "callout-cloud"
+	| "heart"
+	| "lightning"
+
+export type StrokeStyle =
+	| "none"
+	| "solid"
+	| "crayon"
+	| "marker"
+	| "oil"
+	| "natural-pencil"
+	| "watercolor"
+
+export type BrushSize = 1 | 3 | 5 | 8
+
+export type RibbonTabId = "home" | "view"
+
+export interface Rect {
+	x: number
+	y: number
+	w: number
+	h: number
+}
+export interface Point {
+	x: number
+	y: number
+}
+
+export interface DocumentState {
+	width: number
+	height: number
+	fileName: string
+	format: ImageFormat
+	isDirty: boolean
+	dpi: number
+}
+
+export interface TextOptions {
+	fontFamily: string
+	fontSize: number
+	bold: boolean
+	italic: boolean
+	underline: boolean
+	strikethrough: boolean
+	background: "transparent" | "opaque"
+}
+
+export interface ToolState {
+	active: ToolId
+	brush: BrushKind
+	shape: ShapeKind
+	size: BrushSize
+	outline: StrokeStyle
+	fill: StrokeStyle
+	text: TextOptions
+}
+
+export interface ColorState {
+	color1: string
+	color2: string
+	editing: "color1" | "color2"
+	palette: readonly string[]
+	custom: (string | null)[]
+}
+
+export interface ViewState {
+	zoom: number
+	showRuler: boolean
+	showGrid: boolean
+	showStatusBar: boolean
+	showThumbnail: boolean
+	fullScreen: boolean
+}
+
+export interface SelectionState {
+	kind: "none" | "rect" | "free"
+	bounds: Rect | null
+	transparent: boolean
+}
+
+/** pure UI shell state; not part of the document data model. */
+export interface UiState {
+	tab: RibbonTabId
+	backstageOpen: boolean
+	openMenu: string | null
+	dialog: DialogId | null
+}
+
+export type DialogId =
+	| "resize-skew"
+	| "edit-colors"
+	| "image-properties"
+	| "save-as"
+	| "confirm-discard"
+	| "about"

@@ -1,0 +1,73 @@
+@use "../../styles/mixins" as m;
+
+.menu {
+	// fixed and portalled to body: an absolute menu would be clipped by the
+	// ribbon's overflow, and overflow-y: visible cannot rescue overflow-x: hidden.
+	position: fixed;
+	min-width: 178px;
+	background: var(--menu-bg);
+	border: 1px solid var(--menu-bd);
+	box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.2);
+	padding: 2px;
+	z-index: 50;
+
+	&__item {
+		display: flex;
+		align-items: center;
+		gap: 7px;
+		width: 100%;
+		height: 24px;
+		padding: 0 8px 0 6px;
+		font-size: 12px;
+		text-align: left;
+		white-space: nowrap;
+
+		&:hover:not(:disabled) {
+			@include m.menu-hover;
+		}
+	}
+
+	&__item-icon {
+		width: 16px;
+		display: flex;
+		justify-content: center;
+		color: #4a4a4a;
+	}
+
+	&__item-label {
+		flex: 1;
+	}
+
+	&__item-shortcut {
+		color: #707070;
+		font-size: 11px;
+	}
+
+	&__check {
+		width: 16px;
+		text-align: center;
+		font-size: 11px;
+	}
+
+	&__section-label {
+		padding: 4px 6px 2px;
+		font-size: 11px;
+		color: var(--rb-group-label);
+	}
+
+	&__sep {
+		height: 1px;
+		background: #d8d8d8;
+		margin: 2px 1px;
+	}
+
+	&__caret {
+		font-size: 8px;
+		color: #555;
+	}
+}
+
+/// anchor for an absolutely positioned menu placed under a button.
+.menu-anchor {
+	position: relative;
+}

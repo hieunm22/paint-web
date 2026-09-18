@@ -1,0 +1,7 @@
+node_modules
+dist
+.DS_Store
+*.local
+
+# vite dep-optimizer cache, written inside frontend/ on every dev run
+.vite

@@ -1,0 +1,179 @@
+.canvas {
+	flex: 1;
+	display: grid;
+	grid-template-columns: auto 1fr;
+	grid-template-rows: auto 1fr;
+	min-height: 0;
+	background: var(--cv-backdrop);
+
+	&__corner {
+		background: #eef0f4;
+		border-right: 1px solid #9aa3b2;
+		border-bottom: 1px solid #9aa3b2;
+	}
+
+	&__ruler {
+		background: #eef0f4;
+		overflow: hidden;
+		position: relative;
+		color: #4a4a4a;
+
+		&--h {
+			height: var(--ruler-size);
+			border-bottom: 1px solid #9aa3b2;
+		}
+
+		&--v {
+			width: var(--ruler-size);
+			border-right: 1px solid #9aa3b2;
+		}
+	}
+
+	// wraps the scrolling viewport to keep the overlay pinned to what is visible.
+	&__pane {
+		position: relative;
+		min-width: 0;
+		min-height: 0;
+	}
+
+	&__viewport {
+		position: relative;
+		width: 100%;
+		height: 100%;
+		overflow: auto;
+		background: var(--cv-backdrop);
+	}
+
+	// screen-space layer for marching ants and handles; never scrolls with content.
+	&__overlay {
+		position: absolute;
+		inset: 0;
+		pointer-events: none;
+	}
+
+	// canvas sits top-left with a 6px margin, never centered.
+	&__stage {
+		position: relative;
+		padding: 6px;
+		width: max-content;
+	}
+
+	&__frame {
+		position: relative;
+		border: 1px solid var(--cv-border);
+		box-shadow: 1px 1px 0 rgba(0, 0, 0, 0.15);
+		background: #fff;
+	}
+
+	&__surface {
+		display: block;
+		background: #fff;
+		// keep pixels crisp and square when zoomed instead of bilinear smoothing.
+		image-rendering: pixelated;
+
+		&--preview {
+			position: absolute;
+			left: 0;
+			top: 0;
+			background: none;
+		}
+	}
+
+	&__grid {
+		position: absolute;
+		inset: 0;
+		pointer-events: none;
+		background-image:
+			linear-gradient(to right, rgba(0, 0, 0, 0.18) 1px, transparent 1px),
+			linear-gradient(to bottom, rgba(0, 0, 0, 0.18) 1px, transparent 1px);
+	}
+
+	// eight 5x5 handles, black border on white, flush to the canvas edge.
+	&__handle {
+		position: absolute;
+		width: 5px;
+		height: 5px;
+		background: var(--cv-handle-bg);
+		border: 1px solid var(--cv-handle-bd);
+
+		&--nw {
+			left: -3px;
+			top: -3px;
+			cursor: nwse-resize;
+		}
+		&--n {
+			left: calc(50% - 3px);
+			top: -3px;
+			cursor: ns-resize;
+		}
+		&--ne {
+			right: -3px;
+			top: -3px;
+			cursor: nesw-resize;
+		}
+		&--w {
+			left: -3px;
+			top: calc(50% - 3px);
+			cursor: ew-resize;
+		}
+		&--e {
+			right: -3px;
+			top: calc(50% - 3px);
+			cursor: ew-resize;
+		}
+		&--sw {
+			left: -3px;
+			bottom: -3px;
+			cursor: nesw-resize;
+		}
+		&--s {
+			left: calc(50% - 3px);
+			bottom: -3px;
+			cursor: ns-resize;
+		}
+		&--se {
+			right: -3px;
+			bottom: -3px;
+			cursor: nwse-resize;
+		}
+	}
+
+	// marching ants around the selection.
+	&__ants {
+		position: absolute;
+		pointer-events: none;
+		border: 1px dashed #000;
+		background: rgba(255, 255, 255, 0.06);
+		animation: canvas-march 600ms linear infinite;
+	}
+
+	&__thumbnail {
+		position: absolute;
+		right: 12px;
+		top: 12px;
+		width: 160px;
+		background: var(--rb-bg);
+		border: 1px solid #8f8f8f;
+		box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.25);
+	}
+
+	&__thumbnail-title {
+		font-size: 11px;
+		padding: 2px 5px;
+		background: linear-gradient(#fdfdfd, #ececec);
+		border-bottom: 1px solid #d5d5d5;
+	}
+
+	&__thumbnail-body {
+		height: 96px;
+		margin: 5px;
+		background: #fff;
+		border: 1px solid #b5b5b5;
+	}
+}
+
+@keyframes canvas-march {
+	to {
+		background-position: 8px 0;
+	}
+}

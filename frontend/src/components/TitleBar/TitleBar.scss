@@ -1,0 +1,87 @@
+@use "../../styles/mixins" as m;
+
+.title-bar {
+	display: flex;
+	align-items: center;
+	height: var(--title-height);
+	background: var(--tb-bg);
+	color: var(--tb-text);
+	border-bottom: 1px solid #e8e8e8;
+	padding-left: 6px;
+	flex: 0 0 auto;
+
+	&__app-icon {
+		width: 16px;
+		height: 16px;
+		margin-right: 4px;
+		border: 1px solid #9c9c9c;
+		background: linear-gradient(#fff, #eaeaea);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		color: #2b77b8;
+		font-size: 9px;
+	}
+
+	&__qat {
+		display: flex;
+		align-items: center;
+		gap: 1px;
+	}
+
+	&__qat-btn {
+		width: 22px;
+		height: 22px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		border-radius: 2px;
+		color: #3c3c3c;
+
+		&:hover:not(:disabled) {
+			@include m.rb-hover;
+		}
+		&:disabled {
+			color: #b8b8b8;
+		}
+		&--caret {
+			width: 14px;
+		}
+	}
+
+	&__title {
+		flex: 1;
+		text-align: center;
+		font-size: 12px;
+		padding: 0 12px;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
+	&__window-btns {
+		display: flex;
+		height: 100%;
+	}
+
+	&__window-btn {
+		width: 45px;
+		height: 100%;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		color: #1a1a1a;
+
+		&:hover:not(:disabled) {
+			background: #e5e5e5;
+		}
+		&:disabled {
+			color: #bdbdbd;
+		}
+
+		&--close:hover {
+			background: var(--tb-close-hover);
+			color: #fff;
+		}
+	}
+}

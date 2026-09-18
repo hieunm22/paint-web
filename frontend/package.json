@@ -1,0 +1,35 @@
+{
+  "name": "paint-web",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "format": "prettier --write \"src/**/*.{ts,tsx,scss,css,json}\"",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^7.3.1",
+    "@fortawesome/pro-duotone-svg-icons": "^7.3.1",
+    "@fortawesome/pro-light-svg-icons": "^7.3.1",
+    "@fortawesome/pro-regular-svg-icons": "^7.3.1",
+    "@fortawesome/pro-solid-svg-icons": "^7.3.1",
+    "@fortawesome/react-fontawesome": "^3.5.0",
+    "@reduxjs/toolkit": "^2.12.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-redux": "^9.3.0"
+  },
+  "devDependencies": {
+    "@ianvs/prettier-plugin-sort-imports": "^4.7.1",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^4.3.3",
+    "prettier": "^3.9.8",
+    "sass": "^1.104.1",
+    "typescript": "~5.6.3",
+    "vite": "^5.4.10"
+  }
+}

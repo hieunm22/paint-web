@@ -1,0 +1,128 @@
+@use "../../styles/mixins" as m;
+
+.ribbon-btn {
+	display: flex;
+	border-radius: 2px;
+	color: #1a1a1a;
+
+	&:hover:not(:disabled) {
+		@include m.rb-hover;
+	}
+	&:active:not(:disabled) {
+		@include m.rb-active;
+	}
+
+	&--selected,
+	&--selected:hover {
+		@include m.rb-selected;
+	}
+
+	// large button: 32px icon on top, two-line label below, fixed width.
+	&--large {
+		flex-direction: column;
+		align-items: center;
+		justify-content: flex-start;
+		width: 56px;
+		min-height: 68px;
+		padding: 4px 2px 2px;
+		gap: 3px;
+	}
+
+	&--small {
+		flex-direction: row;
+		align-items: center;
+		gap: 4px;
+		height: 22px;
+		padding: 0 5px 0 3px;
+		min-width: 60px;
+	}
+
+	&--icon-only {
+		width: 24px;
+		height: 24px;
+		align-items: center;
+		justify-content: center;
+		color: #4a4a4a;
+	}
+
+	&__icon {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		color: #4a4a4a;
+
+		&--large {
+			height: 34px;
+		}
+		&--small {
+			width: 16px;
+		}
+	}
+
+	&__label {
+		font-size: 12px;
+		white-space: nowrap;
+
+		&--large {
+			font-size: 11px;
+			line-height: 12px;
+			text-align: center;
+			max-width: 52px;
+			white-space: normal;
+		}
+	}
+
+	&__caret {
+		font-size: 8px;
+		color: #555;
+	}
+}
+
+.ribbon-split {
+	display: flex;
+	flex-direction: column;
+	width: 56px;
+	min-height: 68px;
+	position: relative;
+
+	&__top,
+	&__bottom {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		border: 1px solid transparent;
+		border-radius: 2px;
+		color: #1a1a1a;
+
+		&:hover {
+			@include m.rb-hover;
+		}
+		&:active {
+			@include m.rb-active;
+		}
+	}
+
+	&__top {
+		flex: 1;
+		padding-top: 4px;
+	}
+
+	&__bottom {
+		gap: 2px;
+		padding: 1px 2px 2px;
+		font-size: 11px;
+		line-height: 12px;
+		flex-direction: column;
+	}
+
+	&__label-row {
+		display: flex;
+		align-items: center;
+		gap: 3px;
+	}
+
+	// the 1px divider appears only on hover.
+	&:hover &__top {
+		border-bottom-color: var(--rb-btn-hover-bd);
+	}
+}

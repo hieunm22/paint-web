@@ -1,0 +1,71 @@
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+	height: 100%;
+	margin: 0;
+	padding: 0;
+}
+
+body {
+	font-family: var(--font-ui);
+	font-size: var(--font-ui-size);
+	color: #000;
+	background: var(--rb-bg);
+	overflow: hidden;
+	-webkit-font-smoothing: antialiased;
+	user-select: none;
+	cursor: default;
+}
+
+button {
+	font: inherit;
+	color: inherit;
+	margin: 0;
+	padding: 0;
+	border: 1px solid transparent;
+	background: none;
+	cursor: default;
+}
+
+button:disabled {
+	color: #a0a0a0;
+}
+button:focus-visible {
+	outline: 1px dotted #000;
+	outline-offset: -3px;
+}
+
+input,
+select {
+	font: inherit;
+}
+
+ul,
+li {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+svg {
+	display: block;
+}
+
+::-webkit-scrollbar {
+	width: 16px;
+	height: 16px;
+	background: #f0f0f0;
+}
+::-webkit-scrollbar-thumb {
+	background: #cdcdcd;
+	border: 3px solid #f0f0f0;
+}
+::-webkit-scrollbar-thumb:hover {
+	background: #a6a6a6;
+}

@@ -1,0 +1,300 @@
+@use "../../styles/mixins" as m;
+
+// Ribbon frame
+.ribbon {
+	&__tab-strip {
+		display: flex;
+		align-items: stretch;
+		height: var(--tab-height);
+		background: var(--rb-bg);
+		border-bottom: 1px solid var(--rb-border);
+		padding-left: 2px;
+		position: relative;
+		z-index: 2;
+	}
+
+	&__tab {
+		padding: 0 11px;
+		height: var(--tab-height);
+		border: 1px solid transparent;
+		border-bottom: none;
+		font-size: 12px;
+		line-height: 1;
+
+		&:hover {
+			background: var(--rb-tab-hover);
+			border-color: #a8cdf0;
+		}
+
+		&--active,
+		&--active:hover {
+			background: var(--rb-tab-active);
+			border-color: var(--rb-border);
+			border-bottom: 1px solid var(--rb-tab-active);
+			margin-bottom: -1px;
+		}
+
+		&--file {
+			background: var(--bs-bg);
+			color: #fff;
+			border-color: var(--bs-bg);
+
+			&:hover {
+				background: var(--bs-item-hover);
+				border-color: var(--bs-item-hover);
+			}
+		}
+	}
+
+	&__content {
+		display: flex;
+		align-items: stretch;
+		height: var(--rb-height);
+		background: var(--rb-tab-active);
+		border-bottom: 1px solid var(--rb-border);
+		overflow: hidden; // No adaptive ribbon; overflowing groups are clipped.
+		padding: 2px 0 0;
+		position: relative;
+		z-index: 1;
+	}
+}
+
+// Tools: 3x2 grid
+.tools-grid {
+	display: grid;
+	grid-template-columns: repeat(3, 26px);
+	grid-auto-rows: 26px;
+	gap: 1px;
+	padding: 4px 2px;
+}
+
+// Brushes: 9-cell gallery
+.brush-gallery {
+	display: grid;
+	grid-template-columns: repeat(3, 30px);
+	gap: 1px;
+	padding: 1px;
+
+	&__cell {
+		width: 30px;
+		height: 30px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		border: 1px solid transparent;
+		border-radius: 2px;
+
+		&:hover {
+			@include m.rb-hover;
+		}
+
+		&--selected,
+		&--selected:hover {
+			@include m.rb-selected;
+		}
+	}
+}
+
+// Shapes: scrolling gallery plus the Outline and Fill menus
+.shape-gallery {
+	display: flex;
+	align-items: flex-start;
+
+	&__viewport {
+		overflow: hidden;
+	}
+
+	&__grid {
+		display: grid;
+		gap: 1px;
+		padding: 1px;
+	}
+
+	&__cell {
+		width: 26px;
+		height: 22px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		border: 1px solid transparent;
+		border-radius: 2px;
+
+		&:hover {
+			@include m.rb-hover;
+		}
+
+		&--selected,
+		&--selected:hover {
+			@include m.rb-selected;
+		}
+	}
+
+	&__scroller {
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+		border: 1px solid #d2d2d2;
+		border-radius: 1px;
+		margin-left: 2px;
+		background: #fbfbfb;
+	}
+
+	&__scroll-btn {
+		width: 15px;
+		height: 22px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		font-size: 8px;
+		color: #444;
+
+		&:hover:not(:disabled) {
+			background: var(--rb-tab-hover);
+		}
+	}
+
+	&__options {
+		display: flex;
+		flex-direction: column;
+		gap: 1px;
+		margin-left: 3px;
+		padding-top: 1px;
+	}
+
+	&__option-btn {
+		min-width: 72px;
+	}
+}
+
+// Size
+.size-preview {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	align-items: center;
+}
+
+.size-line {
+	background: #3b3b3b;
+	border-radius: 1px;
+}
+
+.size-menu {
+	&__item {
+		display: flex;
+		align-items: center;
+		height: 26px;
+		padding: 0 8px;
+		border: 1px solid transparent;
+		width: 100%;
+
+		&:hover {
+			@include m.menu-hover;
+		}
+
+		&--selected {
+			background: var(--rb-selected-bg);
+			border-color: var(--rb-selected-bd);
+		}
+	}
+}
+
+// Colours
+.colors {
+	display: flex;
+	align-items: flex-start;
+	gap: 6px;
+	padding: 3px 4px 0;
+
+	&__slot {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 2px;
+		width: 44px;
+		padding: 2px;
+		border: 1px solid transparent;
+		border-radius: 2px;
+
+		&:hover {
+			@include m.rb-hover;
+		}
+
+		&--editing,
+		&--editing:hover {
+			@include m.rb-selected;
+		}
+	}
+
+	&__slot-swatch {
+		width: 26px;
+		height: 26px;
+		border: 1px solid #8f8f8f;
+		box-shadow: inset 0 0 0 1px #fff;
+	}
+
+	&__slot-label {
+		font-size: 11px;
+		line-height: 12px;
+	}
+
+	&__palette {
+		display: grid;
+		grid-template-columns: repeat(10, 16px);
+		grid-auto-rows: 16px;
+		gap: 2px;
+		padding-top: 2px;
+	}
+
+	&__swatch {
+		@include m.swatch(16px);
+
+		&:hover {
+			border-color: #000;
+			box-shadow: inset 0 0 0 1px #fff;
+		}
+
+		&--empty {
+			background: repeating-linear-gradient(
+				45deg,
+				#efefef 0 3px,
+				#fcfcfc 3px 6px
+			);
+		}
+	}
+
+	&__edit {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: 2px;
+		width: 54px;
+		min-height: 62px;
+		padding: 4px 2px;
+		border: 1px solid transparent;
+		border-radius: 2px;
+		font-size: 11px;
+		line-height: 12px;
+
+		&:hover {
+			@include m.rb-hover;
+		}
+	}
+
+	&__edit-wheel {
+		width: 26px;
+		height: 26px;
+		border-radius: 50%;
+		border: 1px solid #8f8f8f;
+		background: conic-gradient(
+			#ed1c24,
+			#fff200,
+			#22b14c,
+			#00a2e8,
+			#3f48cc,
+			#a349a4,
+			#ed1c24
+		);
+	}
+}
