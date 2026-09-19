@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next"
 import {
 	Menu,
 	MenuAnchor,
@@ -7,6 +8,7 @@ import {
 } from "components/Menu"
 import { SmallButton, SplitButton } from "components/RibbonButton"
 import { ButtonStack, RibbonGroup } from "components/RibbonGroup"
+import { tooltipWithShortcut } from "locales/common"
 import { useAppDispatch, useAppSelector } from "store/hooks"
 import { toggleTransparent } from "store/slices/selectionSlice"
 import { setTool } from "store/slices/toolSlice"
@@ -14,6 +16,7 @@ import { openDialog, toggleMenu } from "store/slices/uiSlice"
 
 /** Select split button, Crop, Resize and Rotate. */
 export function ImageGroup() {
+	const { t } = useTranslation()
 	const dispatch = useAppDispatch()
 	const openMenu = useAppSelector((s) => s.ui.openMenu)
 	const selection = useAppSelector((s) => s.selection)
@@ -21,9 +24,9 @@ export function ImageGroup() {
 	const hasSelection = selection.kind !== "none"
 
 	return (
-		<RibbonGroup label="Image">
+		<RibbonGroup label={t("ribbon.image.label")}>
 			<SplitButton
-				label="Select"
+				label={t("ribbon.image.select")}
 				icon="select"
 				selected={activeTool === "select-rect" || activeTool === "select-free"}
 				onClick={() => dispatch(setTool("select-rect"))}
@@ -31,28 +34,39 @@ export function ImageGroup() {
 				onToggleMenu={() => dispatch(toggleMenu("select"))}
 				menu={
 					<Menu width={196}>
-						<MenuSectionLabel>Selection shapes</MenuSectionLabel>
+						<MenuSectionLabel>
+							{t("ribbon.image.selection-shapes")}
+						</MenuSectionLabel>
 						<MenuItem
-							label="Rectangular selection"
+							label={t("ribbon.image.select-rect")}
 							checked={activeTool === "select-rect"}
 							onClick={() => dispatch(setTool("select-rect"))}
 						/>
 						<MenuItem
-							label="Free-form selection"
+							label={t("ribbon.image.select-free")}
 							checked={activeTool === "select-free"}
 							onClick={() => dispatch(setTool("select-free"))}
 						/>
 						<MenuSeparator />
-						<MenuSectionLabel>Selection options</MenuSectionLabel>
-						<MenuItem label="Select all" shortcut="Ctrl+A" />
+						<MenuSectionLabel>
+							{t("ribbon.image.selection-options")}
+						</MenuSectionLabel>
 						<MenuItem
-							label="Invert selection"
-							shortcut="Ctrl+I"
+							label={t("ribbon.image.select-all")}
+							shortcut={t("shortcut.image.select-all")}
+						/>
+						<MenuItem
+							label={t("ribbon.image.invert-selection")}
+							shortcut={t("shortcut.image.invert-selection")}
 							disabled={!hasSelection}
 						/>
-						<MenuItem label="Delete" shortcut="Del" disabled={!hasSelection} />
 						<MenuItem
-							label="Transparent selection"
+							label={t("ribbon.image.delete")}
+							shortcut={t("shortcut.image.delete")}
+							disabled={!hasSelection}
+						/>
+						<MenuItem
+							label={t("ribbon.image.transparent-selection")}
 							checked={selection.transparent}
 							onClick={() => dispatch(toggleTransparent())}
 						/>
@@ -60,27 +74,34 @@ export function ImageGroup() {
 				}
 			/>
 			<ButtonStack>
-				<SmallButton label="Crop" icon="crop" disabled={!hasSelection} />
 				<SmallButton
-					label="Resize"
+					label={t("ribbon.image.crop")}
+					icon="crop"
+					disabled={!hasSelection}
+				/>
+				<SmallButton
+					label={t("ribbon.image.resize")}
 					icon="resize"
-					title="Resize and Skew (Ctrl+W)"
+					title={tooltipWithShortcut(
+						"dialog.resize-skew.title",
+						"shortcut.image.resize",
+					)}
 					onClick={() => dispatch(openDialog("resize-skew"))}
 				/>
 				<MenuAnchor>
 					<SmallButton
-						label="Rotate ▾"
+						label={t("ribbon.image.rotate")}
 						icon="rotate"
 						onClick={() => dispatch(toggleMenu("rotate"))}
 					/>
 					{openMenu === "rotate" && (
 						<Menu>
-							<MenuItem label="Rotate right 90°" icon="redo" />
-							<MenuItem label="Rotate left 90°" icon="undo" />
-							<MenuItem label="Rotate 180°" icon="rotate" />
+							<MenuItem label={t("ribbon.image.rotate-right")} icon="redo" />
+							<MenuItem label={t("ribbon.image.rotate-left")} icon="undo" />
+							<MenuItem label={t("ribbon.image.rotate-180")} icon="rotate" />
 							<MenuSeparator />
-							<MenuItem label="Flip vertical" />
-							<MenuItem label="Flip horizontal" />
+							<MenuItem label={t("ribbon.image.flip-vertical")} />
+							<MenuItem label={t("ribbon.image.flip-horizontal")} />
 						</Menu>
 					)}
 				</MenuAnchor>

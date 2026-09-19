@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next"
 import { RIBBON_TABS } from "./constant"
 import { BrushesGroup } from "./components/BrushesGroup"
 import { ClipboardGroup } from "./components/ClipboardGroup"
@@ -13,6 +14,7 @@ import { openBackstage, setTab } from "store/slices/uiSlice"
 import "./Ribbon.scss"
 
 export function Ribbon() {
+	const { t } = useTranslation()
 	const dispatch = useAppDispatch()
 	const tab = useAppSelector((s) => s.ui.tab)
 
@@ -24,9 +26,9 @@ export function Ribbon() {
 					className="ribbon__tab ribbon__tab--file"
 					onClick={() => dispatch(openBackstage())}
 				>
-					File
+					{t("ribbon.tab.file")}
 				</button>
-				{RIBBON_TABS.map(({ id, label }) => (
+				{RIBBON_TABS.map(({ id, labelKey }) => (
 					<button
 						key={id}
 						type="button"
@@ -35,7 +37,7 @@ export function Ribbon() {
 						className={`ribbon__tab${tab === id ? " ribbon__tab--active" : ""}`}
 						onClick={() => dispatch(setTab(id))}
 					>
-						{label}
+						{t(labelKey)}
 					</button>
 				))}
 			</div>

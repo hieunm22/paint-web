@@ -1,57 +1,76 @@
+import { useTranslation } from "react-i18next"
 import { useAppSelector } from "store/hooks"
 import { Dialog } from "./Dialog"
 
 /** image properties dialog (Ctrl+E). */
 export function ImagePropertiesDialog() {
+	const { t } = useTranslation()
 	const doc = useAppSelector((s) => s.doc)
 	const sizeKB = Math.round((doc.width * doc.height * 3) / 1024)
 
 	return (
-		<Dialog title="Image Properties" width={332}>
+		<Dialog title={t("dialog.image-properties.title")} width={332}>
 			<div className="dialog__body">
 				<div className="dialog__group">
-					<div className="dialog__group-title">File Attributes</div>
+					<div className="dialog__group-title">
+						{t("dialog.image-properties.file-attributes")}
+					</div>
 					<div className="dialog__kv">
-						<span>Last saved:</span>
-						<span>Not available</span>
-						<span>Size on disk:</span>
-						<span>{sizeKB} KB (ước tính)</span>
-						<span>Resolution:</span>
-						<span>{doc.dpi} DPI</span>
+						<span>{t("dialog.image-properties.last-saved")}</span>
+						<span>{t("dialog.image-properties.not-available")}</span>
+						<span>{t("dialog.image-properties.size-on-disk")}</span>
+						<span>
+							{t("dialog.image-properties.size-estimate", { 0: sizeKB })}
+						</span>
+						<span>{t("dialog.image-properties.resolution")}</span>
+						<span>{t("dialog.image-properties.dpi", { 0: doc.dpi })}</span>
 					</div>
 				</div>
 
 				<div className="dialog__group">
-					<div className="dialog__group-title">Units</div>
+					<div className="dialog__group-title">
+						{t("dialog.image-properties.units")}
+					</div>
 					<div className="dialog__row dialog__row--flush">
 						<label>
-							<input type="radio" name="units" /> Inches
+							<input type="radio" name="units" />{" "}
+							{t("dialog.image-properties.inches")}
 						</label>
 						<label>
-							<input type="radio" name="units" /> Centimeters
+							<input type="radio" name="units" />{" "}
+							{t("dialog.image-properties.centimeters")}
 						</label>
 						<label>
-							<input type="radio" name="units" defaultChecked /> Pixels
+							<input type="radio" name="units" defaultChecked />{" "}
+							{t("dialog.image-properties.pixels")}
 						</label>
 					</div>
 				</div>
 
 				<div className="dialog__group">
-					<div className="dialog__group-title">Colors</div>
+					<div className="dialog__group-title">
+						{t("dialog.image-properties.colors")}
+					</div>
 					<div className="dialog__row dialog__row--flush">
 						<label>
-							<input type="radio" name="colors" /> Black and white
+							<input type="radio" name="colors" />{" "}
+							{t("dialog.image-properties.black-and-white")}
 						</label>
 						<label>
-							<input type="radio" name="colors" defaultChecked /> Color
+							<input type="radio" name="colors" defaultChecked />{" "}
+							{t("dialog.image-properties.color")}
 						</label>
 					</div>
 				</div>
 
 				<div className="dialog__row dialog__row--flush">
-					<span className="dialog__label">Width:</span>
+					<span className="dialog__label">
+						{t("dialog.image-properties.width")}
+					</span>
 					<input className="dialog__num" defaultValue={doc.width} />
-					<span className="dialog__label dialog__label--short">Height:</span>
+					<span className="dialog__label dialog__label--short">
+						{t("dialog.image-properties.height")}
+					</span>
 					<input className="dialog__num" defaultValue={doc.height} />
 				</div>
 			</div>

@@ -88,7 +88,7 @@ export interface FillResponse {
 
 export interface Tool {
 	readonly id: ToolId
-	/** history label for the step this tool pushes. */
+	/** history label for the step this tool pushes, already translated. */
 	readonly label: string
 	begin(pt: Point, mods: Modifiers, ctx: ToolContext): void
 	update?(pts: Point[], mods: Modifiers, ctx: ToolContext): void

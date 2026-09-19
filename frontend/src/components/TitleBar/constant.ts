@@ -1,10 +1,25 @@
-import type { QatItem, WindowButton } from "./types"
+import type { QatItemDef, WindowButton } from "./types"
 
 /** Quick Access Toolbar. what each item may do is decided in the hook. */
-export const QAT_ITEMS: QatItem[] = [
-	{ id: "save", icon: "save", title: "Save (Ctrl+S)" },
-	{ id: "undo", icon: "undo", title: "Undo (Ctrl+Z)" },
-	{ id: "redo", icon: "redo", title: "Redo (Ctrl+Y)" },
+export const QAT_ITEMS: QatItemDef[] = [
+	{
+		id: "save",
+		icon: "save",
+		labelKey: "titlebar.qat.save",
+		shortcutKey: "shortcut.file.save",
+	},
+	{
+		id: "undo",
+		icon: "undo",
+		labelKey: "titlebar.qat.undo",
+		shortcutKey: "shortcut.edit.undo",
+	},
+	{
+		id: "redo",
+		icon: "redo",
+		labelKey: "titlebar.qat.redo",
+		shortcutKey: "shortcut.edit.redo",
+	},
 ]
 
 /**
@@ -16,14 +31,14 @@ export const WINDOW_BUTTONS: WindowButton[] = [
 		id: "minimize",
 		icon: "minimize",
 		size: 11,
-		title: "Không khả dụng trên web — dùng nút thu nhỏ của trình duyệt",
+		titleKey: "titlebar.window.minimize",
 		disabled: true,
 	},
 	{
 		id: "maximize",
 		icon: "maximize",
 		size: 11,
-		title: "Maximise (toàn màn hình)",
+		titleKey: "titlebar.window.maximize",
 	},
-	{ id: "close", icon: "close", size: 14, title: "Close" },
+	{ id: "close", icon: "close", size: 14, titleKey: "titlebar.window.close" },
 ]

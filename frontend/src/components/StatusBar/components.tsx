@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next"
 import type { StatusCellProps, ZoomControlProps } from "./types"
 
 export function StatusCell({ icon, children }: StatusCellProps) {
@@ -17,12 +18,14 @@ export function ZoomControl({
 	onZoomIn,
 	onZoomOut,
 }: ZoomControlProps) {
+	const { t } = useTranslation()
+
 	return (
 		<div className="status-bar__zoom">
 			<button
 				type="button"
 				className="status-bar__zoom-btn"
-				title="Zoom out"
+				title={t("statusbar.zoom.out")}
 				onClick={onZoomOut}
 			>
 				−
@@ -34,13 +37,13 @@ export function ZoomControl({
 				max={maxIndex}
 				step={1}
 				value={stepIndex}
-				aria-label="Zoom"
+				aria-label={t("statusbar.zoom.label")}
 				onChange={(e) => onStep(Number(e.target.value))}
 			/>
 			<button
 				type="button"
 				className="status-bar__zoom-btn"
-				title="Zoom in"
+				title={t("statusbar.zoom.in")}
 				onClick={onZoomIn}
 			>
 				+

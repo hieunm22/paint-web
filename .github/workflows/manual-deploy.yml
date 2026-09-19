@@ -1,0 +1,108 @@
+# Manual deploy triggered from the Actions tab.
+# Optionally install deps before the build, or redeploy whatever branch already sits on the server.
+name: Manual Deploy
+run-name: Manual Deploy - ${{ inputs.use_current_branch && 'current branch' || github.ref_name }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      install_dependency:
+        description: 'Install dependencies'
+        type: boolean
+        required: false
+        default: false
+      use_current_branch:
+        description: 'Use current branch on server'
+        type: boolean
+        required: false
+        default: false
+
+jobs:
+  manual-deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: setup ssh
+        env:
+          SERVER_IP: ${{ vars.SERVER_IP }}
+          SSH_PORT: ${{ vars.SSH_PORT }}
+        run: |
+          set -eo pipefail
+          if [ -z "$SSH_PORT" ]; then
+            echo "::error::repo variable SSH_PORT is not set (Settings > Secrets and variables > Actions > Variables)"
+            exit 1
+          fi
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          if ! ssh-keyscan -H -p "$SSH_PORT" -T 10 "$SERVER_IP" >> ~/.ssh/known_hosts; then
+            echo "::error::ssh-keyscan could not reach ${SERVER_IP}:${SSH_PORT} - sshd down, port changed, or firewall blocking?"
+            exit 1
+          fi
+          echo "SSH setup completed (${SERVER_IP}:${SSH_PORT})"
+
+      - name: deploy via ssh
+        env:
+          SERVER_IP: ${{ vars.SERVER_IP }}
+          SSH_PORT: ${{ vars.SSH_PORT }}
+          INSTALL_DEPENDENCY: ${{ inputs.install_dependency }}
+          USE_CURRENT_BRANCH: ${{ inputs.use_current_branch }}
+          DEPLOY_BRANCH: ${{ github.ref_name }}
+        run: |
+          set -eo pipefail
+          echo "install_dependency=$INSTALL_DEPENDENCY use_current_branch=$USE_CURRENT_BRANCH branch=$DEPLOY_BRANCH"
+          ssh -p "$SSH_PORT" root@"$SERVER_IP" \
+            INSTALL_DEPENDENCY="$INSTALL_DEPENDENCY" \
+            USE_CURRENT_BRANCH="$USE_CURRENT_BRANCH" \
+            DEPLOY_BRANCH="$DEPLOY_BRANCH" \
+            bash -s <<'REMOTE'
+          set -e
+          BASE=/root/projects/paint-web
+
+          checkout_branch() {
+            if [ "$USE_CURRENT_BRANCH" = "true" ]; then
+              CURRENT=$(git -C "$BASE" rev-parse --abbrev-ref HEAD)
+              echo "==> use_current_branch is on - skipping checkout, deploying $CURRENT as it sits on the server"
+              return
+            fi
+            echo "==> checking out $DEPLOY_BRANCH..."
+            cd "$BASE"
+            # fetch first, then force the checkout onto the chosen ref: a plain pull only updates whatever branch the server happened to sit on
+            git fetch origin "$DEPLOY_BRANCH"
+            git checkout "$DEPLOY_BRANCH"
+            git reset --hard "origin/$DEPLOY_BRANCH"
+          }
+
+          deploy_frontend() {
+            echo "==> deploying frontend..."
+            cd "$BASE/frontend"
+            source /root/.nvm/nvm.sh
+            if [ "$INSTALL_DEPENDENCY" = "true" ]; then
+              echo "install_dependency is on - running make install..."
+              make install
+            fi
+            make publish-sync
+          }
+
+          checkout_branch
+          deploy_frontend
+          REMOTE
+
+  notify:
+    runs-on: ubuntu-latest
+    needs: manual-deploy
+    # always() so a failed deploy still reports
+    if: always()
+    steps:
+      - name: send telegram message
+        run: |
+          STATUS="${{ needs.manual-deploy.result }}"
+          BRANCH="${{ inputs.use_current_branch && 'current branch' || github.ref_name }}"
+          TIMESTAMP=$(TZ='Asia/Ho_Chi_Minh' date '+%Y-%m-%d %H:%M:%S')
+          RUN_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          if [ "$STATUS" = "success" ]; then EMOJI="✅"; else EMOJI="❌"; fi
+          printf -v MESSAGE '%s Manual Deploy (%s) finished at %s: %s\n%s' "$EMOJI" "$BRANCH" "$TIMESTAMP" "$STATUS" "$RUN_URL"
+          curl -s -X POST \
+            https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage \
+            -d chat_id=${{ vars.TELEGRAM_CHAT_ID }} \
+            --data-urlencode "text=$MESSAGE"

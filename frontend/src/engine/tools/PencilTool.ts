@@ -1,4 +1,5 @@
 import { stampSegment } from "./common"
+import { translate } from "locales/translate"
 import type { Point } from "store/types"
 import type { Modifiers, Tool, ToolContext } from "../types"
 import { constrainToAxis } from "../geometry"
@@ -9,7 +10,10 @@ const ORIGIN: Point = { x: 0, y: 0 }
 /** one pixel wide at size 1, no antialiasing at any size. */
 export class PencilTool implements Tool {
 	readonly id = "pencil"
-	readonly label = "Pencil"
+
+	get label(): string {
+		return translate("history.label.pencil")
+	}
 	private origin: Point = ORIGIN
 	private last: Point = ORIGIN
 

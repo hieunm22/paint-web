@@ -1,14 +1,19 @@
+import { translate } from "locales/translate"
+
 /**
  * estimated saved file size for the fourth status cell.
  * Placeholder; the real one is lazy and debounced over actual image data.
  */
 export function estimateFileSize(width: number, height: number): string {
 	const kb = Math.round((width * height * 3) / 1024)
-	return kb >= 1024 ? `${(kb / 1024).toFixed(1)}MB` : `${kb}KB`
+
+	return kb >= 1024
+		? translate("statusbar.cell.file-size-mb", { 0: (kb / 1024).toFixed(1) })
+		: translate("statusbar.cell.file-size-kb", { 0: kb })
 }
 
 export function formatZoomPercent(zoom: number): string {
-	return `${Math.round(zoom * 100)}%`
+	return translate("statusbar.zoom.percent", { 0: Math.round(zoom * 100) })
 }
 
 /** slider position for a zoom factor; falls back to the first step when off-scale. */

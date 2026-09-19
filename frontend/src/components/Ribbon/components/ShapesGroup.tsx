@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next"
 import {
 	SHAPE_GALLERY_COLS,
 	SHAPE_GALLERY_ROW_HEIGHT,
@@ -6,7 +7,7 @@ import {
 import { Icon } from "components/Icon"
 import { RibbonGroup } from "components/RibbonGroup"
 import { ShapeIcon } from "components/ShapeIcon"
-import { SHAPE_LABELS, SHAPE_ORDER } from "components/ShapeIcon/constant"
+import { SHAPE_LABEL_KEYS, SHAPE_ORDER } from "components/ShapeIcon/constant"
 import { shapeHasInterior } from "../common"
 import { useShapeGalleryScroll } from "../hooks"
 import { useAppDispatch, useAppSelector } from "store/hooks"
@@ -16,6 +17,7 @@ import { StrokeMenuButton } from "./StrokeMenuButton"
 
 /** 23-shape gallery that scrolls by row, plus the Outline and Fill menus. */
 export function ShapesGroup() {
+	const { t } = useTranslation()
 	const dispatch = useAppDispatch()
 	const { shape, outline, fill } = useAppSelector((s) => s.tool)
 	const openMenu = useAppSelector((s) => s.ui.openMenu)
@@ -23,7 +25,7 @@ export function ShapesGroup() {
 	const hasInterior = shapeHasInterior(shape)
 
 	return (
-		<RibbonGroup label="Shapes">
+		<RibbonGroup label={t("ribbon.shapes.label")}>
 			<div className="shape-gallery">
 				<div
 					className="shape-gallery__viewport"
@@ -45,8 +47,8 @@ export function ShapesGroup() {
 								className={`shape-gallery__cell${
 									shape === kind ? " shape-gallery__cell--selected" : ""
 								}`}
-								title={SHAPE_LABELS[kind]}
-								aria-label={SHAPE_LABELS[kind]}
+								title={t(SHAPE_LABEL_KEYS[kind])}
+								aria-label={t(SHAPE_LABEL_KEYS[kind])}
 								onClick={() => dispatch(setShape(kind))}
 							>
 								<ShapeIcon kind={kind} size={18} />
@@ -59,7 +61,7 @@ export function ShapesGroup() {
 					<button
 						type="button"
 						className="shape-gallery__scroll-btn"
-						title="Scroll up"
+						title={t("ribbon.shapes.scroll-up")}
 						disabled={!scroll.canScrollUp}
 						onClick={scroll.scrollUp}
 					>
@@ -68,7 +70,7 @@ export function ShapesGroup() {
 					<button
 						type="button"
 						className="shape-gallery__scroll-btn"
-						title="Scroll down"
+						title={t("ribbon.shapes.scroll-down")}
 						disabled={!scroll.canScrollDown}
 						onClick={scroll.scrollDown}
 					>
@@ -77,7 +79,7 @@ export function ShapesGroup() {
 					<button
 						type="button"
 						className="shape-gallery__scroll-btn"
-						title="Show all shapes"
+						title={t("ribbon.shapes.show-all")}
 					>
 						<Icon name="caretDown" size={8} />
 					</button>
@@ -86,7 +88,7 @@ export function ShapesGroup() {
 				<div className="shape-gallery__options">
 					<StrokeMenuButton
 						menuId="outline"
-						label="Outline"
+						label={t("ribbon.shapes.outline")}
 						value={outline}
 						disabled={!hasInterior}
 						open={openMenu === "outline"}
@@ -95,7 +97,7 @@ export function ShapesGroup() {
 					/>
 					<StrokeMenuButton
 						menuId="fill"
-						label="Fill"
+						label={t("ribbon.shapes.fill")}
 						value={fill}
 						disabled={!hasInterior}
 						open={openMenu === "fill"}

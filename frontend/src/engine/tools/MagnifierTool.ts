@@ -1,3 +1,4 @@
+import { translate } from "locales/translate"
 import { zoomAt } from "store/slices/viewSlice"
 import type { Point } from "store/types"
 import type { Modifiers, Tool, ToolContext } from "../types"
@@ -14,7 +15,10 @@ function nextLevel(zoom: number, back: boolean): number | undefined {
 
 export class MagnifierTool implements Tool {
 	readonly id = "magnifier"
-	readonly label = "Magnifier"
+
+	get label(): string {
+		return translate("history.label.magnifier")
+	}
 
 	begin(pt: Point, mods: Modifiers, ctx: ToolContext): void {
 		const next = nextLevel(ctx.zoom, mods.secondary)

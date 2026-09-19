@@ -1,20 +1,21 @@
+import type { ImageFormat } from "store/types"
 import type { FormatDef } from "./types"
 
-/** supported save formats. */
+/** supported save formats. the names are proper nouns and stay untranslated. */
 export const SAVE_FORMATS: FormatDef[] = [
-	{ id: "png", label: "PNG", ext: ".png" },
-	{ id: "jpeg", label: "JPEG", ext: ".jpg" },
-	{ id: "bmp", label: "BMP (24-bit)", ext: ".bmp" },
-	{ id: "gif", label: "GIF", ext: ".gif" },
-	{ id: "webp", label: "WEBP", ext: ".webp" },
+	{ id: "png", name: "PNG", ext: ".png" },
+	{ id: "jpeg", name: "JPEG", ext: ".jpg" },
+	{ id: "bmp", name: "BMP (24-bit)", ext: ".bmp" },
+	{ id: "gif", name: "GIF", ext: ".gif" },
+	{ id: "webp", name: "WEBP", ext: ".webp" },
 ]
 
-export const FORMAT_HINTS: Record<string, string> = {
-	png: "PNG giữ nguyên alpha — định dạng mặc định.",
-	jpeg: "JPEG không có alpha: nền trong suốt sẽ thành trắng.",
-	bmp: "BMP ghi bằng encoder tự viết, 24-bit không nén — alpha hợp nhất với nền trắng.",
-	gif: "GIF lượng tử hoá về 256 màu, alpha 1-bit.",
-	webp: "WEBP giữ alpha; Safari ≥ 16.",
+export const FORMAT_HINT_KEYS: Record<ImageFormat, string> = {
+	png: "dialog.save-as.hint-png",
+	jpeg: "dialog.save-as.hint-jpeg",
+	bmp: "dialog.save-as.hint-bmp",
+	gif: "dialog.save-as.hint-gif",
+	webp: "dialog.save-as.hint-webp",
 }
 
 /** the 48 fixed Basic colors from the classic Windows dialog. */

@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next"
 import { HANDLES, RULER_SIZE } from "./constant"
 import { buildRulerTicks } from "./common"
 import type { RulerProps } from "./types"
@@ -84,9 +85,13 @@ export function ResizeHandles() {
 }
 
 export function Thumbnail() {
+	const { t } = useTranslation()
+
 	return (
 		<div className="canvas__thumbnail">
-			<div className="canvas__thumbnail-title">Thumbnail</div>
+			<div className="canvas__thumbnail-title">
+				{t("canvas.thumbnail.title")}
+			</div>
 			<div className="canvas__thumbnail-body" />
 		</div>
 	)

@@ -4,7 +4,7 @@ import type { DocumentState, ImageFormat } from "../types"
 const initialState: DocumentState = {
 	width: 1152,
 	height: 648,
-	fileName: "Untitled",
+	fileName: "",
 	format: "png",
 	isDirty: false,
 	dpi: 96,

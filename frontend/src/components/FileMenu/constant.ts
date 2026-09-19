@@ -5,27 +5,44 @@ import type { FileMenuRow, RecentPicture } from "./types"
  * becomes From camera, email becomes Copy image, desktop background is dropped.
  */
 export const FILE_MENU_ROWS: FileMenuRow[] = [
-	{ label: "New", icon: "new", shortcut: "Ctrl+N" },
-	{ label: "Open", icon: "open", shortcut: "Ctrl+O" },
-	{ label: "Save", icon: "save", shortcut: "Ctrl+S" },
-	{ label: "Save as", icon: "saveAs", submenu: true, dialog: "save-as" },
-	"sep",
-	{ label: "Print", icon: "print", submenu: true },
 	{
-		label: "From camera",
-		icon: "camera",
-		note: "getUserMedia - tối đa ~4K",
+		labelKey: "filemenu.item.new",
+		icon: "new",
+		shortcutKey: "shortcut.file.new",
 	},
-	{ label: "Copy image", icon: "copy" },
+	{
+		labelKey: "filemenu.item.open",
+		icon: "open",
+		shortcutKey: "shortcut.file.open",
+	},
+	{
+		labelKey: "filemenu.item.save",
+		icon: "save",
+		shortcutKey: "shortcut.file.save",
+	},
+	{
+		labelKey: "filemenu.item.save-as",
+		icon: "saveAs",
+		submenu: true,
+		dialog: "save-as",
+	},
+	"sep",
+	{ labelKey: "filemenu.item.print", icon: "print", submenu: true },
+	{
+		labelKey: "filemenu.item.from-camera",
+		icon: "camera",
+		noteKey: "filemenu.item.from-camera-note",
+	},
+	{ labelKey: "filemenu.item.copy-image", icon: "copy" },
 	"sep",
 	{
-		label: "Properties",
+		labelKey: "filemenu.item.properties",
 		icon: "properties",
-		shortcut: "Ctrl+E",
+		shortcutKey: "shortcut.file.properties",
 		dialog: "image-properties",
 	},
-	{ label: "About Paint", icon: "about", dialog: "about" },
-	{ label: "Exit", icon: "exit" },
+	{ labelKey: "filemenu.item.about", icon: "about", dialog: "about" },
+	{ labelKey: "filemenu.item.exit", icon: "exit" },
 ]
 
 /** placeholder; the real list reads FileSystemFileHandle from IndexedDB. */

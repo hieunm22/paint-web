@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next"
 import { Icon } from "components/Icon"
 import { useDialogDrag } from "../hooks"
 import { useAppDispatch } from "store/hooks"
@@ -5,6 +6,7 @@ import { closeDialog } from "store/slices/uiSlice"
 import type { DialogProps } from "../types"
 
 export function Dialog({ title, width, children, footer }: DialogProps) {
+	const { t } = useTranslation()
 	const dispatch = useAppDispatch()
 	const { dialogRef, offset, handleProps } = useDialogDrag()
 
@@ -23,7 +25,7 @@ export function Dialog({ title, width, children, footer }: DialogProps) {
 					<button
 						type="button"
 						className="dialog__close"
-						aria-label="Close"
+						aria-label={t("dialog.common.close")}
 						onClick={() => dispatch(closeDialog())}
 					>
 						<Icon name="close" size={12} />
@@ -38,14 +40,14 @@ export function Dialog({ title, width, children, footer }: DialogProps) {
 								className="dialog__btn dialog__btn--primary"
 								onClick={() => dispatch(closeDialog())}
 							>
-								OK
+								{t("dialog.common.ok")}
 							</button>
 							<button
 								type="button"
 								className="dialog__btn"
 								onClick={() => dispatch(closeDialog())}
 							>
-								Cancel
+								{t("dialog.common.cancel")}
 							</button>
 						</>
 					)}

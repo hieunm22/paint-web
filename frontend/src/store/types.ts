@@ -77,6 +77,7 @@ export interface Point {
 export interface DocumentState {
 	width: number
 	height: number
+	/** empty until the document is saved or opened; shown as "Untitled". */
 	fileName: string
 	format: ImageFormat
 	isDirty: boolean

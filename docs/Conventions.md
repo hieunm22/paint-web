@@ -11,24 +11,27 @@ The general conventions are global and live outside this repo:
 Read those first. This file records only what is specific to paint-web, and it
 refines the global rules rather than contradicting them.
 
-**All paths below are relative to `frontend/`.** The repo root holds documentation
-only; the app, its `package.json`, `tsconfig.json` and `vite.config.ts` all live in
-`frontend/`. Run every command from there.
+**All paths below are relative to `frontend/`.** The app, its `package.json`,
+`tsconfig.json` and `vite.config.ts` all live in `frontend/`; run every command from
+there. The repo root holds documentation plus `tools/`, the translation pipeline,
+which is the one exception and is spelled out with a full path where it appears.
 
 New markdown documents go in `docs/`, named in PascalCase. `README.md` and `DESIGN.md`
 stay at the root because that is where a reader looks for them; nothing else joins them.
 
 ---
 
-## 1. The six root imports
+## 1. The seven root imports
 
 ```
-components/  hooks/  engine/  store/  common/  assets/
+components/  hooks/  engine/  locales/  store/  common/  assets/
 ```
 
 Declared in **both** `tsconfig.json` and `vite.config.ts`. `vite.config.ts` derives
-them from one `ROOT_DIRS` array; adding a seventh root means editing both files.
-`src/types/` does not exist yet - its import-order group is reserved.
+them from one `ROOT_DIRS` array. Adding an eighth root means editing both files **and**
+adding an `importOrder` entry to `.prettierrc`: an unlisted root is a bare specifier
+like any other, and Prettier sorts it in among the npm packages. `src/types/` does not
+exist yet - its import-order group is reserved.
 
 The two-entry `paths` trap is documented globally and as a comment inside
 `tsconfig.json`. Do not "tidy up" those pairs.
@@ -93,7 +96,7 @@ DESIGN.md §4 and §11; this section only covers where code goes and what it may
 Vitest, pinned to **2.x**: 3.x and later need Vite 6, and this repo is on Vite 5.
 Bumping one means bumping the other.
 
-- Config lives in `vite.config.ts`, not a second file, so tests resolve the six root
+- Config lives in `vite.config.ts`, not a second file, so tests resolve the seven root
   imports through the same alias list the app uses.
 - `environment: "node"`. jsdom carries no canvas, so a DOM environment would widen the
   surface without covering a single pixel. Anything needing a real canvas is an
@@ -139,8 +142,28 @@ six-point star, or the three callout shapes.
 
 ## 6. Locales
 
-`en` and `vi` in `src/locales/`, CSV to JSON, per the global i18n layout. The generate
-script emits JSON only - no xlsx branch.
+`en` and `vi`, CSV to JSON, per the global i18n layout with one difference: the
+pipeline sits at the repo root rather than inside `src/`, because the CSV and its
+generator are tooling and the app only ever consumes the JSON.
+
+```
+tools/                        # repo root, outside the app
+├─ language.csv               # SOURCE OF TRUTH - edit only this
+├─ convert-to-json.py         # python3 stdlib only, no venv
+└─ generate-language.sh       # run: ./tools/generate-language.sh, or yarn i18n
+
+frontend/src/locales/
+├─ en.json  vi.json           # GENERATED - never edit by hand
+├─ i18n.ts                    # init, fallback locale, localStorage key "language"
+├─ translate.ts               # non-hook helper for code outside React
+├─ common.ts  constant.ts  types.ts
+```
+
+The generate script emits JSON only - no xlsx branch. Commit the CSV and the JSON
+together: `i18n.ts` imports the JSON, so Vite needs it at build time.
+
+Placeholders are written `{0}`, `{1}`, which is why `i18n.ts` overrides i18next's
+`{{ }}` interpolation delimiters.
 
 **No user-visible string is written in a `.ts` or `.tsx` file.** Not in English, not in
 Vietnamese, and `constant.ts` is not an exception - a label table is interface, whatever
@@ -151,10 +174,31 @@ document name and a tool's history label all come from a key.
 Ids and enum values (`'pencil'`), css class names, hex colours, font names, format names
 such as `PNG`, and developer-only log text stay as they are.
 
-Keys read `<area>.<group>.<element>`, following the interface rather than the folder
-tree. React reaches them through `useTranslation()`; the engine, which must not import
-`react-i18next`, goes through `translate()`. `yarn check:i18n` fails on a literal that
-slipped through, and is part of calling work done.
+Keys read `<area>.<group>.<element>` - **exactly three levels, never two or four** -
+and follow the interface rather than the folder tree. A group's own caption is
+`<area>.<group>.label`, which is why there is no `ribbon.group.*` namespace and no
+`ribbon.home.*` tab level: the tab a group sits on is not part of its identity.
+
+Rows sharing a prefix stay contiguous in `language.csv`, label first, so a group reads
+as one block. The generator refuses any key that is not three levels deep.
+
+A constant table holds the key, not the text: `labelKey`, `titleKey`, `shortcutKey`,
+and the component translates at render.
+
+React reaches keys through `useTranslation()`; the engine, which must not import
+`react-i18next`, goes through `translate()`. A tool's history label is therefore a
+getter, not a field - a field would freeze the text at module load.
+
+`yarn check:i18n` (`scripts/check-i18n.mjs`) parses every `.ts`/`.tsx` with the
+TypeScript compiler API and fails on four things: JSX prose, a literal passed to
+`label`, `title`, `aria-label`, `shortcut`, `placeholder` or `note`, any Vietnamese
+character, and a key-shaped literal that `en.json` does not define - which is what
+catches a typo or a rename that missed a call site. Its exemption list lives in the
+script, each entry with a reason. Run it alongside `typecheck` before calling work done.
+
+A value containing a `;` **must** be wrapped in double quotes, or the CSV splits it
+into extra columns. That silently put English text in `vi.json` once; the generator
+now counts columns per row and stops.
 
 ---
 
@@ -167,5 +211,7 @@ yarn format        # prettier over src, import order included
 yarn test          # vitest, one pass
 yarn test:watch    # vitest, watching
 yarn typecheck     # must print nothing
+yarn check:i18n    # no hard-coded user-visible strings
+yarn i18n          # language.csv -> src/locales/{en,vi}.json
 yarn build         # typecheck then build, no warnings
 ```

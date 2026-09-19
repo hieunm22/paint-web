@@ -1,3 +1,4 @@
+import { translate } from "locales/translate"
 import { pickerPicked } from "store/actions"
 import type { Point } from "store/types"
 import type { Modifiers, Tool, ToolContext } from "../types"
@@ -11,7 +12,10 @@ import { drawCursor, PICKER_CURSOR } from "./cursorArt"
  */
 export class PickerTool implements Tool {
 	readonly id = "picker"
-	readonly label = "Pick colour"
+
+	get label(): string {
+		return translate("history.label.picker")
+	}
 
 	begin(pt: Point, mods: Modifiers, ctx: ToolContext): void {
 		if (!contains(ctx.doc, pt)) return

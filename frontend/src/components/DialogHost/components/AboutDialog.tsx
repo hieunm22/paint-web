@@ -1,18 +1,16 @@
+import { useTranslation } from "react-i18next"
 import { Dialog } from "./Dialog"
 
 export function AboutDialog() {
+	const { t } = useTranslation()
+
 	return (
-		<Dialog title="About Paint" width={360}>
+		<Dialog title={t("dialog.about.title")} width={360}>
 			<div className="dialog__body">
-				<div className="dialog__app-name">Paint Web 0.1.0</div>
-				<p className="dialog__para">
-					Bản dựng lại giao diện Ribbon của Microsoft Paint (Windows 10) trên
-					nền web, chạy hoàn toàn client-side.
-				</p>
+				<div className="dialog__app-name">{t("dialog.about.app-name")}</div>
+				<p className="dialog__para">{t("dialog.about.body")}</p>
 				<p className="dialog__para dialog__para--muted">
-					Không liên kết với Microsoft. Giao diện lấy cảm hứng từ Microsoft
-					Paint. Icon dùng Font Awesome Pro theo license riêng; không sử dụng
-					asset gốc của Paint.
+					{t("dialog.about.disclaimer")}
 				</p>
 			</div>
 		</Dialog>

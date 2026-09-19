@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next"
 import { CELL_ICONS } from "./constant"
 import { StatusCell, ZoomControl } from "./components"
 import { estimateFileSize, formatZoomPercent, zoomStepIndex } from "./common"
@@ -8,6 +9,7 @@ import "./StatusBar.scss"
 
 /** four info cells plus the zoom slider on the right. */
 export function StatusBar() {
+	const { t } = useTranslation()
 	const dispatch = useAppDispatch()
 	const doc = useAppSelector((s) => s.doc)
 	const bounds = useAppSelector((s) => s.selection.bounds)
@@ -17,13 +19,17 @@ export function StatusBar() {
 	return (
 		<div className="status-bar">
 			<StatusCell icon={CELL_ICONS.cursor}>
-				{cursor ? `${cursor.x}, ${cursor.y}px` : ""}
+				{cursor
+					? t("statusbar.cell.cursor-position", { 0: cursor.x, 1: cursor.y })
+					: ""}
 			</StatusCell>
 			<StatusCell icon={CELL_ICONS.selection}>
-				{bounds ? `${bounds.w} × ${bounds.h}px` : ""}
+				{bounds
+					? t("statusbar.cell.selection-size", { 0: bounds.w, 1: bounds.h })
+					: ""}
 			</StatusCell>
 			<StatusCell icon={CELL_ICONS.document}>
-				{doc.width} × {doc.height}px
+				{t("statusbar.cell.document-size", { 0: doc.width, 1: doc.height })}
 			</StatusCell>
 			<StatusCell icon={CELL_ICONS.fileSize}>
 				{estimateFileSize(doc.width, doc.height)}

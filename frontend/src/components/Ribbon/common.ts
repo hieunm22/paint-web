@@ -1,3 +1,4 @@
+import { NO_FILL_KEY } from "./constant"
 import type { ShapeKind, StrokeStyle } from "store/types"
 
 /** maximum scroll row for a grid gallery. */
@@ -17,12 +18,12 @@ export function shapeHasInterior(shape: ShapeKind): boolean {
 }
 
 /**
- * the Fill menu shows "No fill" instead of "No outline" for the `none` entry.
+ * the Fill menu names its `none` entry differently from the Outline menu.
  */
-export function strokeStyleLabel(
+export function strokeStyleKey(
 	id: StrokeStyle,
-	baseLabel: string,
+	baseKey: string,
 	isFill: boolean,
 ): string {
-	return id === "none" && isFill ? "No fill" : baseLabel
+	return id === "none" && isFill ? NO_FILL_KEY : baseKey
 }

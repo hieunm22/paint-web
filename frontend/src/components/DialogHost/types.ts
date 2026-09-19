@@ -36,7 +36,7 @@ export interface DialogProps {
 
 export interface FormatDef {
 	id: ImageFormat
-	label: string
+	name: string
 	ext: string
 }
 

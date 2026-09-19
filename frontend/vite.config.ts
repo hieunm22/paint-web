@@ -3,7 +3,15 @@ import react from "@vitejs/plugin-react"
 import { defineConfig } from "vitest/config"
 
 /** folders under src/ that are importable as bare specifiers, e.g. "components/Icon". */
-const ROOT_DIRS = ["components", "hooks", "engine", "store", "common", "assets"]
+const ROOT_DIRS = [
+	"components",
+	"hooks",
+	"engine",
+	"locales",
+	"store",
+	"common",
+	"assets",
+]
 
 /**
  * regex bounds keep the alias from matching a longer name such as "storey",

@@ -69,6 +69,39 @@
 		margin: 5px 12px;
 	}
 
+	&__language {
+		display: flex;
+		align-items: center;
+		gap: 6px;
+		margin-top: auto;
+		padding: 10px 14px 4px;
+		font-size: 12px;
+	}
+
+	&__language-label {
+		flex: 1;
+		color: var(--bs-text);
+		opacity: 0.8;
+	}
+
+	&__language-btn {
+		padding: 3px 8px;
+		border: 1px solid rgba(255, 255, 255, 0.35);
+		border-radius: 2px;
+		color: var(--bs-text);
+		font-size: 12px;
+
+		&:hover {
+			background: var(--bs-item-hover);
+		}
+
+		&--active {
+			background: #fff;
+			border-color: #fff;
+			color: var(--bs-bg);
+		}
+	}
+
 	&__right {
 		flex: 1;
 		padding: 18px 24px;

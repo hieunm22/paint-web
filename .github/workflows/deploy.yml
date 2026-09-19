@@ -1,0 +1,185 @@
+# frontend only repo, the build runs on the server
+name: Build on Changes
+
+on:
+  push:
+    branches: [
+      master
+    ]
+  workflow_dispatch:
+
+jobs:
+  detect-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      frontend-changed: ${{ steps.changes.outputs.frontend-changed }}
+      package-json-changed: ${{ steps.changes.outputs.package-json-changed }}
+      need-build: ${{ steps.changes.outputs.need-build }}
+      build-type: ${{ steps.changes.outputs.build-type }}
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: detect changes
+        working-directory: ${{ github.workspace }}
+        id: changes
+        run: |
+          git checkout ${{ github.ref_name }}
+          # get list changed files
+          CHANGED_FILES=$(git diff --name-only HEAD~1..HEAD)
+
+          # init variables
+          frontend_changed=false
+          package_json_changed=false
+          need_build=false
+          build_type=""
+
+          # the app lives under frontend/, the repo root holds documentation only
+          FE_FOLDER="frontend"
+
+          echo "Changed files:"
+          echo "$CHANGED_FILES"
+
+          # check each file
+          while IFS= read -r file; do
+            if [ -n "$file" ]; then
+              if [[ "$file" == "$FE_FOLDER/"* ]]; then
+                if [[ "$file" == "$FE_FOLDER/package.json" ]]; then
+                  package_json_changed=true
+                  echo "package.json changed"
+                else
+                  frontend_changed=true
+                  echo "frontend file changed: $file"
+                fi
+              fi
+            fi
+          done <<< "$CHANGED_FILES"
+
+          # define build type
+          # need to build if frontend changed (package.json changed included or not)
+          # NO NEED to build if package.json changed only
+          if [ "$frontend_changed" = true ]; then
+            need_build=true
+
+            if [ "$package_json_changed" = true ]; then
+              build_type="frontend-with-deps"
+            else
+              build_type="frontend-only"
+            fi
+          elif [ "$package_json_changed" = true ]; then
+            build_type="package-json-only"
+          else
+            build_type="no-changes"
+          fi
+
+          # Set outputs
+          echo "frontend-changed=$frontend_changed" >> $GITHUB_OUTPUT
+          echo "package-json-changed=$package_json_changed" >> $GITHUB_OUTPUT
+          echo "need-build=$need_build" >> $GITHUB_OUTPUT
+          echo "build-type=$build_type" >> $GITHUB_OUTPUT
+
+          echo "Detection results:"
+          echo "- Frontend changed: $frontend_changed"
+          echo "- package.json changed: $package_json_changed"
+          echo "- Need build: $need_build"
+          echo "- Build type: $build_type"
+          echo "changes detected $build_type - building and deploying... $(date)"
+
+  deploy-to-server:
+    runs-on: ubuntu-latest
+    needs: detect-changes
+    timeout-minutes: 30
+    if: needs.detect-changes.outputs.need-build == 'true' || github.event_name == 'workflow_dispatch'
+    steps:
+      - name: setup ssh
+        env:
+          SERVER_IP: ${{ vars.SERVER_IP }}
+          SSH_PORT: ${{ vars.SSH_PORT }}
+        run: |
+          set -eo pipefail
+          if [ -z "$SSH_PORT" ]; then
+            echo "::error::repo variable SSH_PORT is not set (Settings > Secrets and variables > Actions > Variables)"
+            exit 1
+          fi
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          if ! ssh-keyscan -H -p "$SSH_PORT" -T 10 "$SERVER_IP" >> ~/.ssh/known_hosts; then
+            echo "::error::ssh-keyscan could not reach ${SERVER_IP}:${SSH_PORT} - sshd down, port changed, or firewall blocking?"
+            exit 1
+          fi
+          echo "SSH setup completed (${SERVER_IP}:${SSH_PORT})"
+
+      - name: deploy to server
+        env:
+          SERVER_IP: ${{ vars.SERVER_IP }}
+          SSH_PORT: ${{ vars.SSH_PORT }}
+          BUILD_TYPE: ${{ needs.detect-changes.outputs.build-type }}
+          DEPLOY_BRANCH: ${{ github.ref_name }}
+        run: |
+          set -eo pipefail
+          echo "BUILD_TYPE=$BUILD_TYPE"
+
+          # a workflow_dispatch on this file carries no diff, treat it as a plain frontend build
+          INSTALL_DEPENDENCY=false
+          if [ "$BUILD_TYPE" = "frontend-with-deps" ]; then
+            INSTALL_DEPENDENCY=true
+          fi
+
+          ssh -p "$SSH_PORT" root@"$SERVER_IP" \
+            DEPLOY_BRANCH="$DEPLOY_BRANCH" \
+            INSTALL_DEPENDENCY="$INSTALL_DEPENDENCY" \
+            bash -s <<'REMOTE'
+          set -e
+          BASE=/root/projects/paint-web
+
+          echo "update code to latest version"
+          cd "$BASE"
+          # fetch first, then force the checkout onto the pushed ref: a plain pull only updates whatever branch the server happened to sit on
+          git fetch origin "$DEPLOY_BRANCH"
+          git checkout "$DEPLOY_BRANCH"
+          git reset --hard "origin/$DEPLOY_BRANCH"
+
+          cd "$BASE/frontend"
+          source /root/.nvm/nvm.sh
+
+          if [ "$INSTALL_DEPENDENCY" = "true" ]; then
+            echo "package.json changed - running make install..."
+            make install
+          fi
+
+          echo "deploying frontend..."
+          make publish-sync
+          REMOTE
+
+  no-action-needed:
+    runs-on: ubuntu-latest
+    needs: detect-changes
+    if: needs.detect-changes.outputs.build-type == 'package-json-only'
+    steps:
+      - name: Only package.json changed - No action needed
+        run: |
+          echo "only package.json changed - no build action needed"
+          echo "no SSH setup required"
+
+  notify:
+    runs-on: ubuntu-latest
+    needs: [ detect-changes, deploy-to-server ]
+    # always() so a failed deploy still reports; skipped means nothing was deployed
+    if: always() && needs.deploy-to-server.result != 'skipped'
+    steps:
+      - name: send telegram message
+        run: |
+          STATUS="${{ needs.deploy-to-server.result }}"
+          BUILD_TYPE="${{ needs.detect-changes.outputs.build-type }}"
+          BRANCH="${{ github.ref_name }}"
+          TIMESTAMP=$(TZ='Asia/Ho_Chi_Minh' date '+%Y-%m-%d %H:%M:%S')
+          RUN_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          if [ "$STATUS" = "success" ]; then EMOJI="✅"; else EMOJI="❌"; fi
+          printf -v MESSAGE '%s Auto Deploy [%s] (%s) finished at %s: %s\n%s' "$EMOJI" "${BUILD_TYPE:-manual}" "$BRANCH" "$TIMESTAMP" "$STATUS" "$RUN_URL"
+          curl -s -X POST \
+            https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage \
+            -d chat_id=${{ vars.TELEGRAM_CHAT_ID }} \
+            --data-urlencode "text=$MESSAGE"

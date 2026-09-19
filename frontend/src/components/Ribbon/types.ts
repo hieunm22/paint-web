@@ -9,26 +9,26 @@ import type {
 
 export interface RibbonTabDef {
 	id: RibbonTabId
-	label: string
+	labelKey: string
 }
 
 export interface ToolDef {
 	id: ToolId
 	icon: IconName
-	label: string
+	labelKey: string
 }
 
 export interface BrushDef {
 	id: BrushKind
 	icon: IconName
-	label: string
+	labelKey: string
 	/** glyph rotation mimicking the calligraphy stamp angle. */
 	rotate?: number
 }
 
 export interface StrokeStyleDef {
 	id: StrokeStyle
-	label: string
+	labelKey: string
 }
 
 export type SizeDef = BrushSize

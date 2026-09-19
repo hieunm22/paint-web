@@ -1,8 +1,10 @@
+import { useTranslation } from "react-i18next"
 import { WINDOW_BUTTONS } from "./constant"
 import { Icon } from "components/Icon"
 import { useQatItems } from "./hooks"
 
 export function QuickAccessToolbar() {
+	const { t } = useTranslation()
 	const items = useQatItems()
 
 	return (
@@ -22,7 +24,7 @@ export function QuickAccessToolbar() {
 			<button
 				type="button"
 				className="title-bar__qat-btn title-bar__qat-btn--caret"
-				title="Customise Quick Access Toolbar"
+				title={t("titlebar.qat.customise")}
 			>
 				<Icon name="caretDown" size={9} />
 			</button>
@@ -31,6 +33,8 @@ export function QuickAccessToolbar() {
 }
 
 export function WindowButtons() {
+	const { t } = useTranslation()
+
 	return (
 		<div className="title-bar__window-btns">
 			{WINDOW_BUTTONS.map((btn) => (
@@ -38,7 +42,7 @@ export function WindowButtons() {
 					key={btn.id}
 					type="button"
 					className={`title-bar__window-btn title-bar__window-btn--${btn.id}`}
-					title={btn.title}
+					title={t(btn.titleKey)}
 					disabled={btn.disabled}
 				>
 					<Icon name={btn.icon} size={btn.size} />

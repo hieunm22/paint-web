@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next"
 import { SIZES } from "../constant"
 import { Menu } from "components/Menu"
 import { SplitButton } from "components/RibbonButton"
@@ -8,15 +9,16 @@ import { toggleMenu } from "store/slices/uiSlice"
 
 /** the menu renders real 1, 3, 5 and 8 px rules. */
 export function SizeGroup() {
+	const { t } = useTranslation()
 	const dispatch = useAppDispatch()
 	const size = useAppSelector((s) => s.tool.size)
 	const open = useAppSelector((s) => s.ui.openMenu) === "size"
 
 	return (
-		<RibbonGroup label="Size">
+		<RibbonGroup label={t("ribbon.size.label")}>
 			<SplitButton
-				label="Size"
-				title={`Size (${size}px) — Ctrl+= / Ctrl+-`}
+				label={t("ribbon.size.label")}
+				title={t("ribbon.size.tooltip", { 0: size })}
 				iconNode={
 					<div className="size-preview">
 						{SIZES.map((s) => (
@@ -37,8 +39,8 @@ export function SizeGroup() {
 								key={s}
 								type="button"
 								className={`size-menu__item${size === s ? " size-menu__item--selected" : ""}`}
-								title={`${s}px`}
-								aria-label={`${s}px`}
+								title={t("ribbon.size.value", { 0: s })}
+								aria-label={t("ribbon.size.value", { 0: s })}
 								aria-checked={size === s}
 								onClick={() => dispatch(setSize(s))}
 							>

@@ -1,7 +1,8 @@
+import { useTranslation } from "react-i18next"
 import { STROKE_STYLES } from "../constant"
 import { Icon } from "components/Icon"
 import { Menu, MenuAnchor, MenuItem } from "components/Menu"
-import { strokeStyleLabel } from "../common"
+import { strokeStyleKey } from "../common"
 import type { StrokeMenuButtonProps } from "../types"
 
 /** seven-item menu shared by Outline and Fill. */
@@ -14,6 +15,7 @@ export function StrokeMenuButton({
 	onToggle,
 	onPick,
 }: StrokeMenuButtonProps) {
+	const { t } = useTranslation()
 	const isFill = menuId === "fill"
 
 	return (
@@ -33,7 +35,7 @@ export function StrokeMenuButton({
 					{STROKE_STYLES.map((style) => (
 						<MenuItem
 							key={style.id}
-							label={strokeStyleLabel(style.id, style.label, isFill)}
+							label={t(strokeStyleKey(style.id, style.labelKey, isFill))}
 							checked={value === style.id}
 							onClick={() => onPick(style.id)}
 						/>

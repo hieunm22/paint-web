@@ -1,27 +1,30 @@
 import { useState } from "react"
-import { FORMAT_HINTS, SAVE_FORMATS } from "../constant"
+import { useTranslation } from "react-i18next"
+import { FORMAT_HINT_KEYS, SAVE_FORMATS } from "../constant"
+import { documentName } from "store/common"
 import { useAppSelector } from "store/hooks"
 import type { ImageFormat } from "store/types"
 import { Dialog } from "./Dialog"
 
 /** fallback for browsers without the File System Access API. */
 export function SaveAsDialog() {
+	const { t } = useTranslation()
 	const fileName = useAppSelector((s) => s.doc.fileName)
 	const [format, setFormat] = useState<ImageFormat>("png")
 	const lossy = format === "jpeg" || format === "webp"
 
 	return (
-		<Dialog title="Save As" width={396}>
+		<Dialog title={t("dialog.save-as.title")} width={396}>
 			<div className="dialog__body">
 				<div className="dialog__row dialog__row--flush">
-					<span className="dialog__label">File name:</span>
+					<span className="dialog__label">{t("dialog.save-as.file-name")}</span>
 					<input
 						className="dialog__num dialog__num--wide"
-						defaultValue={fileName}
+						defaultValue={documentName(fileName)}
 					/>
 				</div>
 				<div className="dialog__row dialog__row--flush">
-					<span className="dialog__label">Save as type:</span>
+					<span className="dialog__label">{t("dialog.save-as.type")}</span>
 					<select
 						className="dialog__select"
 						value={format}
@@ -29,14 +32,14 @@ export function SaveAsDialog() {
 					>
 						{SAVE_FORMATS.map((f) => (
 							<option key={f.id} value={f.id}>
-								{f.label} ({f.ext})
+								{t("dialog.save-as.format-option", { 0: f.name, 1: f.ext })}
 							</option>
 						))}
 					</select>
 				</div>
 				{lossy && (
 					<div className="dialog__row dialog__row--flush">
-						<span className="dialog__label">Quality:</span>
+						<span className="dialog__label">{t("dialog.save-as.quality")}</span>
 						<input
 							type="range"
 							min={10}
@@ -47,7 +50,7 @@ export function SaveAsDialog() {
 					</div>
 				)}
 				<div className="dialog__hint dialog__hint--flush">
-					{FORMAT_HINTS[format]}
+					{t(FORMAT_HINT_KEYS[format])}
 				</div>
 			</div>
 		</Dialog>

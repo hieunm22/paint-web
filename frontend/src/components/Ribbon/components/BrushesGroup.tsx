@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next"
 import { BRUSHES } from "../constant"
 import { Icon } from "components/Icon"
 import { Menu } from "components/Menu"
@@ -9,15 +10,16 @@ import { toggleMenu } from "store/slices/uiSlice"
 
 /** the button keeps the selected brush icon; the menu opens the 9-brush gallery. */
 export function BrushesGroup() {
+	const { t } = useTranslation()
 	const dispatch = useAppDispatch()
 	const { active, brush } = useAppSelector((s) => s.tool)
 	const open = useAppSelector((s) => s.ui.openMenu) === "brushes"
 	const current = BRUSHES.find((b) => b.id === brush) ?? BRUSHES[0]
 
 	return (
-		<RibbonGroup label="Brushes">
+		<RibbonGroup label={t("ribbon.brushes.label")}>
 			<SplitButton
-				label="Brushes"
+				label={t("ribbon.brushes.label")}
 				iconNode={
 					<Icon name={current.icon} size={30} rotate={current.rotate} />
 				}
@@ -35,8 +37,8 @@ export function BrushesGroup() {
 									className={`brush-gallery__cell${
 										brush === b.id ? " brush-gallery__cell--selected" : ""
 									}`}
-									title={b.label}
-									aria-label={b.label}
+									title={t(b.labelKey)}
+									aria-label={t(b.labelKey)}
 									onClick={() => dispatch(setBrush(b.id))}
 								>
 									<Icon name={b.icon} size={18} rotate={b.rotate} />

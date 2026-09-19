@@ -1,3 +1,4 @@
+import { translate } from "locales/translate"
 import type { Point, Rect } from "store/types"
 import type { Modifiers, RGBA, Tool, ToolContext } from "../types"
 import { hexToRgba } from "../color"
@@ -15,7 +16,10 @@ const OFF_THREAD_PIXELS = 4_000_000
 /** flood fill with zero tolerance: Paint matches colours exactly. */
 export class FillTool implements Tool {
 	readonly id = "fill"
-	readonly label = "Fill with colour"
+
+	get label(): string {
+		return translate("history.label.fill")
+	}
 
 	begin(pt: Point, mods: Modifiers, ctx: ToolContext): void {
 		if (!contains(ctx.doc, pt)) return

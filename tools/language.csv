@@ -1,0 +1,221 @@
+﻿Key;English;Vietnamese
+ribbon.tab.file;File;Tệp
+ribbon.tab.home;Home;Trang chủ
+ribbon.tab.view;View;Xem
+ribbon.clipboard.label;Clipboard;Bảng tạm
+ribbon.clipboard.paste;Paste;Dán
+ribbon.clipboard.paste-from;Paste from…;Dán từ…
+ribbon.clipboard.cut;Cut;Cắt
+ribbon.clipboard.copy;Copy;Sao chép
+ribbon.image.label;Image;Ảnh
+ribbon.image.select;Select;Chọn
+ribbon.image.selection-shapes;Selection shapes;Kiểu vùng chọn
+ribbon.image.select-rect;Rectangular selection;Chọn hình chữ nhật
+ribbon.image.select-free;Free-form selection;Chọn tự do
+ribbon.image.selection-options;Selection options;Tuỳ chọn vùng chọn
+ribbon.image.select-all;Select all;Chọn tất cả
+ribbon.image.invert-selection;Invert selection;Đảo vùng chọn
+ribbon.image.delete;Delete;Xoá
+ribbon.image.transparent-selection;Transparent selection;Vùng chọn trong suốt
+ribbon.image.crop;Crop;Cắt xén
+ribbon.image.resize;Resize;Đổi cỡ
+ribbon.image.rotate;Rotate ▾;Xoay ▾
+ribbon.image.rotate-right;Rotate right 90°;Xoay phải 90°
+ribbon.image.rotate-left;Rotate left 90°;Xoay trái 90°
+ribbon.image.rotate-180;Rotate 180°;Xoay 180°
+ribbon.image.flip-vertical;Flip vertical;Lật dọc
+ribbon.image.flip-horizontal;Flip horizontal;Lật ngang
+ribbon.tools.label;Tools;Công cụ
+ribbon.tools.pencil;Pencil;Bút chì
+ribbon.tools.fill;Fill with colour;Tô màu
+ribbon.tools.text;Text;Chữ
+ribbon.tools.eraser;Eraser;Tẩy
+ribbon.tools.picker;Colour picker;Lấy màu
+ribbon.tools.magnifier;Magnifier;Kính lúp
+ribbon.brushes.label;Brushes;Cọ vẽ
+ribbon.brushes.brush;Brush;Cọ
+ribbon.brushes.calligraphy1;Calligraphy brush 1;Cọ thư pháp 1
+ribbon.brushes.calligraphy2;Calligraphy brush 2;Cọ thư pháp 2
+ribbon.brushes.airbrush;Airbrush;Bình xịt
+ribbon.brushes.oil;Oil brush;Cọ sơn dầu
+ribbon.brushes.crayon;Crayon;Bút sáp
+ribbon.brushes.marker;Marker;Bút dạ
+ribbon.brushes.natural-pencil;Natural pencil;Bút chì tự nhiên
+ribbon.brushes.watercolor;Watercolour;Màu nước
+ribbon.shapes.label;Shapes;Hình
+ribbon.shapes.line;Line;Đường thẳng
+ribbon.shapes.curve;Curve;Đường cong
+ribbon.shapes.oval;Oval;Hình bầu dục
+ribbon.shapes.rect;Rectangle;Hình chữ nhật
+ribbon.shapes.rounded-rect;Rounded rectangle;Chữ nhật bo góc
+ribbon.shapes.polygon;Polygon;Đa giác
+ribbon.shapes.right-triangle;Right triangle;Tam giác vuông
+ribbon.shapes.triangle;Triangle;Tam giác
+ribbon.shapes.diamond;Diamond;Hình thoi
+ribbon.shapes.pentagon;Pentagon;Ngũ giác
+ribbon.shapes.hexagon;Hexagon;Lục giác
+ribbon.shapes.arrow-right;Right arrow;Mũi tên phải
+ribbon.shapes.arrow-left;Left arrow;Mũi tên trái
+ribbon.shapes.arrow-up;Up arrow;Mũi tên lên
+ribbon.shapes.arrow-down;Down arrow;Mũi tên xuống
+ribbon.shapes.star-4;Four-point star;Sao bốn cánh
+ribbon.shapes.star-5;Five-point star;Sao năm cánh
+ribbon.shapes.star-6;Six-point star;Sao sáu cánh
+ribbon.shapes.callout-rounded;Rounded rectangular callout;Chú thích chữ nhật bo góc
+ribbon.shapes.callout-oval;Oval callout;Chú thích bầu dục
+ribbon.shapes.callout-cloud;Cloud callout;Chú thích đám mây
+ribbon.shapes.heart;Heart;Trái tim
+ribbon.shapes.lightning;Lightning;Tia chớp
+ribbon.shapes.scroll-up;Scroll up;Cuộn lên
+ribbon.shapes.scroll-down;Scroll down;Cuộn xuống
+ribbon.shapes.show-all;Show all shapes;Hiện tất cả hình
+ribbon.shapes.outline;Outline;Viền
+ribbon.shapes.fill;Fill;Tô
+ribbon.stroke.none;No outline;Không viền
+ribbon.stroke.none-fill;No fill;Không tô
+ribbon.stroke.solid;Solid colour;Màu đặc
+ribbon.stroke.crayon;Crayon;Bút sáp
+ribbon.stroke.marker;Marker;Bút dạ
+ribbon.stroke.oil;Oil;Sơn dầu
+ribbon.stroke.natural-pencil;Natural pencil;Bút chì tự nhiên
+ribbon.stroke.watercolor;Watercolour;Màu nước
+ribbon.size.label;Size;Cỡ nét
+ribbon.size.value;{0}px;{0}px
+ribbon.size.tooltip;Size ({0}px) - Ctrl+= / Ctrl+-;Cỡ nét ({0}px) - Ctrl+= / Ctrl+-
+ribbon.colors.label;Colours;Màu
+ribbon.colors.color1;Colour 1;Màu 1
+ribbon.colors.color2;Colour 2;Màu 2
+ribbon.colors.custom-empty;Custom colour slot;Ô màu tuỳ chỉnh trống
+ribbon.colors.edit;Edit colours;Sửa màu
+ribbon.extras.label;Extras;Khác
+ribbon.extras.copy;Copy to clipboard;Chép ra bảng tạm
+ribbon.extras.copy-tooltip;Copy the whole image or the selection to the system clipboard;Chép toàn ảnh hoặc vùng chọn ra bảng tạm của hệ thống
+ribbon.zoom.label;Zoom;Thu phóng
+ribbon.zoom.in;Zoom in;Phóng to
+ribbon.zoom.out;Zoom out;Thu nhỏ
+ribbon.zoom.actual;100%;100%
+ribbon.show-hide.label;Show or hide;Hiện hoặc ẩn
+ribbon.show-hide.rulers;Rulers;Thước
+ribbon.show-hide.gridlines;Gridlines;Lưới
+ribbon.show-hide.gridlines-tooltip;Gridlines (Ctrl+G) - needs zoom >= 400%;Lưới (Ctrl+G) - cần thu phóng >= 400%
+ribbon.show-hide.status-bar;Status bar;Thanh trạng thái
+ribbon.display.label;Display;Hiển thị
+ribbon.display.full-screen;Full screen;Toàn màn hình
+ribbon.display.thumbnail;Thumbnail;Ảnh thu nhỏ
+shortcut.file.new;Ctrl+N;Ctrl+N
+shortcut.file.open;Ctrl+O;Ctrl+O
+shortcut.file.save;Ctrl+S;Ctrl+S
+shortcut.file.properties;Ctrl+E;Ctrl+E
+shortcut.edit.undo;Ctrl+Z;Ctrl+Z
+shortcut.edit.redo;Ctrl+Y;Ctrl+Y
+shortcut.edit.cut;Ctrl+X;Ctrl+X
+shortcut.edit.copy;Ctrl+C;Ctrl+C
+shortcut.edit.paste;Ctrl+V;Ctrl+V
+shortcut.image.select-all;Ctrl+A;Ctrl+A
+shortcut.image.invert-selection;Ctrl+I;Ctrl+I
+shortcut.image.delete;Del;Del
+shortcut.image.resize;Ctrl+W;Ctrl+W
+shortcut.view.zoom-in;Ctrl+PgUp;Ctrl+PgUp
+shortcut.view.zoom-out;Ctrl+PgDn;Ctrl+PgDn
+shortcut.view.rulers;Ctrl+R;Ctrl+R
+shortcut.view.full-screen;F11;F11
+common.tooltip.with-shortcut;{0} ({1});{0} ({1})
+titlebar.qat.save;Save;Lưu
+titlebar.qat.undo;Undo;Hoàn tác
+titlebar.qat.redo;Redo;Làm lại
+titlebar.qat.customise;Customise Quick Access Toolbar;Tuỳ chỉnh thanh truy cập nhanh
+titlebar.window.title;{0} - Paint;{0} - Paint
+titlebar.window.minimize;Not available on the web - use your browser's minimise button;Không khả dụng trên web - dùng nút thu nhỏ của trình duyệt
+titlebar.window.maximize;Maximise (full screen);Phóng to (toàn màn hình)
+titlebar.window.close;Close;Đóng
+statusbar.cell.cursor-position;{0}, {1}px;{0}, {1}px
+statusbar.cell.selection-size;{0} x {1}px;{0} x {1}px
+statusbar.cell.document-size;{0} x {1}px;{0} x {1}px
+statusbar.cell.file-size-kb;{0}KB;{0}KB
+statusbar.cell.file-size-mb;{0}MB;{0}MB
+statusbar.zoom.label;Zoom;Thu phóng
+statusbar.zoom.in;Zoom in;Phóng to
+statusbar.zoom.out;Zoom out;Thu nhỏ
+statusbar.zoom.percent;{0}%;{0}%
+canvas.thumbnail.title;Thumbnail;Ảnh thu nhỏ
+filemenu.nav.back;Back;Quay lại
+filemenu.item.new;New;Mới
+filemenu.item.open;Open;Mở
+filemenu.item.save;Save;Lưu
+filemenu.item.save-as;Save as;Lưu thành
+filemenu.item.print;Print;In
+filemenu.item.from-camera;From camera;Từ máy ảnh
+filemenu.item.from-camera-note;Uses getUserMedia - about 4K at most;Dùng getUserMedia - tối đa khoảng 4K
+filemenu.item.copy-image;Copy image;Chép ảnh
+filemenu.item.properties;Properties;Thuộc tính
+filemenu.item.about;About Paint;Giới thiệu Paint
+filemenu.item.exit;Exit;Thoát
+filemenu.recent.title;Recent pictures;Ảnh gần đây
+filemenu.recent.meta;{0} · {1} days ago;{0} · {1} ngày trước
+filemenu.language.label;Language;Ngôn ngữ
+filemenu.language.en;English;English
+filemenu.language.vi;Tiếng Việt;Tiếng Việt
+dialog.common.ok;OK;OK
+dialog.common.cancel;Cancel;Huỷ
+dialog.common.close;Close;Đóng
+dialog.about.title;About Paint;Giới thiệu Paint
+dialog.about.app-name;Paint Web 0.1.0;Paint Web 0.1.0
+dialog.about.body;A web rebuild of the Microsoft Paint (Windows 10) Ribbon interface, running entirely client-side.;Bản dựng lại giao diện Ribbon của Microsoft Paint (Windows 10) trên nền web, chạy hoàn toàn client-side.
+dialog.about.disclaimer;"Not affiliated with Microsoft. The interface is inspired by Microsoft Paint. Icons come from Font Awesome Pro under a separate licence; no original Paint asset is used.";"Không liên kết với Microsoft. Giao diện lấy cảm hứng từ Microsoft Paint. Icon dùng Font Awesome Pro theo license riêng; không sử dụng asset gốc của Paint."
+dialog.confirm-discard.title;Paint;Paint
+dialog.confirm-discard.message;Do you want to save changes to {0}?;Bạn có muốn lưu thay đổi cho {0} không?
+dialog.confirm-discard.save;Save;Lưu
+dialog.confirm-discard.dont-save;Don't Save;Không lưu
+dialog.edit-colors.title;Edit Colours;Sửa màu
+dialog.edit-colors.basic;Basic colours:;Màu cơ bản:
+dialog.edit-colors.add-custom;Add to Custom Colours;Thêm vào màu tuỳ chỉnh
+dialog.edit-colors.color-solid;Colour|Solid:;Màu|Đặc:
+dialog.edit-colors.hue;Hue:;Tông:
+dialog.edit-colors.sat;Sat:;Bão hoà:
+dialog.edit-colors.lum;Lum:;Độ sáng:
+dialog.edit-colors.red;Red:;Đỏ:
+dialog.edit-colors.green;Green:;Lục:
+dialog.edit-colors.blue;Blue:;Lam:
+dialog.image-properties.title;Image Properties;Thuộc tính ảnh
+dialog.image-properties.file-attributes;File Attributes;Thuộc tính tệp
+dialog.image-properties.last-saved;Last saved:;Lưu lần cuối:
+dialog.image-properties.not-available;Not available;Không có
+dialog.image-properties.size-on-disk;Size on disk:;Dung lượng trên đĩa:
+dialog.image-properties.size-estimate;{0} KB (estimated);{0} KB (ước tính)
+dialog.image-properties.resolution;Resolution:;Độ phân giải:
+dialog.image-properties.dpi;{0} DPI;{0} DPI
+dialog.image-properties.units;Units;Đơn vị
+dialog.image-properties.inches;Inches;Inch
+dialog.image-properties.centimeters;Centimeters;Xentimét
+dialog.image-properties.pixels;Pixels;Điểm ảnh
+dialog.image-properties.colors;Colours;Màu
+dialog.image-properties.black-and-white;Black and white;Đen trắng
+dialog.image-properties.color;Colour;Màu
+dialog.image-properties.width;Width:;Rộng:
+dialog.image-properties.height;Height:;Cao:
+dialog.resize-skew.title;Resize and Skew;Đổi cỡ và nghiêng
+dialog.resize-skew.resize;Resize;Đổi cỡ
+dialog.resize-skew.by;By:;Theo:
+dialog.resize-skew.percentage;Percentage;Phần trăm
+dialog.resize-skew.pixels;Pixels;Điểm ảnh
+dialog.resize-skew.horizontal;↔ Horizontal:;↔ Ngang:
+dialog.resize-skew.vertical;↕ Vertical:;↕ Dọc:
+dialog.resize-skew.maintain-ratio;Maintain aspect ratio;Giữ tỉ lệ khung hình
+dialog.resize-skew.skew;Skew (Degrees);Nghiêng (độ)
+dialog.resize-skew.hint;Limited to ±89° - a wider angle makes the matrix degenerate.;Giới hạn ±89° - tránh ma trận suy biến.
+dialog.save-as.title;Save As;Lưu thành
+dialog.save-as.file-name;File name:;Tên tệp:
+dialog.save-as.type;Save as type:;Lưu kiểu:
+dialog.save-as.quality;Quality:;Chất lượng:
+dialog.save-as.format-option;{0} ({1});{0} ({1})
+dialog.save-as.hint-png;PNG keeps alpha - the default format.;PNG giữ nguyên alpha - định dạng mặc định.
+dialog.save-as.hint-jpeg;JPEG has no alpha: a transparent background turns white.;JPEG không có alpha: nền trong suốt sẽ thành trắng.
+dialog.save-as.hint-bmp;BMP is written by a hand-rolled encoder, 24-bit uncompressed - alpha is flattened onto white.;BMP ghi bằng encoder tự viết, 24-bit không nén - alpha hợp nhất với nền trắng.
+dialog.save-as.hint-gif;GIF is quantised to 256 colours with 1-bit alpha.;GIF lượng tử hoá về 256 màu, alpha 1-bit.
+dialog.save-as.hint-webp;"WEBP keeps alpha; Safari 16 and later.";"WEBP giữ alpha; Safari 16 trở lên."
+document.name.untitled;Untitled;Chưa đặt tên
+history.label.pencil;Pencil;Bút chì
+history.label.eraser;Eraser;Tẩy
+history.label.fill;Fill with colour;Tô màu
+history.label.picker;Pick colour;Lấy màu
+history.label.magnifier;Magnifier;Kính lúp

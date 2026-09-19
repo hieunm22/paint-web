@@ -26,6 +26,8 @@
 			"engine/*": ["./src/engine/*"],
 			"hooks": ["./src/hooks"],
 			"hooks/*": ["./src/hooks/*"],
+			"locales": ["./src/locales"],
+			"locales/*": ["./src/locales/*"],
 			"store": ["./src/store"],
 			"store/*": ["./src/store/*"]
 		}

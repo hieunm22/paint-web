@@ -1,4 +1,5 @@
 import { stampSegment } from "./common"
+import { translate } from "locales/translate"
 import type { Point } from "store/types"
 import type { Modifiers, Tool, ToolContext } from "../types"
 import { hexToRgba } from "../color"
@@ -14,7 +15,10 @@ const ORIGIN: Point = { x: 0, y: 0 }
  */
 export class EraserTool implements Tool {
 	readonly id = "eraser"
-	readonly label = "Eraser"
+
+	get label(): string {
+		return translate("history.label.eraser")
+	}
 	private origin: Point = ORIGIN
 	private last: Point = ORIGIN
 
