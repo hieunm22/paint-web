@@ -68,6 +68,18 @@ by redrawing `base`.
 UI icons are **Font Awesome Pro** (license held, token in `~/.npmrc`), registered in
 `src/components/Icon/constant.ts`.
 
+They use the **webfont**, not the SVG components: `ICONS` maps a name to a class
+string and `<Icon>` renders `<i className="fa-solid fa-...">`. Consequences to respect:
+
+- `main.tsx` imports `fontawesome.css` plus only the style files in use (`solid`,
+  `regular`). `all.css` would pull every Pro family.
+- Adding an icon in a third style means a third CSS import and another ~300 kB font
+  file. Check whether a `solid` glyph will do first.
+- `Icon` sets `font-size` and nothing else. A fixed `width` does not scale a glyph
+  the way it scaled the SVG; it just lets wide glyphs spill over the label.
+- Class names are generated from the packages, never hand-typed. `faVectorSquare`
+  resolves to `fa-draw-square`, and aliases like that are why.
+
 The 23 shapes in the Shapes gallery are **hand-written SVG geometry** in
 `src/components/ShapeIcon/constant.tsx`. They are the outlines the user actually draws
 and must be exact; FA carries no right triangle, rounded rectangle, curve, four- or

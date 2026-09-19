@@ -26,11 +26,7 @@ export function StrokeMenuButton({
 				onClick={onToggle}
 			>
 				<span className="ribbon-btn__label">{label}</span>
-				<Icon
-					name="caretDown"
-					size={8}
-					className="ribbon-btn__caret"
-				/>
+				<Icon name="caretDown" size={8} className="ribbon-btn__caret" />
 			</button>
 			{open && !disabled && (
 				<Menu width={160}>

@@ -44,20 +44,13 @@ export function ImageGroup() {
 						/>
 						<MenuSeparator />
 						<MenuSectionLabel>Selection options</MenuSectionLabel>
-						<MenuItem
-							label="Select all"
-							shortcut="Ctrl+A"
-						/>
+						<MenuItem label="Select all" shortcut="Ctrl+A" />
 						<MenuItem
 							label="Invert selection"
 							shortcut="Ctrl+I"
 							disabled={!hasSelection}
 						/>
-						<MenuItem
-							label="Delete"
-							shortcut="Del"
-							disabled={!hasSelection}
-						/>
+						<MenuItem label="Delete" shortcut="Del" disabled={!hasSelection} />
 						<MenuItem
 							label="Transparent selection"
 							checked={selection.transparent}
@@ -67,11 +60,7 @@ export function ImageGroup() {
 				}
 			/>
 			<ButtonStack>
-				<SmallButton
-					label="Crop"
-					icon="crop"
-					disabled={!hasSelection}
-				/>
+				<SmallButton label="Crop" icon="crop" disabled={!hasSelection} />
 				<SmallButton
 					label="Resize"
 					icon="resize"
@@ -86,18 +75,9 @@ export function ImageGroup() {
 					/>
 					{openMenu === "rotate" && (
 						<Menu>
-							<MenuItem
-								label="Rotate right 90°"
-								icon="redo"
-							/>
-							<MenuItem
-								label="Rotate left 90°"
-								icon="undo"
-							/>
-							<MenuItem
-								label="Rotate 180°"
-								icon="rotate"
-							/>
+							<MenuItem label="Rotate right 90°" icon="redo" />
+							<MenuItem label="Rotate left 90°" icon="undo" />
+							<MenuItem label="Rotate 180°" icon="rotate" />
 							<MenuSeparator />
 							<MenuItem label="Flip vertical" />
 							<MenuItem label="Flip horizontal" />

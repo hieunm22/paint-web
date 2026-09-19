@@ -19,11 +19,7 @@ export function BrushesGroup() {
 			<SplitButton
 				label="Brushes"
 				iconNode={
-					<Icon
-						name={current.icon}
-						size={30}
-						rotate={current.rotate}
-					/>
+					<Icon name={current.icon} size={30} rotate={current.rotate} />
 				}
 				selected={active === "brush"}
 				onClick={() => dispatch(setBrush(brush))}
@@ -43,11 +39,7 @@ export function BrushesGroup() {
 									aria-label={b.label}
 									onClick={() => dispatch(setBrush(b.id))}
 								>
-									<Icon
-										name={b.icon}
-										size={18}
-										rotate={b.rotate}
-									/>
+									<Icon name={b.icon} size={18} rotate={b.rotate} />
 								</button>
 							))}
 						</div>

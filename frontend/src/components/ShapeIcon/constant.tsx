@@ -7,31 +7,9 @@ import type { ShapeKind } from "store/types"
 export const SHAPE_PATHS: Record<ShapeKind, JSX.Element> = {
 	line: <path d="M4 20 L20 4" />,
 	curve: <path d="M4 18 C8 4, 16 4, 20 18" />,
-	oval: (
-		<ellipse
-			cx="12"
-			cy="12"
-			rx="9"
-			ry="6.5"
-		/>
-	),
-	rect: (
-		<rect
-			x="3"
-			y="6"
-			width="18"
-			height="12"
-		/>
-	),
-	"rounded-rect": (
-		<rect
-			x="3"
-			y="6"
-			width="18"
-			height="12"
-			rx="3.5"
-		/>
-	),
+	oval: <ellipse cx="12" cy="12" rx="9" ry="6.5" />,
+	rect: <rect x="3" y="6" width="18" height="12" />,
+	"rounded-rect": <rect x="3" y="6" width="18" height="12" rx="3.5" />,
 	polygon: <path d="M4 14 L9 5 L17 7 L20 15 L12 20 Z" />,
 	"right-triangle": <path d="M5 4 L5 20 L20 20 Z" />,
 	triangle: <path d="M12 4 L21 20 L3 20 Z" />,
@@ -56,28 +34,15 @@ export const SHAPE_PATHS: Record<ShapeKind, JSX.Element> = {
 	),
 	"callout-oval": (
 		<g>
-			<ellipse
-				cx="12"
-				cy="10"
-				rx="9"
-				ry="6"
-			/>
+			<ellipse cx="12" cy="10" rx="9" ry="6" />
 			<path d="M8 15.4 L5.5 21 L11 16.3" />
 		</g>
 	),
 	"callout-cloud": (
 		<g>
 			<path d="M7 16 a3.5 3.5 0 0 1 -0.5 -7 a4.5 4.5 0 0 1 8.3 -2.2 a4 4 0 0 1 5.6 4.4 a3.2 3.2 0 0 1 -2.4 4.8 z" />
-			<circle
-				cx="7.5"
-				cy="19"
-				r="1.6"
-			/>
-			<circle
-				cx="4.5"
-				cy="21.4"
-				r="1"
-			/>
+			<circle cx="7.5" cy="19" r="1.6" />
+			<circle cx="4.5" cy="21.4" r="1" />
 		</g>
 	),
 	heart: (

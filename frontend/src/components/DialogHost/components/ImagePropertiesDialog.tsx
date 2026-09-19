@@ -7,10 +7,7 @@ export function ImagePropertiesDialog() {
 	const sizeKB = Math.round((doc.width * doc.height * 3) / 1024)
 
 	return (
-		<Dialog
-			title="Image Properties"
-			width={332}
-		>
+		<Dialog title="Image Properties" width={332}>
 			<div className="dialog__body">
 				<div className="dialog__group">
 					<div className="dialog__group-title">File Attributes</div>
@@ -28,26 +25,13 @@ export function ImagePropertiesDialog() {
 					<div className="dialog__group-title">Units</div>
 					<div className="dialog__row dialog__row--flush">
 						<label>
-							<input
-								type="radio"
-								name="units"
-							/>{" "}
-							Inches
+							<input type="radio" name="units" /> Inches
 						</label>
 						<label>
-							<input
-								type="radio"
-								name="units"
-							/>{" "}
-							Centimeters
+							<input type="radio" name="units" /> Centimeters
 						</label>
 						<label>
-							<input
-								type="radio"
-								name="units"
-								defaultChecked
-							/>{" "}
-							Pixels
+							<input type="radio" name="units" defaultChecked /> Pixels
 						</label>
 					</div>
 				</div>
@@ -56,34 +40,19 @@ export function ImagePropertiesDialog() {
 					<div className="dialog__group-title">Colors</div>
 					<div className="dialog__row dialog__row--flush">
 						<label>
-							<input
-								type="radio"
-								name="colors"
-							/>{" "}
-							Black and white
+							<input type="radio" name="colors" /> Black and white
 						</label>
 						<label>
-							<input
-								type="radio"
-								name="colors"
-								defaultChecked
-							/>{" "}
-							Color
+							<input type="radio" name="colors" defaultChecked /> Color
 						</label>
 					</div>
 				</div>
 
 				<div className="dialog__row dialog__row--flush">
 					<span className="dialog__label">Width:</span>
-					<input
-						className="dialog__num"
-						defaultValue={doc.width}
-					/>
+					<input className="dialog__num" defaultValue={doc.width} />
 					<span className="dialog__label dialog__label--short">Height:</span>
-					<input
-						className="dialog__num"
-						defaultValue={doc.height}
-					/>
+					<input className="dialog__num" defaultValue={doc.height} />
 				</div>
 			</div>
 		</Dialog>

@@ -53,22 +53,11 @@ export function MenuItem({
 			<span className="menu__item-icon">
 				{checked !== undefined
 					? checked && <span className="menu__check">✓</span>
-					: icon && (
-							<Icon
-								name={icon}
-								size={14}
-							/>
-						)}
+					: icon && <Icon name={icon} size={14} />}
 			</span>
 			<span className="menu__item-label">{label}</span>
 			{shortcut && <span className="menu__item-shortcut">{shortcut}</span>}
-			{submenu && (
-				<Icon
-					name="caretDown"
-					size={8}
-					className="menu__caret"
-				/>
-			)}
+			{submenu && <Icon name="caretDown" size={8} className="menu__caret" />}
 		</button>
 	)
 }
@@ -78,12 +67,7 @@ export function MenuSectionLabel({ children }: MenuSectionLabelProps) {
 }
 
 export function MenuSeparator() {
-	return (
-		<div
-			className="menu__sep"
-			role="separator"
-		/>
-	)
+	return <div className="menu__sep" role="separator" />
 }
 
 export { MenuAnchor } from "./components"

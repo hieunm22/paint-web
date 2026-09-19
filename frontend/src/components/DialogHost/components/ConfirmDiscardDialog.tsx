@@ -21,18 +21,10 @@ export function ConfirmDiscardDialog() {
 					>
 						Save
 					</button>
-					<button
-						type="button"
-						className="dialog__btn"
-						onClick={close}
-					>
+					<button type="button" className="dialog__btn" onClick={close}>
 						Don't Save
 					</button>
-					<button
-						type="button"
-						className="dialog__btn"
-						onClick={close}
-					>
+					<button type="button" className="dialog__btn" onClick={close}>
 						Cancel
 					</button>
 				</>

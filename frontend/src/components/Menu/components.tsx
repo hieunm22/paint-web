@@ -11,10 +11,7 @@ export function MenuAnchor({ children, className }: MenuAnchorProps) {
 
 	return (
 		<MenuAnchorContext.Provider value={ref}>
-			<div
-				ref={ref}
-				className={className ?? "menu-anchor"}
-			>
+			<div ref={ref} className={className ?? "menu-anchor"}>
 				{children}
 			</div>
 		</MenuAnchorContext.Provider>

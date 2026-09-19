@@ -49,10 +49,7 @@ export function ShapesGroup() {
 								aria-label={SHAPE_LABELS[kind]}
 								onClick={() => dispatch(setShape(kind))}
 							>
-								<ShapeIcon
-									kind={kind}
-									size={18}
-								/>
+								<ShapeIcon kind={kind} size={18} />
 							</button>
 						))}
 					</div>
@@ -82,10 +79,7 @@ export function ShapesGroup() {
 						className="shape-gallery__scroll-btn"
 						title="Show all shapes"
 					>
-						<Icon
-							name="caretDown"
-							size={8}
-						/>
+						<Icon name="caretDown" size={8} />
 					</button>
 				</div>
 

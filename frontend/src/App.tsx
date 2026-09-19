@@ -18,10 +18,7 @@ export default function App() {
 		<div className="app">
 			<TitleBar />
 
-			<div
-				className="app__main"
-				data-menu-root
-			>
+			<div className="app__main" data-menu-root>
 				<div className="app__chrome">
 					<Ribbon />
 				</div>

@@ -20,15 +20,8 @@ export function ClipboardGroup() {
 				onToggleMenu={() => dispatch(toggleMenu("paste"))}
 				menu={
 					<Menu>
-						<MenuItem
-							label="Paste"
-							icon="paste"
-							shortcut="Ctrl+V"
-						/>
-						<MenuItem
-							label="Paste from…"
-							icon="open"
-						/>
+						<MenuItem label="Paste" icon="paste" shortcut="Ctrl+V" />
+						<MenuItem label="Paste from…" icon="open" />
 					</Menu>
 				}
 			/>

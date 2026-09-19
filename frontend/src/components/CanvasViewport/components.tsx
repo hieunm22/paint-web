@@ -9,10 +9,7 @@ export function Ruler({ orientation, length, zoom }: RulerProps) {
 	const px = length * zoom
 
 	return (
-		<div
-			className={`canvas__ruler canvas__ruler--${orientation}`}
-			aria-hidden
-		>
+		<div className={`canvas__ruler canvas__ruler--${orientation}`} aria-hidden>
 			<svg
 				width={horizontal ? px + 40 : RULER_SIZE}
 				height={horizontal ? RULER_SIZE : px + 40}
@@ -80,10 +77,7 @@ export function ResizeHandles() {
 	return (
 		<>
 			{HANDLES.map((pos) => (
-				<span
-					key={pos}
-					className={`canvas__handle canvas__handle--${pos}`}
-				/>
+				<span key={pos} className={`canvas__handle canvas__handle--${pos}`} />
 			))}
 		</>
 	)

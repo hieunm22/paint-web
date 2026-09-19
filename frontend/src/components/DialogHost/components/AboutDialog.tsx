@@ -2,10 +2,7 @@ import { Dialog } from "./Dialog"
 
 export function AboutDialog() {
 	return (
-		<Dialog
-			title="About Paint"
-			width={360}
-		>
+		<Dialog title="About Paint" width={360}>
 			<div className="dialog__body">
 				<div className="dialog__app-name">Paint Web 0.1.0</div>
 				<p className="dialog__para">

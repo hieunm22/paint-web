@@ -23,29 +23,14 @@ export function CanvasViewport() {
 	return (
 		<div className="canvas">
 			{rulerOn ? <div className="canvas__corner" /> : <div />}
+			{rulerOn ? <Ruler orientation="h" length={width} zoom={zoom} /> : <div />}
 			{rulerOn ? (
-				<Ruler
-					orientation="h"
-					length={width}
-					zoom={zoom}
-				/>
-			) : (
-				<div />
-			)}
-			{rulerOn ? (
-				<Ruler
-					orientation="v"
-					length={height}
-					zoom={zoom}
-				/>
+				<Ruler orientation="v" length={height} zoom={zoom} />
 			) : (
 				<div />
 			)}
 
-			<div
-				className="canvas__pane"
-				ref={paneRef}
-			>
+			<div className="canvas__pane" ref={paneRef}>
 				<div className="canvas__viewport">
 					<div className="canvas__stage">
 						<div
@@ -88,10 +73,7 @@ export function CanvasViewport() {
 					</div>
 				</div>
 
-				<canvas
-					ref={overlayRef}
-					className="canvas__overlay"
-				/>
+				<canvas ref={overlayRef} className="canvas__overlay" />
 
 				{showThumbnail && <Thumbnail />}
 			</div>

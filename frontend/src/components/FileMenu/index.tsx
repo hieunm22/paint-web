@@ -9,21 +9,14 @@ export function FileMenu() {
 	const dispatch = useAppDispatch()
 
 	return (
-		<div
-			className="file-menu"
-			role="menu"
-			aria-label="File"
-		>
+		<div className="file-menu" role="menu" aria-label="File">
 			<div className="file-menu__left">
 				<button
 					type="button"
 					className="file-menu__back"
 					onClick={() => dispatch(closeBackstage())}
 				>
-					<Icon
-						name="caretDown"
-						size={12}
-					/>
+					<Icon name="caretDown" size={12} />
 					Back
 				</button>
 				<FileMenuList />

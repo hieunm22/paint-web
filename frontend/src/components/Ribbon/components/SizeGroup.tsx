@@ -42,10 +42,7 @@ export function SizeGroup() {
 								aria-checked={size === s}
 								onClick={() => dispatch(setSize(s))}
 							>
-								<div
-									className="size-line"
-									style={{ height: s, width: 70 }}
-								/>
+								<div className="size-line" style={{ height: s, width: 70 }} />
 							</button>
 						))}
 					</Menu>

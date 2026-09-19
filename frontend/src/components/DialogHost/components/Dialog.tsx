@@ -9,10 +9,7 @@ export function Dialog({ title, width, children, footer }: DialogProps) {
 	const { dialogRef, offset, handleProps } = useDialogDrag()
 
 	return (
-		<div
-			className="dialog__overlay"
-			role="presentation"
-		>
+		<div className="dialog__overlay" role="presentation">
 			<div
 				ref={dialogRef}
 				className="dialog"
@@ -21,10 +18,7 @@ export function Dialog({ title, width, children, footer }: DialogProps) {
 				aria-label={title}
 				aria-modal
 			>
-				<div
-					className="dialog__titlebar"
-					{...handleProps}
-				>
+				<div className="dialog__titlebar" {...handleProps}>
 					<span className="dialog__title">{title}</span>
 					<button
 						type="button"
@@ -32,10 +26,7 @@ export function Dialog({ title, width, children, footer }: DialogProps) {
 						aria-label="Close"
 						onClick={() => dispatch(closeDialog())}
 					>
-						<Icon
-							name="close"
-							size={12}
-						/>
+						<Icon name="close" size={12} />
 					</button>
 				</div>
 				{children}

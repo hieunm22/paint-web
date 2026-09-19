@@ -74,38 +74,17 @@ export function EditColorsDialog() {
 					<div className="dialog__color-fields">
 						<div>
 							<div className="dialog__edit-colors-caption">Color|Solid:</div>
-							<div
-								className="dialog__preview"
-								style={{ background: hex }}
-							/>
+							<div className="dialog__preview" style={{ background: hex }} />
 						</div>
 						<div>
-							<NumField
-								label="Hue:"
-								value={160}
-							/>
-							<NumField
-								label="Sat:"
-								value={0}
-							/>
-							<NumField
-								label="Lum:"
-								value={0}
-							/>
+							<NumField label="Hue:" value={160} />
+							<NumField label="Sat:" value={0} />
+							<NumField label="Lum:" value={0} />
 						</div>
 						<div>
-							<NumField
-								label="Red:"
-								value={0}
-							/>
-							<NumField
-								label="Green:"
-								value={0}
-							/>
-							<NumField
-								label="Blue:"
-								value={0}
-							/>
+							<NumField label="Red:" value={0} />
+							<NumField label="Green:" value={0} />
+							<NumField label="Blue:" value={0} />
 						</div>
 					</div>
 				</div>
@@ -118,10 +97,7 @@ function NumField({ label, value }: NumFieldProps) {
 	return (
 		<div className="dialog__num-field">
 			<span className="dialog__num-field-label">{label}</span>
-			<input
-				className="dialog__num dialog__num--narrow"
-				defaultValue={value}
-			/>
+			<input className="dialog__num dialog__num--narrow" defaultValue={value} />
 		</div>
 	)
 }

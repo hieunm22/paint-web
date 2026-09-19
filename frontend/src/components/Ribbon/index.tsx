@@ -18,10 +18,7 @@ export function Ribbon() {
 
 	return (
 		<>
-			<div
-				className="ribbon__tab-strip"
-				role="tablist"
-			>
+			<div className="ribbon__tab-strip" role="tablist">
 				<button
 					type="button"
 					className="ribbon__tab ribbon__tab--file"
@@ -43,10 +40,7 @@ export function Ribbon() {
 				))}
 			</div>
 
-			<div
-				className="ribbon__content"
-				role="tabpanel"
-			>
+			<div className="ribbon__content" role="tabpanel">
 				{tab === "home" ? (
 					<>
 						<ClipboardGroup />
