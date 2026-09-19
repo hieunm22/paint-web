@@ -92,7 +92,7 @@ class PaintEngine {
 	 */
 	hover(image: Point | null, screen: Point | null): void {
 		const tool = TOOLS[store.getState().tool.active]
-		const ctx = this.tool ? null : this.context()
+		const ctx = this.context()
 		if (!tool?.paintOverlay || !ctx || !image || !screen) {
 			if (this.overlayPainted) this.clearOverlay()
 			return

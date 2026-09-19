@@ -1,6 +1,7 @@
 import { zoomAt } from "store/slices/viewSlice"
 import type { Point } from "store/types"
 import type { Modifiers, Tool, ToolContext } from "../types"
+import { drawCursor, MAGNIFIER_CURSOR } from "./cursorArt"
 
 /** the magnifier steps through its own four levels, not the zoom slider's. */
 const LEVELS = [1, 2, 4, 8]
@@ -25,6 +26,8 @@ export class MagnifierTool implements Tool {
 	 * its size shrinks as the step gets bigger.
 	 */
 	paintOverlay(screen: Point, ctx: ToolContext): void {
+		drawCursor(ctx.overlay, MAGNIFIER_CURSOR, screen)
+
 		const next = nextLevel(ctx.zoom, false)
 		if (!next) return
 

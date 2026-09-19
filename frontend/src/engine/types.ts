@@ -56,6 +56,20 @@ export interface ToolContext {
 	defer(label: string, work: Promise<void>): void
 }
 
+/**
+ * a drawn cursor: the very glyph the ribbon shows for that tool, plus the spot
+ * in it that sits on the pointer. svg carries no hotspot of its own.
+ */
+export interface CursorArt {
+	/** raw svg from the icon package. */
+	source: string
+	/** longest side of the drawn glyph, in css pixels. */
+	size: number
+	/** hotspot as a fraction of the drawn box: the pencil writes at 0.04, 0.95. */
+	hotX: number
+	hotY: number
+}
+
 /** what crosses to the fill worker; the pixel buffer travels, it is not copied. */
 export interface FillRequest {
 	buffer: ArrayBuffer

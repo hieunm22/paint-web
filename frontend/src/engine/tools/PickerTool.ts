@@ -3,6 +3,7 @@ import type { Point } from "store/types"
 import type { Modifiers, Tool, ToolContext } from "../types"
 import { rgbaToHex } from "../color"
 import { contains } from "../geometry"
+import { drawCursor, PICKER_CURSOR } from "./cursorArt"
 
 /**
  * reads one committed pixel into a swatch and hands the previous tool back.
@@ -24,5 +25,9 @@ export class PickerTool implements Tool {
 				hex: rgbaToHex(pixel),
 			}),
 		)
+	}
+
+	paintOverlay(screen: Point, ctx: ToolContext): void {
+		drawCursor(ctx.overlay, PICKER_CURSOR, screen)
 	}
 }

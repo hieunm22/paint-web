@@ -2,6 +2,7 @@ import { stampSegment } from "./common"
 import type { Point } from "store/types"
 import type { Modifiers, Tool, ToolContext } from "../types"
 import { constrainToAxis } from "../geometry"
+import { drawCursor, PENCIL_CURSOR } from "./cursorArt"
 
 const ORIGIN: Point = { x: 0, y: 0 }
 
@@ -26,6 +27,10 @@ export class PencilTool implements Tool {
 			stampSegment(ctx, this.last, pt, color)
 			this.last = pt
 		}
+	}
+
+	paintOverlay(screen: Point, ctx: ToolContext): void {
+		drawCursor(ctx.overlay, PENCIL_CURSOR, screen)
 	}
 }
 

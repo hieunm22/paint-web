@@ -4,6 +4,7 @@ import { hexToRgba } from "../color"
 import { floodFillOffThread } from "../fillWorker"
 import { contains } from "../geometry"
 import { floodFill } from "../raster"
+import { drawCursor, FILL_CURSOR } from "./cursorArt"
 
 /**
  * above this the fill goes to a worker. four megapixels is about 200 ms of
@@ -51,6 +52,10 @@ export class FillTool implements Tool {
 			})
 			if (retry) write(ctx, retry, floodFill(retry, seed, color))
 		}
+	}
+
+	paintOverlay(screen: Point, ctx: ToolContext): void {
+		drawCursor(ctx.overlay, FILL_CURSOR, screen)
 	}
 }
 

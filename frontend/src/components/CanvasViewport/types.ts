@@ -20,15 +20,6 @@ export interface RulerTick {
 }
 
 /**
- * cursor for drawing tools.
- */
-export interface CursorArt {
-	url: string
-	x: number
-	y: number
-}
-
-/**
  * pointer positions waiting for the next frame. a pen reports up to 1000 times
  * a second, and drawing each batch as it lands would paint several times in
  * one frame for nothing.

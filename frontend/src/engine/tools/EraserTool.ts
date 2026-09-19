@@ -4,6 +4,7 @@ import type { Modifiers, Tool, ToolContext } from "../types"
 import { hexToRgba } from "../color"
 import { clampRect, constrainToAxis, segmentBounds } from "../geometry"
 import { bresenham, stampReplace } from "../raster"
+import { drawSquareCursor } from "./cursorArt"
 
 const ORIGIN: Point = { x: 0, y: 0 }
 
@@ -52,5 +53,10 @@ export class EraserTool implements Tool {
 			stampReplace(region, dirty, { x, y }, ctx.size, from, to),
 		)
 		ctx.surface.writeRegion(region, dirty.x, dirty.y)
+	}
+
+	/** the square is the footprint, so it follows both size and zoom. */
+	paintOverlay(screen: Point, ctx: ToolContext): void {
+		drawSquareCursor(ctx.overlay, screen, Math.max(1, ctx.size * ctx.zoom))
 	}
 }

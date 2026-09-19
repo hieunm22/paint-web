@@ -494,27 +494,52 @@ interface Point { x: number; y: number }
 interface ToolContext {
   base: CanvasRenderingContext2D;
   preview: CanvasRenderingContext2D;
-  overlay: CanvasRenderingContext2D;
+  overlay: CanvasRenderingContext2D;   // không gian màn hình, css px
+  overlaySize: Size;
+  surface: Surface;                    // đọc/ghi vùng pixel đã commit
   color1: string; color2: string;
   size: number;
+  zoom: number;                        // Magnifier và con trỏ Eraser dùng
   doc: { width: number; height: number };
-  requestRender(): void;
-  commit(description: string): void;   // đẩy preview vào base + push history
+  dispatch: AppDispatch;
+  /** Gọi TRƯỚC khi ghi vào vùng đó: chính nó chụp pixel cũ cho undo */
+  markDirty(rect: Rect): void;
+  /** Việc chạy dài hơn một gesture (fill trong worker): bước undo đẩy khi promise settle */
+  defer(label: string, work: Promise<void>): void;
 }
 
 interface Tool {
   readonly id: ToolId;
-  /** Con trỏ CSS khi hover canvas */
-  cursor(ctx: ToolContext): string;
+  /** Nhãn bước undo, đi qua translate() vì engine không có hook */
+  readonly label: string;
   begin(pt: Point, mods: Modifiers, ctx: ToolContext): void;
-  update(pts: Point[], mods: Modifiers, ctx: ToolContext): void;
-  end(pt: Point, mods: Modifiers, ctx: ToolContext): void;
+  update?(pts: Point[], mods: Modifiers, ctx: ToolContext): void;
+  end?(pt: Point, mods: Modifiers, ctx: ToolContext): void;
   /** Gọi khi người dùng đổi sang tool khác giữa chừng (vd Polygon đang mở) */
-  cancel(ctx: ToolContext): void;
-  /** Vẽ phần chỉ dẫn lên overlay (handle của shape chưa commit) */
-  paintOverlay?(ctx: ToolContext): void;
+  cancel?(ctx: ToolContext): void;
+  /** Con trỏ của tool + chỉ dẫn hover, vẽ lên overlay theo toạ độ màn hình */
+  paintOverlay?(screen: Point, ctx: ToolContext): void;
 }
 ```
+
+**Con trỏ vẽ lên overlay, không giao cho CSS.** Nháp trước có `cursor(ctx): string` trả chuỗi
+CSS; bỏ vì macOS **phóng con trỏ CSS tuỳ biến theo Accessibility → Pointer size** và không
+thuộc tính CSS nào từ chối được. Thay vào đó: `cursor: none` trên vùng canvas, mỗi tool tự vẽ
+con trỏ trong `paintOverlay`, nên kích thước cố định bất kể thiết lập hệ điều hành.
+
+Hình con trỏ là **chính glyph Font Awesome mà ribbon đang hiển thị** (`pencil`, `fill-drip`,
+`eye-dropper`, `magnifying-glass`), đọc `?raw` từ package lúc build rồi dựng `Path2D` — vẽ
+viền trắng lót dưới, tô đen lên trên để đọc được trên nền tối. Không vẽ tay bản na ná: hai bên
+sẽ lệch nhau ngay lần đầu có người đổi icon. Riêng Eraser giữ ô vuông bằng đúng vùng sẽ bị tẩy
+(`size × zoom`), vì đó là thông tin mà glyph không nói được.
+
+Đánh đổi phải biết: con trỏ tự vẽ **trễ hơn con trỏ thật khoảng một frame** khi rê nhanh, chỉ
+tồn tại trong vùng canvas, và **ghi đè lựa chọn trợ năng** của người dùng. Ngoài canvas thì
+con trỏ hệ thống vẫn nguyên.
+
+**Tool không tự commit.** Nháp trước có `commit(description)` và `requestRender()`; thực tế
+tool chỉ gọi `markDirty` rồi vẽ, còn `PaintEngine` nướng preview vào base và đẩy bước undo ở
+`pointerup` — một chỗ duy nhất quyết định khi nào một nét trở thành vĩnh viễn (§4.2).
 
 Mọi tool là **strategy object không trạng thái toàn cục**; trạng thái tạm (điểm bắt đầu, mảng
 điểm polygon) là field private của instance, bị reset trong `begin`.
@@ -1567,8 +1592,9 @@ không chỉ trên `localhost` (localhost được coi là secure nên **không*
 - Keyboard accessibility đầy đủ (Paint gốc rất kém khoản này).
 - Cảnh báo mất dữ liệu khi đóng tab.
 - Auto-recovery từ IndexedDB sau crash.
+- **Con trỏ tool không đổi kích thước theo thiết lập trợ năng của hệ điều hành** (§6.1).
 
-Cả bốn đều **không thay đổi hình dáng giao diện**, nên không vi phạm P1.
+Cả năm đều **không thay đổi hình dáng giao diện**, nên không vi phạm P1.
 
 ---
 
