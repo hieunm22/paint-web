@@ -1,7 +1,7 @@
 import { Icon } from "components/Icon"
+import { FileMenuList, RecentPictureList } from "./components"
 import { useAppDispatch } from "store/hooks"
 import { closeBackstage } from "store/slices/uiSlice"
-import { FileMenuList, RecentPictureList } from "./components"
 import "./FileMenu.scss"
 
 /** blue backstage panel for the File tab, covering ribbon and canvas. */

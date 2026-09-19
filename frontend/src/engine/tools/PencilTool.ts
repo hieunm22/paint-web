@@ -1,7 +1,7 @@
+import { stampSegment } from "./common"
 import type { Point } from "store/types"
 import type { Modifiers, Tool, ToolContext } from "../types"
 import { constrainToAxis } from "../geometry"
-import { stampSegment } from "./common"
 
 const ORIGIN: Point = { x: 0, y: 0 }
 

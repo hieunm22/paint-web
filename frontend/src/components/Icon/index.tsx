@@ -1,5 +1,5 @@
-import type { IconProps } from "./types"
 import { ICONS } from "./constant"
+import type { IconProps } from "./types"
 
 /**
  * a font glyph, not an svg element. size drives font-size only: a fixed width

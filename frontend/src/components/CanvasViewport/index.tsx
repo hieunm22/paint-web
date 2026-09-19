@@ -1,3 +1,4 @@
+import { ResizeHandles, Ruler, Thumbnail } from "./components"
 import { toolCursor, zoomedSize } from "./common"
 import {
 	useOverlayReset,
@@ -6,7 +7,6 @@ import {
 	useZoomFocus,
 } from "./hooks"
 import { useAppSelector } from "store/hooks"
-import { ResizeHandles, Ruler, Thumbnail } from "./components"
 import "./CanvasViewport.scss"
 
 export function CanvasViewport() {

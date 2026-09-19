@@ -1,3 +1,4 @@
+import { BRUSHES } from "../constant"
 import { Icon } from "components/Icon"
 import { Menu } from "components/Menu"
 import { SplitButton } from "components/RibbonButton"
@@ -5,7 +6,6 @@ import { RibbonGroup } from "components/RibbonGroup"
 import { useAppDispatch, useAppSelector } from "store/hooks"
 import { setBrush } from "store/slices/toolSlice"
 import { toggleMenu } from "store/slices/uiSlice"
-import { BRUSHES } from "../constant"
 
 /** the button keeps the selected brush icon; the menu opens the 9-brush gallery. */
 export function BrushesGroup() {

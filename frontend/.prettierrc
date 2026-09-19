@@ -5,5 +5,25 @@
 	"singleQuote": false,
 	"trailingComma": "all",
 	"printWidth": 80,
-	"endOfLine": "lf"
+	"endOfLine": "lf",
+	"plugins": ["@ianvs/prettier-plugin-sort-imports"],
+	"importOrderTypeScriptVersion": "5.6.3",
+	"importOrder": [
+		"<BUILTIN_MODULES>",
+		"<THIRD_PARTY_MODULES>",
+		"^assets(/.*)?$",
+		"^constant(/.*)?$",
+		"^[.]{1,2}/constant$",
+		"^components(/.*)?$",
+		"^[.]{1,2}/components(/.*)?$",
+		"^common(/.*)?$",
+		"^[.]{1,2}/common$",
+		"^engine(/.*)?$",
+		"^hooks(/.*)?$",
+		"^[.]{1,2}/hooks$",
+		"^store(/.*)?$",
+		"^types(/.*)?$",
+		"^[.]{1,2}/types$",
+		"^[.]"
+	]
 }

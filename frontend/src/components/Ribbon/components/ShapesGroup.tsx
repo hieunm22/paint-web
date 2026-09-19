@@ -1,17 +1,17 @@
-import { shapeHasInterior } from "../common"
-import { Icon } from "components/Icon"
-import { RibbonGroup } from "components/RibbonGroup"
-import { ShapeIcon } from "components/ShapeIcon"
-import { SHAPE_LABELS, SHAPE_ORDER } from "components/ShapeIcon/constant"
-import { useShapeGalleryScroll } from "../hooks"
-import { useAppDispatch, useAppSelector } from "store/hooks"
-import { setFill, setOutline, setShape } from "store/slices/toolSlice"
-import { toggleMenu } from "store/slices/uiSlice"
 import {
 	SHAPE_GALLERY_COLS,
 	SHAPE_GALLERY_ROW_HEIGHT,
 	SHAPE_GALLERY_VISIBLE_ROWS,
 } from "../constant"
+import { Icon } from "components/Icon"
+import { RibbonGroup } from "components/RibbonGroup"
+import { ShapeIcon } from "components/ShapeIcon"
+import { SHAPE_LABELS, SHAPE_ORDER } from "components/ShapeIcon/constant"
+import { shapeHasInterior } from "../common"
+import { useShapeGalleryScroll } from "../hooks"
+import { useAppDispatch, useAppSelector } from "store/hooks"
+import { setFill, setOutline, setShape } from "store/slices/toolSlice"
+import { toggleMenu } from "store/slices/uiSlice"
 import { StrokeMenuButton } from "./StrokeMenuButton"
 
 /** 23-shape gallery that scrolls by row, plus the Outline and Fill menus. */

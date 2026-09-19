@@ -1,6 +1,6 @@
 import { Icon } from "components/Icon"
-import { useAppSelector } from "store/hooks"
 import { QuickAccessToolbar, WindowButtons } from "./components"
+import { useAppSelector } from "store/hooks"
 import "./TitleBar.scss"
 
 /** Quick Access Toolbar, window title and the three window buttons. */

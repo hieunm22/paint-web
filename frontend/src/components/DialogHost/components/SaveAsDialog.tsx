@@ -1,7 +1,7 @@
 import { useState } from "react"
+import { FORMAT_HINTS, SAVE_FORMATS } from "../constant"
 import { useAppSelector } from "store/hooks"
 import type { ImageFormat } from "store/types"
-import { FORMAT_HINTS, SAVE_FORMATS } from "../constant"
 import { Dialog } from "./Dialog"
 
 /** fallback for browsers without the File System Access API. */

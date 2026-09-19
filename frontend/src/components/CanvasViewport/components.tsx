@@ -1,6 +1,6 @@
+import { HANDLES, RULER_SIZE } from "./constant"
 import { buildRulerTicks } from "./common"
 import type { RulerProps } from "./types"
-import { HANDLES, RULER_SIZE } from "./constant"
 
 /** ruler drawn as SVG, which keeps the ticks crisp at every zoom level. */
 export function Ruler({ orientation, length, zoom }: RulerProps) {

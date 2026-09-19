@@ -1,8 +1,8 @@
-import { strokeStyleLabel } from "../common"
+import { STROKE_STYLES } from "../constant"
 import { Icon } from "components/Icon"
 import { Menu, MenuAnchor, MenuItem } from "components/Menu"
+import { strokeStyleLabel } from "../common"
 import type { StrokeMenuButtonProps } from "../types"
-import { STROKE_STYLES } from "../constant"
 
 /** seven-item menu shared by Outline and Fill. */
 export function StrokeMenuButton({

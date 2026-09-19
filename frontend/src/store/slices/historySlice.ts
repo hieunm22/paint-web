@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit"
-import { historyChanged } from "../actions"
 import type { HistoryState } from "../types"
+import { historyChanged } from "../actions"
 
 /**
  * two booleans mirroring the engine's stacks. the tiles themselves never enter

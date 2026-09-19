@@ -6,13 +6,14 @@ import {
 	type PointerEvent,
 	type RefObject,
 } from "react"
+import { CANVAS_MARGIN } from "./constant"
 import { isSecondaryButton } from "common/platform"
 import { screenToImage } from "./common"
 import { reportCursor } from "engine/cursor"
 import { paint } from "engine/PaintEngine"
 import type { Modifiers } from "engine/types"
 import type { Point, ToolId, ZoomFocus } from "store/types"
-import { CANVAS_MARGIN } from "./constant"
+import type { PointerBatch } from "./types"
 
 type CanvasPointerEvent = PointerEvent<HTMLCanvasElement>
 
@@ -66,11 +67,33 @@ export function usePointerTools(
 	zoom: number,
 	paneRef: RefObject<HTMLDivElement>,
 ) {
-	return useMemo(
-		() => ({
+	const batch = useRef<PointerBatch>({
+		points: [],
+		mods: { secondary: false, shift: false, alt: false },
+		frame: null,
+	})
+
+	return useMemo(() => {
+		const draw = () => {
+			const held = batch.current
+			held.frame = null
+			if (!held.points.length) return
+
+			paint.update(held.points, held.mods)
+			held.points = []
+		}
+		const discard = () => {
+			const held = batch.current
+			if (held.frame !== null) cancelAnimationFrame(held.frame)
+			held.frame = null
+			held.points = []
+		}
+
+		return {
 			onPointerDown: (e: CanvasPointerEvent) => {
 				if (e.button !== 0 && e.button !== 2) return
 
+				discard()
 				e.currentTarget.setPointerCapture(e.pointerId)
 				paint.begin(pointOf(e, zoom), modifiersOf(e))
 			},
@@ -78,22 +101,38 @@ export function usePointerTools(
 				const points = coalescedPoints(e, zoom)
 				const at = points[points.length - 1] ?? null
 				reportCursor(at)
-				paint.update(points, modifiersOf(e))
 				paint.hover(at, paneOffset(e, paneRef))
+				if (!paint.isDrawing) return
+
+				const held = batch.current
+				held.points.push(...points)
+				held.mods = modifiersOf(e)
+				if (held.frame === null) held.frame = requestAnimationFrame(draw)
 			},
 			onPointerUp: (e: CanvasPointerEvent) => {
+				// what is still buffered belongs to this stroke, not to the frame
+				// that would land after it ends
+				discardFrame(batch.current)
+				draw()
 				paint.end(pointOf(e, zoom), modifiersOf(e))
 			},
-			onPointerCancel: () => paint.cancel(),
+			onPointerCancel: () => {
+				discard()
+				paint.cancel()
+			},
 			onPointerLeave: () => {
 				paint.hover(null, null)
 				if (!paint.isDrawing) reportCursor(null)
 			},
 			// right-drag paints colour 2, which the context menu would interrupt
 			onContextMenu: (e: CanvasPointerEvent) => e.preventDefault(),
-		}),
-		[zoom, paneRef],
-	)
+		}
+	}, [zoom, paneRef])
+}
+
+function discardFrame(held: PointerBatch): void {
+	if (held.frame !== null) cancelAnimationFrame(held.frame)
+	held.frame = null
 }
 
 /**

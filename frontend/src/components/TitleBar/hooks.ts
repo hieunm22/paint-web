@@ -1,8 +1,8 @@
 import { useMemo } from "react"
+import { QAT_ITEMS } from "./constant"
 import { paint } from "engine/PaintEngine"
 import { useAppSelector } from "store/hooks"
 import type { QatItem, QatItemId } from "./types"
-import { QAT_ITEMS } from "./constant"
 
 /** Undo and Redo follow the engine's stacks; Save waits for the file phase. */
 export function useQatItems(): QatItem[] {

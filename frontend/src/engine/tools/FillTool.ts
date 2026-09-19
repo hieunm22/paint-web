@@ -1,8 +1,15 @@
-import type { Point } from "store/types"
+import type { Point, Rect } from "store/types"
+import type { Modifiers, RGBA, Tool, ToolContext } from "../types"
 import { hexToRgba } from "../color"
+import { floodFillOffThread } from "../fillWorker"
 import { contains } from "../geometry"
-import type { Modifiers, Tool, ToolContext } from "../types"
 import { floodFill } from "../raster"
+
+/**
+ * above this the fill goes to a worker. four megapixels is about 200 ms of
+ * scanline work, which is far past a frame and would freeze the interface.
+ */
+const OFF_THREAD_PIXELS = 4_000_000
 
 /** flood fill with zero tolerance: Paint matches colours exactly. */
 export class FillTool implements Tool {
@@ -13,15 +20,44 @@ export class FillTool implements Tool {
 		if (!contains(ctx.doc, pt)) return
 
 		const { width, height } = ctx.doc
-		const img = ctx.surface.readRegion({ x: 0, y: 0, w: width, h: height })
-		if (!img) return
+		const image = ctx.surface.readRegion({ x: 0, y: 0, w: width, h: height })
+		if (!image) return
 
 		const color = hexToRgba(mods.secondary ? ctx.color2 : ctx.color1)
-		const dirty = floodFill(img, pt, color)
-		if (!dirty) return
+		if (width * height <= OFF_THREAD_PIXELS) {
+			write(ctx, image, floodFill(image, pt, color))
+			return
+		}
 
-		ctx.markDirty(dirty)
-		// only the filled box goes back, not the whole document
-		ctx.base.putImageData(img, 0, 0, dirty.x, dirty.y, dirty.w, dirty.h)
+		ctx.defer(this.label, this.offThread(image, pt, color, ctx))
 	}
+
+	/** falls back to the main thread rather than leaving the click unanswered. */
+	private async offThread(
+		image: ImageData,
+		seed: Point,
+		color: RGBA,
+		ctx: ToolContext,
+	): Promise<void> {
+		try {
+			const filled = await floodFillOffThread(image, seed, color)
+			write(ctx, filled.image, filled.dirty)
+		} catch {
+			const retry = ctx.surface.readRegion({
+				x: 0,
+				y: 0,
+				w: ctx.doc.width,
+				h: ctx.doc.height,
+			})
+			if (retry) write(ctx, retry, floodFill(retry, seed, color))
+		}
+	}
+}
+
+/** snapshot first, then put back only the box that changed. */
+function write(ctx: ToolContext, image: ImageData, dirty: Rect | null): void {
+	if (!dirty) return
+
+	ctx.markDirty(dirty)
+	ctx.base.putImageData(image, 0, 0, dirty.x, dirty.y, dirty.w, dirty.h)
 }

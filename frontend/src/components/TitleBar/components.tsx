@@ -1,6 +1,6 @@
+import { WINDOW_BUTTONS } from "./constant"
 import { Icon } from "components/Icon"
 import { useQatItems } from "./hooks"
-import { WINDOW_BUTTONS } from "./constant"
 
 export function QuickAccessToolbar() {
 	const items = useQatItems()

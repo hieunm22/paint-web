@@ -1,6 +1,6 @@
 import type { Point } from "store/types"
-import { clampRect, segmentBounds } from "../geometry"
 import type { ToolContext } from "../types"
+import { clampRect, segmentBounds } from "../geometry"
 import { bresenham } from "../raster"
 
 /**

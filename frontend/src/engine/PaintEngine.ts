@@ -20,6 +20,7 @@ class PaintEngine {
 	private docSize: Size = EMPTY
 	private secondary = false
 	private overlayPainted = false
+	private busy = false
 
 	get isDrawing(): boolean {
 		return this.tool !== null
@@ -46,6 +47,9 @@ class PaintEngine {
 	}
 
 	begin(pt: Point, mods: Modifiers): void {
+		// a deferred fill still owns the undo snapshot; a second gesture would
+		// clear it out from under the worker
+		if (this.busy) return
 		this.cancel()
 
 		const tool = TOOLS[store.getState().tool.active]
@@ -104,6 +108,11 @@ class PaintEngine {
 		this.overlayPainted = false
 	}
 
+	/** true while work handed over by a tool is still running. */
+	get isBusy(): boolean {
+		return this.busy
+	}
+
 	/** drops a gesture in progress, for a tool change or a lost pointer. */
 	cancel(): void {
 		const tool = this.tool
@@ -133,6 +142,20 @@ class PaintEngine {
 	}
 
 	/** the title bar shows a star until the document is saved. */
+	/**
+	 * a tool handed back work that finishes after the gesture. the step is
+	 * pushed when it settles: the tool marks its own pixels dirty first.
+	 */
+	private deferStep(label: string, work: Promise<void>): void {
+		this.busy = true
+		work
+			.catch(() => undefined)
+			.finally(() => {
+				this.busy = false
+				if (this.history.commitStroke(label)) this.markUnsaved()
+			})
+	}
+
 	private markUnsaved(): void {
 		if (!store.getState().doc.isDirty) store.dispatch(setDirty(true))
 	}
@@ -167,6 +190,7 @@ class PaintEngine {
 			doc: surface.documentSize,
 			dispatch: store.dispatch,
 			markDirty: (rect) => this.history.touch(rect),
+			defer: (label, work) => this.deferStep(label, work),
 		}
 	}
 }

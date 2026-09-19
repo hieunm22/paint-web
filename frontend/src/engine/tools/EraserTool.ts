@@ -1,9 +1,9 @@
+import { stampSegment } from "./common"
 import type { Point } from "store/types"
 import type { Modifiers, Tool, ToolContext } from "../types"
 import { hexToRgba } from "../color"
 import { clampRect, constrainToAxis, segmentBounds } from "../geometry"
 import { bresenham, stampReplace } from "../raster"
-import { stampSegment } from "./common"
 
 const ORIGIN: Point = { x: 0, y: 0 }
 

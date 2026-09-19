@@ -53,6 +53,22 @@ export interface ToolContext {
 	dispatch: AppDispatch
 	/** call before writing pixels there: it snapshots them for undo. */
 	markDirty(rect: Rect): void
+	defer(label: string, work: Promise<void>): void
+}
+
+/** what crosses to the fill worker; the pixel buffer travels, it is not copied. */
+export interface FillRequest {
+	buffer: ArrayBuffer
+	width: number
+	height: number
+	seed: Point
+	color: RGBA
+}
+
+export interface FillResponse {
+	buffer: ArrayBuffer
+	/** the box that changed, or null when the seed already held that colour. */
+	dirty: Rect | null
 }
 
 export interface Tool {

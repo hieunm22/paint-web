@@ -1,6 +1,3 @@
-import type { Size } from "engine/types"
-import type { Point, ToolId } from "store/types"
-import type { RulerTick } from "./types"
 import {
 	CANVAS_MARGIN,
 	ERASER_CURSOR_MAX,
@@ -10,6 +7,9 @@ import {
 	TOOL_CURSOR_ART,
 	TOOL_CURSORS,
 } from "./constant"
+import type { Size } from "engine/types"
+import type { Point, ToolId } from "store/types"
+import type { RulerTick } from "./types"
 
 /** css size of a document-space layer at the current zoom. */
 export function zoomedSize(width: number, height: number, zoom: number): Size {
