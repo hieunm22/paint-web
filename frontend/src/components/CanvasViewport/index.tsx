@@ -1,5 +1,10 @@
 import { toolCursor, zoomedSize } from "./common"
-import { usePointerTools, useSurface } from "./hooks"
+import {
+	useOverlayReset,
+	usePointerTools,
+	useSurface,
+	useZoomFocus,
+} from "./hooks"
 import { useAppSelector } from "store/hooks"
 import { ResizeHandles, Ruler, Thumbnail } from "./components"
 import "./CanvasViewport.scss"
@@ -9,11 +14,14 @@ export function CanvasViewport() {
 	const { zoom, showRuler, showGrid, showThumbnail } = useAppSelector(
 		(s) => s.view,
 	)
+	const focus = useAppSelector((s) => s.view.focus)
 	const activeTool = useAppSelector((s) => s.tool.active)
 	const brushSize = useAppSelector((s) => s.tool.size)
 	const bounds = useAppSelector((s) => s.selection.bounds)
 	const { baseRef, previewRef, overlayRef, paneRef } = useSurface(width, height)
-	const pointerProps = usePointerTools(zoom)
+	const pointerProps = usePointerTools(zoom, paneRef)
+	const viewportRef = useZoomFocus(focus)
+	useOverlayReset(activeTool)
 
 	// rulers need zoom >= 1, gridlines need zoom >= 4.
 	const rulerOn = showRuler && zoom >= 1
@@ -32,7 +40,7 @@ export function CanvasViewport() {
 			)}
 
 			<div className="canvas__pane" ref={paneRef}>
-				<div className="canvas__viewport">
+				<div className="canvas__viewport" ref={viewportRef}>
 					<div className="canvas__stage">
 						<div className="canvas__frame" style={{ ...layerSize, cursor }}>
 							<canvas

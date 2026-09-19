@@ -1,6 +1,6 @@
 import { fileURLToPath } from "node:url"
 import react from "@vitejs/plugin-react"
-import { defineConfig } from "vite"
+import { defineConfig } from "vitest/config"
 
 /** folders under src/ that are importable as bare specifiers, e.g. "components/Icon". */
 const ROOT_DIRS = ["components", "hooks", "engine", "store", "common", "assets"]
@@ -24,6 +24,12 @@ export default defineConfig({
 		port: 3004
 	},
 	resolve: { alias: rootAliases },
+	// engine tests run in plain node: they exercise pure pixel maths, and a
+	// jsdom that cannot back a canvas would only look like it covers more
+	test: {
+		environment: "node",
+		include: ["src/**/*.test.ts"],
+	},
 	css: {
 		preprocessorOptions: {
 			// opt into the modern Sass API; the legacy JS API is deprecated.

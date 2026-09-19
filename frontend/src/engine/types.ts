@@ -40,6 +40,9 @@ export interface Modifiers {
 export interface ToolContext {
 	base: CanvasRenderingContext2D
 	preview: CanvasRenderingContext2D
+	/** screen space, in css pixels: chrome that is not part of the bitmap. */
+	overlay: CanvasRenderingContext2D
+	overlaySize: Size
 	surface: Surface
 	color1: string
 	color2: string
@@ -61,6 +64,11 @@ export interface Tool {
 	end?(pt: Point, mods: Modifiers, ctx: ToolContext): void
 	/** the user switched tool mid-gesture. */
 	cancel?(ctx: ToolContext): void
+	/**
+	 * draws hover guidance on the overlay, in css pixels relative to the pane.
+	 * a tool that declares it gets called on every pointer move.
+	 */
+	paintOverlay?(screen: Point, ctx: ToolContext): void
 }
 
 /** one undo step: the tiles as they were before the stroke rewrote them. */

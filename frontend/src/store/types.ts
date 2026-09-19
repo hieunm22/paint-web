@@ -121,8 +121,19 @@ export interface ColorState {
 	custom: (string | null)[]
 }
 
+/**
+ * an image point the viewport should centre on, carrying the zoom it was asked
+ * at: the effect that applies it must not fire again when zoom alone changes.
+ */
+export interface ZoomFocus {
+	x: number
+	y: number
+	zoom: number
+}
+
 export interface ViewState {
 	zoom: number
+	focus: ZoomFocus | null
 	showRuler: boolean
 	showGrid: boolean
 	showStatusBar: boolean

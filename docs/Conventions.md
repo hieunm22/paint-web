@@ -88,7 +88,28 @@ DESIGN.md §4 and §11; this section only covers where code goes and what it may
 
 ---
 
-## 4. Icons
+## 4. Tests
+
+Vitest, pinned to **2.x**: 3.x and later need Vite 6, and this repo is on Vite 5.
+Bumping one means bumping the other.
+
+- Config lives in `vite.config.ts`, not a second file, so tests resolve the six root
+  imports through the same alias list the app uses.
+- `environment: "node"`. jsdom carries no canvas, so a DOM environment would widen the
+  surface without covering a single pixel. Anything needing a real canvas is an
+  end-to-end test, not a unit one.
+- A test sits beside what it tests, as `<name>.test.ts`. Component folders keep their
+  fixed file list, so a test for one goes in a `components/<Name>/` sibling only once
+  that folder actually has a test to hold.
+- `describe` and `it` are imported from `vitest`; globals stay off, which keeps
+  `tsconfig.json` free of a `types` entry.
+- Prefer a hand-written stand-in over a mocking framework. `History.test.ts` drives the
+  real class through a flat pixel array, because `Surface` is only asked for a size and
+  for boxes of pixels.
+
+---
+
+## 5. Icons
 
 UI icons are **Font Awesome Pro** (license held, token in `~/.npmrc`), registered in
 `src/components/Icon/constant.ts`.
@@ -113,19 +134,35 @@ six-point star, or the three callout shapes.
 
 ---
 
-## 5. Locales
+## 6. Locales
 
 `en` and `vi` in `src/locales/`, CSV to JSON, per the global i18n layout. The generate
 script emits JSON only - no xlsx branch.
 
+**No user-visible string is written in a `.ts` or `.tsx` file.** Not in English, not in
+Vietnamese, and `constant.ts` is not an exception - a label table is interface, whatever
+it looks like. Button and group labels, `title`, `aria-label`, menu items and the
+shortcut shown beside them, dialog titles and buttons, status bar units, the default
+document name and a tool's history label all come from a key.
+
+Ids and enum values (`'pencil'`), css class names, hex colours, font names, format names
+such as `PNG`, and developer-only log text stay as they are.
+
+Keys read `<area>.<group>.<element>`, following the interface rather than the folder
+tree. React reaches them through `useTranslation()`; the engine, which must not import
+`react-i18next`, goes through `translate()`. `yarn check:i18n` fails on a literal that
+slipped through, and is part of calling work done.
+
 ---
 
-## 6. Commands
+## 7. Commands
 
 ```sh
 cd frontend
 yarn dev           # http://localhost:3004
 yarn format        # prettier over src, import order included
+yarn test          # vitest, one pass
+yarn test:watch    # vitest, watching
 yarn typecheck     # must print nothing
 yarn build         # typecheck then build, no warnings
 ```

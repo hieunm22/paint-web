@@ -19,6 +19,7 @@ class PaintEngine {
 	private tool: Tool | null = null
 	private docSize: Size = EMPTY
 	private secondary = false
+	private overlayPainted = false
 
 	get isDrawing(): boolean {
 		return this.tool !== null
@@ -81,6 +82,28 @@ class PaintEngine {
 		if (this.history.commitStroke(tool.label)) this.markUnsaved()
 	}
 
+	/**
+	 * the pointer moved over the canvas without drawing. `screen` is in overlay
+	 * css pixels; passing null clears whatever guidance was on show.
+	 */
+	hover(image: Point | null, screen: Point | null): void {
+		const tool = TOOLS[store.getState().tool.active]
+		const ctx = this.tool ? null : this.context()
+		if (!tool?.paintOverlay || !ctx || !image || !screen) {
+			if (this.overlayPainted) this.clearOverlay()
+			return
+		}
+
+		this.surface.clearOverlay()
+		tool.paintOverlay(screen, ctx)
+		this.overlayPainted = true
+	}
+
+	clearOverlay(): void {
+		this.surface.clearOverlay()
+		this.overlayPainted = false
+	}
+
 	/** drops a gesture in progress, for a tool change or a lost pointer. */
 	cancel(): void {
 		const tool = this.tool
@@ -127,12 +150,15 @@ class PaintEngine {
 		const { surface } = this
 		const base = surface.baseContext
 		const preview = surface.previewContext
-		if (!base || !preview) return null
+		const overlay = surface.overlayContext
+		if (!base || !preview || !overlay) return null
 
 		const state = store.getState()
 		return {
 			base,
 			preview,
+			overlay,
+			overlaySize: surface.overlaySize,
 			surface,
 			color1: state.colors.color1,
 			color2: state.colors.color2,

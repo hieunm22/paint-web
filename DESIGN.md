@@ -162,7 +162,7 @@ người dùng quen Paint có thể chỉnh sửa ảnh trên bất kỳ HĐH n�
 └───────────────────┬──────────────────────────────────────────────┘
                     │ đọc state / dispatch command
 ┌───────────────────▼──────────────────────────────────────────────┐
-│                    Store (Zustand)                               │
+│                    Store (Redux Toolkit)                         │
 │   documentSlice · toolSlice · colorSlice · viewSlice ·           │
 │   selectionSlice · historySlice · uiSlice                        │
 └───────────────────┬──────────────────────────────────────────────┘
@@ -242,8 +242,8 @@ interface AppState {
   document: DocumentState;    // width, height, filename, isDirty, format
   tool:     ToolState;        // activeTool, brushKind, shapeKind, size, outline, fill
   color:    ColorState;       // color1, color2, palette, customColors[10]
-  view:     ViewState;        // zoom, scrollX/Y, showRuler, showGrid, showStatus, fullscreen
-  selection:SelectionState;   // kind, bounds, floating bitmap, transparentMode
+  view:     ViewState;        // zoom, focus, showRuler, showGrid, showStatus, fullscreen
+  selection:SelectionState;   // kind, bounds, transparentMode, isDragging
   history:  HistoryState;     // canUndo, canRedo (chỉ 2 boolean — data nằm trong engine)
   ui:       UiState;          // activeRibbonTab, openDialog, openDropdown, toast
 }
@@ -265,6 +265,9 @@ function screenToImage(clientX: number, clientY: number): Point {
   };
 }
 ```
+
+Cài đặt thật lấy `getBoundingClientRect()` của chính canvas thay cho `scrollX/scrollY`:
+rect đã trừ sẵn phần đã cuộn, nên store không phải giữ vị trí cuộn (§6).
 
 **Bẫy thường gặp:** khi zoom ≥ 200%, một pixel ảnh chiếm nhiều pixel màn hình. Phải đặt
 `image-rendering: pixelated` trên canvas để pixel hiện vuông sắc nét như Paint, chứ không bị
@@ -444,7 +447,14 @@ interface ColorState {
 // ───────────────────────── View ─────────────────────────
 interface ViewState {
   zoom: number;                  // 0.125 … 8
-  scrollX: number; scrollY: number;
+  /**
+   * Điểm ảnh mà viewport phải đưa về giữa sau khi Magnifier đổi zoom (§8.1),
+   * kèm theo mức zoom lúc yêu cầu. Chỉ có thế — KHÔNG có scrollX/scrollY:
+   * cuộn là trạng thái của chính phần tử cuộn trong DOM, và `scroll` bắn dày
+   * như `pointermove` nên dispatch nó sẽ vi phạm §15. `screenToImage` đọc
+   * `getBoundingClientRect()` của canvas, trong đó đã có sẵn phần đã cuộn.
+   */
+  focus: { x: number; y: number; zoom: number } | null;
   showRuler: boolean;            // chỉ bật được khi zoom ≥ 1
   showGrid: boolean;             // chỉ bật được khi zoom ≥ 4
   showStatusBar: boolean;
@@ -456,12 +466,22 @@ interface ViewState {
 interface SelectionState {
   kind: 'none' | 'rect' | 'free';
   bounds: Rect | null;           // bbox trong toạ độ ảnh
+  transparent: boolean;          // "Transparent selection" trong menu Select
+  isDragging: boolean;
+}
+
+/**
+ * Bitmap của vùng chọn KHÔNG nằm trong store — nó thuộc `SelectionManager` (§4.1).
+ * Lý do: toàn bộ vòng đời vùng chọn (§9.1) là thao tác pixel trên preview/base, và
+ * không component React nào đọc tới nó — ribbon chỉ cần `kind !== 'none'`, còn marching
+ * ants vẽ trên overlay bằng rAF. Store giữ con trỏ tới một buffer nó không bao giờ đọc
+ * thì thành hai nguồn sự thật. `isDragging` là boolean nên ở lại store; buffer thì không.
+ */
+interface SelectionBuffers {
   /** Bitmap đã "bốc" khỏi base; null nghĩa là vùng chọn chưa bị di chuyển */
   floating: ImageBitmap | null;
   /** Mask alpha cho free-form selection; null nếu là hình chữ nhật */
   mask: ImageData | null;
-  transparent: boolean;          // "Transparent selection" trong menu Select
-  isDragging: boolean;
 }
 
 interface Rect { x: number; y: number; w: number; h: number }
@@ -1407,6 +1427,43 @@ không thể sinh lúc runtime.
    thông báo `aria-live` (§18). Những chỗ đó gọi `translate('history.label.pencil')`, không
    gọi được `useTranslation()`.
 
+#### Luật: không có chuỗi giao diện viết cứng
+
+**Mọi chuỗi người dùng đọc được đều phải đi qua một key.** Không literal tiếng Anh, không
+literal tiếng Việt, ở bất kỳ file `.ts`/`.tsx` nào — kể cả trong bảng `constant.ts`, nơi
+chuỗi hay lọt qua review nhất vì trông như dữ liệu chứ không như giao diện.
+
+Tính là chuỗi giao diện:
+
+| Chỗ | Ví dụ đang viết cứng hôm nay |
+|---|---|
+| Nhãn nút và nhãn nhóm ribbon | `TOOLS`, `BRUSHES`, `STROKE_STYLES`, `RIBBON_TABS` trong `Ribbon/constant.ts` |
+| Tooltip `title` và `aria-label` | `"Size (5px) — Ctrl+= / Ctrl+-"`, `"Custom colour slot"` |
+| Mục menu và phím tắt hiển thị kèm | `MenuItem label` / `shortcut` |
+| Tiêu đề dialog, nhãn trường, nút OK/Cancel | `DialogHost/constant.ts`, `EditColorsDialog` |
+| Chuỗi trên status bar và đơn vị | `"{0} × {1}px"` |
+| Tên tài liệu mặc định | `"Untitled"` trong `docSlice` |
+| Nhãn bước history (hiện ở tooltip Undo) | `Tool.label` trong `engine/tools/*` |
+| Tiêu đề cửa sổ và thông báo `aria-live` | `"{0} - Paint"`, `"Đã cắt ảnh còn {0} x {1}"` |
+| Tên bộ lọc định dạng ở Save as, và toast | §12.2, §12.1 |
+
+**Không** tính, và phải để nguyên: id và giá trị enum (`'pencil'`, `'select-rect'`), tên class
+CSS, mã màu hex, tên font (`Calibri`), tên định dạng viết hoa (`PNG`, `JPEG`) vì là tên riêng,
+khoá i18n, và mọi chuỗi chỉ xuất hiện trong log dành cho lập trình viên.
+
+Quy ước đặt key: `<vùng>.<nhóm>.<phần tử>`, khớp cây giao diện chứ không khớp cây thư mục —
+`ribbon.home.tools.pencil`, `dialog.resize-skew.title`, `statusbar.selection-size`. Nhãn
+history dùng tiền tố `history.label.*` vì engine đọc chúng qua `translate()`.
+
+Trong React: `useTranslation()`. Ngoài React (engine, `aria-live`, nhãn history):
+`translate('key')` — engine không được import `react-i18next` (§4.1).
+
+**Bắt buộc có công cụ chặn, không dựa vào review.** P2 giao thêm `yarn check:i18n`: quét
+`src/**/*.tsx` tìm text node và các prop `label` / `title` / `aria-label` / `shortcut` /
+`placeholder` mang literal, cộng với mọi ký tự tiếng Việt trong `.ts`/`.tsx`, và thoát khác 0
+nếu còn. Danh sách miễn trừ để ngay trong script, mỗi dòng kèm lý do. Chạy nó trong cùng chỗ
+với `typecheck` trước khi gọi là xong việc.
+
 **Bẫy cần test:** nhãn nhóm ribbon tiếng Việt dài hơn tiếng Anh đáng kể ("Clipboard" → "Bảng
 tạm", "Resize" → "Đổi kích thước"). Ribbon **không** co giãn theo chiều rộng (§7.1) nên chuỗi
 dài sẽ bị `overflow: hidden` cắt mất. Visual regression (§19) phải chụp **cả hai** ngôn ngữ.
@@ -1438,7 +1495,7 @@ là tài liệu tham chiếu bắt buộc cho reviewer.
 |---|---|---|
 | **P0 — Nền móng** (1 tuần) | Vite + TS + store, Surface 3 lớp, viewport + scroll + zoom, status bar, khung ribbon rỗng có 3 tab | Mở được app, canvas trắng 1152×648, zoom và xem toạ độ chạy đúng |
 | **P1 — Vẽ cơ bản** (1.5 tuần) | Pencil, Eraser, Fill, Picker, Magnifier; Size; Colors + palette; History tile-based | Vẽ và undo/redo hoạt động; đây là lúc chạy được thử nghiệm người dùng đầu tiên |
-| **P2 — Ngôn ngữ** (0.5 tuần) | Hạ tầng i18n vi/en theo pipeline CSV (§18.1): `src/locales/`, script sinh JSON, `i18n.ts` + `translate.ts`, root import thứ bảy khai trong **cả** `vite.config.ts` lẫn `tsconfig.json`; rút toàn bộ chuỗi của P0–P1 vào `language.csv` | Đổi ngôn ngữ chạy đúng trên ribbon, status bar và dialog đã có; nhãn nhóm ribbon tiếng Việt không bị cắt |
+| **P2 — Ngôn ngữ** (1 tuần) | Hạ tầng i18n vi/en theo pipeline CSV (§18.1): `src/locales/`, script sinh JSON, `i18n.ts` + `translate.ts`, root import thứ bảy khai trong **cả** `vite.config.ts` lẫn `tsconfig.json`; rút **toàn bộ** chuỗi giao diện của P0–P1 vào `language.csv` (khoảng 150 chỗ trong 23 file, gồm cả bảng `constant.ts` và `Tool.label` của engine); thêm `yarn check:i18n` chặn chuỗi viết cứng | Đổi ngôn ngữ chạy đúng trên ribbon, status bar, menu File và mọi dialog đã có; `yarn check:i18n` sạch; nhãn nhóm ribbon tiếng Việt không bị cắt |
 | **P3 — File** (1 tuần) | Open (3 đường vào), Save/Save as 5 định dạng, encoder BMP+GIF, clipboard, dirty tracking, beforeunload | Chỉnh sửa trọn vòng đời một file |
 | **P4 — Hình & chọn** (2 tuần) | 23 shapes, Outline/Fill, shape editable sau khi thả; Selection chữ nhật + tự do, move/cut/copy/paste, transparent selection | Annotate screenshot đầy đủ |
 | **P5 — Ảnh & Text** (1.5 tuần) | Crop, Resize/Skew dialog, Rotate/Flip, Text tool + tab ngữ cảnh | Ngang tính năng Paint cho công việc thực tế |
