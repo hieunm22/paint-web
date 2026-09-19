@@ -8,6 +8,7 @@ import { Toast } from "components/Toast"
 import { useBeforeUnload } from "hooks/useBeforeUnload"
 import { useClipboard } from "hooks/useClipboard"
 import { useDismissMenus } from "hooks/useDismissMenus"
+import { useDocumentTitle } from "hooks/useDocumentTitle"
 import { useFileDrop } from "hooks/useFileDrop"
 import { useKeyboardShortcuts } from "hooks/useKeyboardShortcuts"
 import { useAppSelector } from "store/hooks"
@@ -16,6 +17,7 @@ import "./App.scss"
 /** app shell: title bar 32px, tab strip 24px, ribbon 94px, then canvas and status bar. */
 export default function App() {
 	useDismissMenus()
+	useDocumentTitle()
 	useKeyboardShortcuts()
 	useFileDrop()
 	useClipboard()
