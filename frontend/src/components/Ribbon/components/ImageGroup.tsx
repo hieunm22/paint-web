@@ -7,7 +7,7 @@ import {
 } from "components/Menu"
 import { SmallButton, SplitButton } from "components/RibbonButton"
 import { ButtonStack, RibbonGroup } from "components/RibbonGroup"
-import { useAppDispatch, useAppSelector } from "store"
+import { useAppDispatch, useAppSelector } from "store/hooks"
 import { toggleTransparent } from "store/slices/selectionSlice"
 import { setTool } from "store/slices/toolSlice"
 import { openDialog, toggleMenu } from "store/slices/uiSlice"

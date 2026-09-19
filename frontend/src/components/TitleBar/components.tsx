@@ -1,16 +1,20 @@
 import { Icon } from "components/Icon"
-import { QAT_ITEMS, WINDOW_BUTTONS } from "./constant"
+import { useQatItems } from "./hooks"
+import { WINDOW_BUTTONS } from "./constant"
 
 export function QuickAccessToolbar() {
+	const items = useQatItems()
+
 	return (
 		<div className="title-bar__qat">
-			{QAT_ITEMS.map((item) => (
+			{items.map((item) => (
 				<button
 					key={item.id}
 					type="button"
 					className="title-bar__qat-btn"
 					title={item.title}
 					disabled={item.disabled}
+					onClick={item.onClick}
 				>
 					<Icon name={item.icon} size={14} />
 				</button>

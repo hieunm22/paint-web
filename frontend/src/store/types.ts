@@ -95,6 +95,8 @@ export interface TextOptions {
 
 export interface ToolState {
 	active: ToolId
+	/** the tool the picker returns to once it has read a pixel. */
+	prevTool: ToolId
 	brush: BrushKind
 	shape: ShapeKind
 	size: BrushSize
@@ -103,10 +105,18 @@ export interface ToolState {
 	text: TextOptions
 }
 
+export type ColorSlotId = "color1" | "color2"
+
+/** one pixel read by the colour picker, with the swatch it lands in. */
+export interface PickedColor {
+	which: ColorSlotId
+	hex: string
+}
+
 export interface ColorState {
 	color1: string
 	color2: string
-	editing: "color1" | "color2"
+	editing: ColorSlotId
 	palette: readonly string[]
 	custom: (string | null)[]
 }
@@ -118,6 +128,11 @@ export interface ViewState {
 	showStatusBar: boolean
 	showThumbnail: boolean
 	fullScreen: boolean
+}
+
+export interface HistoryState {
+	canUndo: boolean
+	canRedo: boolean
 }
 
 export interface SelectionState {

@@ -1,6 +1,6 @@
 import { LargeButton, SmallButton } from "components/RibbonButton"
 import { ButtonStack, RibbonGroup } from "components/RibbonGroup"
-import { useAppDispatch, useAppSelector } from "store"
+import { useAppDispatch, useAppSelector } from "store/hooks"
 import { setZoom, toggleView, zoomIn, zoomOut } from "store/slices/viewSlice"
 
 /** View tab: Zoom, Show or hide, Display. */

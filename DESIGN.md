@@ -1348,6 +1348,13 @@ Subset Selawik chỉ các ký tự Latin + tiếng Việt → ~28 KB woff2.
 Hỗ trợ **`en` + `vi`** ngay từ v1. Dùng `i18next` + `react-i18next`, và **nguồn sự thật là một
 file CSV**, JSON được sinh ra chứ không sửa tay.
 
+**P2 là một phase riêng cho việc này (§20.1), không để đến cuối.** P4–P6 mới là nơi sinh ra
+phần lớn chuỗi giao diện —
+23 shapes, selection, dialog ảnh, 9 brush, tab View. Dựng muộn thì phải quay lại bóc chuỗi ra
+khỏi code đã viết xong; dựng ở P2 thì mỗi phase sau chỉ thêm key vào `language.csv` ngay lúc
+viết. Đổi lại là một ràng buộc: **từ P3 trở đi, chuỗi giao diện mới phải vào CSV ngay**, không
+hardcode rồi hẹn dọn sau — hẹn dọn sau chính là cái giá mà việc chuyển lên P2 muốn tránh.
+
 Khác `chat-app`: **không** tách thư mục `Tools/` — CSV, script sinh và JSON nằm **cùng một
 chỗ** trong `src/locales/`, để sửa chuỗi không phải nhảy qua lại hai nhánh cây thư mục:
 
@@ -1431,14 +1438,15 @@ là tài liệu tham chiếu bắt buộc cho reviewer.
 |---|---|---|
 | **P0 — Nền móng** (1 tuần) | Vite + TS + store, Surface 3 lớp, viewport + scroll + zoom, status bar, khung ribbon rỗng có 3 tab | Mở được app, canvas trắng 1152×648, zoom và xem toạ độ chạy đúng |
 | **P1 — Vẽ cơ bản** (1.5 tuần) | Pencil, Eraser, Fill, Picker, Magnifier; Size; Colors + palette; History tile-based | Vẽ và undo/redo hoạt động; đây là lúc chạy được thử nghiệm người dùng đầu tiên |
-| **P2 — File** (1 tuần) | Open (3 đường vào), Save/Save as 5 định dạng, encoder BMP+GIF, clipboard, dirty tracking, beforeunload | Chỉnh sửa trọn vòng đời một file |
-| **P3 — Hình & chọn** (2 tuần) | 23 shapes, Outline/Fill, shape editable sau khi thả; Selection chữ nhật + tự do, move/cut/copy/paste, transparent selection | Annotate screenshot đầy đủ |
-| **P4 — Ảnh & Text** (1.5 tuần) | Crop, Resize/Skew dialog, Rotate/Flip, Text tool + tab ngữ cảnh | Ngang tính năng Paint cho công việc thực tế |
-| **P5 — Brushes & View** (1 tuần) | 9 brush, Ruler, Gridlines, Thumbnail, Full screen, Edit colours dialog | Đủ tính năng v1.0 |
-| **P6 — Hoàn thiện** (1.5 tuần) | A11y pass, i18n vi/en qua pipeline CSV (§18.1), pressure cho bút (§8.6), PWA + File Handling, visual regression, đường 6K/8K (§15) | Sẵn sàng phát hành |
-| **P7 — Phát hành** (0.5 tuần) | Dọn §21.2, CSP + header, domain + HTTPS, manifest `file_handlers`, trang giới thiệu/miễn trừ | App chạy công khai trên domain thật |
+| **P2 — Ngôn ngữ** (0.5 tuần) | Hạ tầng i18n vi/en theo pipeline CSV (§18.1): `src/locales/`, script sinh JSON, `i18n.ts` + `translate.ts`, root import thứ bảy khai trong **cả** `vite.config.ts` lẫn `tsconfig.json`; rút toàn bộ chuỗi của P0–P1 vào `language.csv` | Đổi ngôn ngữ chạy đúng trên ribbon, status bar và dialog đã có; nhãn nhóm ribbon tiếng Việt không bị cắt |
+| **P3 — File** (1 tuần) | Open (3 đường vào), Save/Save as 5 định dạng, encoder BMP+GIF, clipboard, dirty tracking, beforeunload | Chỉnh sửa trọn vòng đời một file |
+| **P4 — Hình & chọn** (2 tuần) | 23 shapes, Outline/Fill, shape editable sau khi thả; Selection chữ nhật + tự do, move/cut/copy/paste, transparent selection | Annotate screenshot đầy đủ |
+| **P5 — Ảnh & Text** (1.5 tuần) | Crop, Resize/Skew dialog, Rotate/Flip, Text tool + tab ngữ cảnh | Ngang tính năng Paint cho công việc thực tế |
+| **P6 — Brushes & View** (1 tuần) | 9 brush, Ruler, Gridlines, Thumbnail, Full screen, Edit colours dialog | Đủ tính năng v1.0 |
+| **P7 — Hoàn thiện** (1 tuần) | A11y pass, rà nốt chuỗi i18n còn sót, pressure cho bút (§8.6), PWA + File Handling, visual regression chụp cả hai ngôn ngữ, đường 6K/8K (§15) | Sẵn sàng phát hành |
+| **P8 — Phát hành** (0.5 tuần) | Dọn §21.2, CSP + header, domain + HTTPS, manifest `file_handlers`, trang giới thiệu/miễn trừ | App chạy công khai trên domain thật |
 
-Tổng ước tính: **~10.5 tuần** cho 1 dev full-time, hoặc ~6.5 tuần cho 2 dev (P3 và P4 song song được).
+Tổng ước tính: **~10.5 tuần** cho 1 dev full-time, hoặc ~6.5 tuần cho 2 dev (P4 và P5 song song được).
 
 ### 20.2 Deploy công khai
 
@@ -1617,7 +1625,7 @@ Title bar hiển thị `{fileName} - Paint` (§7.2) để giữ fidelity, tên s
 Đảo ngược đề xuất cũ ("không ở v1"). Web hỗ trợ đầy đủ qua Pointer Events; đặc tả chi tiết ở
 **§8.6**. Điểm cốt lõi: chuột và ngón tay giữ hành vi **giống Paint chính xác**, chỉ bút thật
 mới nhận pressure/tilt — nên không thêm UI nào và không phá P1. Chỉ 6 tool có biến thiên sẵn
-được ánh xạ; Pencil/Eraser/Fill/Shapes/Text giữ nguyên cứng như Paint. Vào P6.
+được ánh xạ; Pencil/Eraser/Fill/Shapes/Text giữ nguyên cứng như Paint. Vào P7.
 
 **Q3 — Kích thước ảnh: hỗ trợ 6K (6144×3456) và 8K (7680×4320).**
 
@@ -1633,7 +1641,7 @@ thường tối đa 4K. Đường 6K/8K là để **mở và sửa** ảnh/scree
 
 **Q4 — Deploy công khai: CÓ.**
 
-Đặc tả ở **§20.2**, thêm phase **P7** vào lộ trình. Kéo theo: §21.2 chuyển từ "nên tuân thủ"
+Đặc tả ở **§20.2**, thêm phase **P8** vào lộ trình. Kéo theo: §21.2 chuyển từ "nên tuân thủ"
 sang **bắt buộc xử lý trước khi phát hành**, HTTPS là điều kiện tiên quyết cho ba API cốt lõi,
 và NFR-07 (không gửi dữ liệu ảnh đi) trở thành lời hứa công khai nên cần nói rõ trên trang.
 

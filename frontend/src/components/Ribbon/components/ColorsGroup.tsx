@@ -1,5 +1,5 @@
 import { RibbonGroup } from "components/RibbonGroup"
-import { useAppDispatch, useAppSelector } from "store"
+import { useAppDispatch, useAppSelector } from "store/hooks"
 import { applyColor, setEditingSwatch } from "store/slices/colorsSlice"
 import { openDialog } from "store/slices/uiSlice"
 import { ColorSlot } from "./ColorSlot"

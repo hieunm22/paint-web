@@ -1,5 +1,5 @@
 import { Icon } from "components/Icon"
-import { useAppDispatch } from "store"
+import { useAppDispatch } from "store/hooks"
 import { openDialog } from "store/slices/uiSlice"
 import { FILE_MENU_ROWS, RECENT_PICTURES } from "./constant"
 

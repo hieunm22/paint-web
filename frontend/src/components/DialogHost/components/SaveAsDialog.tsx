@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { useAppSelector } from "store"
+import { useAppSelector } from "store/hooks"
 import type { ImageFormat } from "store/types"
 import { FORMAT_HINTS, SAVE_FORMATS } from "../constant"
 import { Dialog } from "./Dialog"

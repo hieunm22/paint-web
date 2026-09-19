@@ -1,7 +1,7 @@
 import { useRef } from "react"
 import { createPortal } from "react-dom"
 import { Icon } from "components/Icon"
-import { useMenuPlacement } from "./hooks"
+import { useMenuDismiss, useMenuPlacement } from "./hooks"
 import type { MenuItemProps, MenuProps, MenuSectionLabelProps } from "./types"
 import "./Menu.scss"
 
@@ -12,6 +12,7 @@ import "./Menu.scss"
 export function Menu({ children, width }: MenuProps) {
 	const ref = useRef<HTMLDivElement>(null)
 	const position = useMenuPlacement(ref)
+	const dismiss = useMenuDismiss()
 
 	return createPortal(
 		<div
@@ -19,6 +20,7 @@ export function Menu({ children, width }: MenuProps) {
 			className="menu"
 			role="menu"
 			data-menu-root
+			onClick={dismiss}
 			style={{
 				minWidth: width,
 				top: position?.top ?? 0,

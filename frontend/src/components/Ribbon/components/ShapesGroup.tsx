@@ -4,7 +4,7 @@ import { RibbonGroup } from "components/RibbonGroup"
 import { ShapeIcon } from "components/ShapeIcon"
 import { SHAPE_LABELS, SHAPE_ORDER } from "components/ShapeIcon/constant"
 import { useShapeGalleryScroll } from "../hooks"
-import { useAppDispatch, useAppSelector } from "store"
+import { useAppDispatch, useAppSelector } from "store/hooks"
 import { setFill, setOutline, setShape } from "store/slices/toolSlice"
 import { toggleMenu } from "store/slices/uiSlice"
 import {

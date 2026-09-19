@@ -1,5 +1,5 @@
 import { useEffect } from "react"
-import { useAppDispatch, useAppSelector } from "store"
+import { useAppDispatch, useAppSelector } from "store/hooks"
 import { closeMenu } from "store/slices/uiSlice"
 
 /** closes the open ribbon menu on an outside click or Escape. */

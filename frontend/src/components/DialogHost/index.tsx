@@ -1,4 +1,4 @@
-import { useAppSelector } from "store"
+import { useAppSelector } from "store/hooks"
 import { AboutDialog } from "./components/AboutDialog"
 import { ConfirmDiscardDialog } from "./components/ConfirmDiscardDialog"
 import { EditColorsDialog } from "./components/EditColorsDialog"

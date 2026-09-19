@@ -1,6 +1,6 @@
 import { IconButton } from "components/RibbonButton"
 import { RibbonGroup } from "components/RibbonGroup"
-import { useAppDispatch, useAppSelector } from "store"
+import { useAppDispatch, useAppSelector } from "store/hooks"
 import { setTool } from "store/slices/toolSlice"
 import { TOOLS } from "../constant"
 

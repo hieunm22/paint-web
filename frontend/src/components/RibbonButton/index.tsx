@@ -107,7 +107,10 @@ export function SplitButton({
 				className={`ribbon-split__top${selected ? " ribbon-btn--selected" : ""}`}
 				title={title ?? label}
 				disabled={disabled}
-				onClick={onClick}
+				onClick={() => {
+					onClick?.()
+					if (open) onToggleMenu?.()
+				}}
 			>
 				<span className="ribbon-btn__icon ribbon-btn__icon--large">
 					{iconNode ?? (icon && <Icon name={icon} size={30} />)}

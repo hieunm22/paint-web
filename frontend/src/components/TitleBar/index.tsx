@@ -1,5 +1,5 @@
 import { Icon } from "components/Icon"
-import { useAppSelector } from "store"
+import { useAppSelector } from "store/hooks"
 import { QuickAccessToolbar, WindowButtons } from "./components"
 import "./TitleBar.scss"
 

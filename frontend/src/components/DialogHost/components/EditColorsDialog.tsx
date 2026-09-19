@@ -1,14 +1,13 @@
 import { useState } from "react"
-import { useAppDispatch } from "store"
+import { BASIC_COLORS } from "../constant"
+import { useAppDispatch } from "store/hooks"
 import { addCustomColor, applyColor } from "store/slices/colorsSlice"
 import { closeDialog } from "store/slices/uiSlice"
 import type { NumFieldProps } from "../types"
-import { BASIC_COLORS } from "../constant"
 import { Dialog } from "./Dialog"
 
 /**
  * recreates the classic Windows "Edit Colors" dialog.
- * Windows scales are Hue 0-239, Sat 0-240, Lum 0-240, not 0-360 and 0-100.
  */
 export function EditColorsDialog() {
 	const dispatch = useAppDispatch()

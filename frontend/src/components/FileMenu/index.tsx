@@ -1,5 +1,5 @@
 import { Icon } from "components/Icon"
-import { useAppDispatch } from "store"
+import { useAppDispatch } from "store/hooks"
 import { closeBackstage } from "store/slices/uiSlice"
 import { FileMenuList, RecentPictureList } from "./components"
 import "./FileMenu.scss"

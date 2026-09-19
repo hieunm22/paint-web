@@ -1,11 +1,15 @@
 import {
 	createContext,
+	useCallback,
 	useContext,
 	useLayoutEffect,
 	useState,
+	type MouseEvent,
 	type RefObject,
 } from "react"
 import { placeMenu } from "./common"
+import { useAppDispatch } from "store/hooks"
+import { closeMenu } from "store/slices/uiSlice"
 import type { MenuPosition } from "./types"
 
 export const MenuAnchorContext = createContext<RefObject<HTMLElement> | null>(
@@ -58,4 +62,23 @@ export function useMenuPlacement(
 	}, [anchorRef, menuRef])
 
 	return position
+}
+
+/**
+ * a windows menu closes the moment an item is activated, whatever the item
+ * does. listening on the menu itself covers every gallery cell and size rule
+ * without each of them having to remember to dismiss.
+ */
+export function useMenuDismiss() {
+	const dispatch = useAppDispatch()
+
+	return useCallback(
+		(e: MouseEvent<HTMLDivElement>) => {
+			const target = e.target as HTMLElement
+			// a click on the menu's own padding is not a choice; a disabled item
+			// fires nothing at all
+			if (target.closest("button")) dispatch(closeMenu())
+		},
+		[dispatch],
+	)
 }

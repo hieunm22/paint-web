@@ -76,6 +76,8 @@
 			left: 0;
 			top: 0;
 			background: none;
+			// without this the browser pans and zooms instead of letting us draw
+			touch-action: none;
 		}
 	}
 

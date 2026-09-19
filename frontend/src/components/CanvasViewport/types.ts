@@ -15,3 +15,12 @@ export interface RulerTick {
 	/** numeric label, present on major ticks only. */
 	label?: number
 }
+
+/**
+ * cursor for drawing tools.
+ */
+export interface CursorArt {
+	url: string
+	x: number
+	y: number
+}

@@ -1,6 +1,6 @@
 import { Icon } from "components/Icon"
 import { useDialogDrag } from "../hooks"
-import { useAppDispatch } from "store"
+import { useAppDispatch } from "store/hooks"
 import { closeDialog } from "store/slices/uiSlice"
 import type { DialogProps } from "../types"
 

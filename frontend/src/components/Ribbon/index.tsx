@@ -1,4 +1,4 @@
-import { useAppDispatch, useAppSelector } from "store"
+import { useAppDispatch, useAppSelector } from "store/hooks"
 import { openBackstage, setTab } from "store/slices/uiSlice"
 import { BrushesGroup } from "./components/BrushesGroup"
 import { ClipboardGroup } from "./components/ClipboardGroup"

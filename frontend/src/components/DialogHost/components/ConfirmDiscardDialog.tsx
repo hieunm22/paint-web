@@ -1,4 +1,4 @@
-import { useAppDispatch, useAppSelector } from "store"
+import { useAppDispatch, useAppSelector } from "store/hooks"
 import { closeDialog } from "store/slices/uiSlice"
 import { Dialog } from "./Dialog"
 

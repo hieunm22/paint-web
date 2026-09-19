@@ -1,4 +1,4 @@
-import { useAppSelector } from "store"
+import { useAppSelector } from "store/hooks"
 import { Dialog } from "./Dialog"
 
 /** image properties dialog (Ctrl+E). */
