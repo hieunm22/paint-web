@@ -4,10 +4,7 @@ import "./RibbonGroup.scss"
 /** Ribbon group frame: the button area with the group label at the bottom. */
 export function RibbonGroup({ label, children }: RibbonGroupProps) {
 	return (
-		<section
-			className="ribbon-group"
-			aria-label={label}
-		>
+		<section className="ribbon-group" aria-label={label}>
 			<div className="ribbon-group__body">{children}</div>
 			<div className="ribbon-group__label">{label}</div>
 		</section>

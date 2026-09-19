@@ -1,10 +1,10 @@
 import type { QatItem, WindowButton } from "./types"
 
-/** Quick Access Toolbar. Undo and Redo stay disabled until history has data. */
+/** Quick Access Toolbar. what each item may do is decided in the hook. */
 export const QAT_ITEMS: QatItem[] = [
 	{ id: "save", icon: "save", title: "Save (Ctrl+S)" },
-	{ id: "undo", icon: "undo", title: "Undo (Ctrl+Z)", disabled: true },
-	{ id: "redo", icon: "redo", title: "Redo (Ctrl+Y)", disabled: true },
+	{ id: "undo", icon: "undo", title: "Undo (Ctrl+Z)" },
+	{ id: "redo", icon: "redo", title: "Redo (Ctrl+Y)" },
 ]
 
 /**

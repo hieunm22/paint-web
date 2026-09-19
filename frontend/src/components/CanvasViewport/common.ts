@@ -1,7 +1,7 @@
+import { CANVAS_MARGIN, RULER_MAJOR_STEP, RULER_MINOR_STEP } from "./constant"
 import type { Size } from "engine/types"
 import type { Point } from "store/types"
 import type { RulerTick } from "./types"
-import { CANVAS_MARGIN, RULER_MAJOR_STEP, RULER_MINOR_STEP } from "./constant"
 
 /** css size of a document-space layer at the current zoom. */
 export function zoomedSize(width: number, height: number, zoom: number): Size {

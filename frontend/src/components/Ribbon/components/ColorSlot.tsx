@@ -9,10 +9,7 @@ export function ColorSlot({ label, hex, editing, onClick }: ColorSlotProps) {
 			aria-pressed={editing}
 			onClick={onClick}
 		>
-			<span
-				className="colors__slot-swatch"
-				style={{ background: hex }}
-			/>
+			<span className="colors__slot-swatch" style={{ background: hex }} />
 			<span className="colors__slot-label">{label}</span>
 		</button>
 	)

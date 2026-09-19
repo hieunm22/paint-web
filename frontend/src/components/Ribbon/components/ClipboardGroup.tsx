@@ -1,7 +1,7 @@
 import { Menu, MenuItem } from "components/Menu"
 import { SmallButton, SplitButton } from "components/RibbonButton"
 import { ButtonStack, RibbonGroup } from "components/RibbonGroup"
-import { useAppDispatch, useAppSelector } from "store"
+import { useAppDispatch, useAppSelector } from "store/hooks"
 import { toggleMenu } from "store/slices/uiSlice"
 
 /** Paste split button plus stacked Cut and Copy. */
@@ -20,15 +20,8 @@ export function ClipboardGroup() {
 				onToggleMenu={() => dispatch(toggleMenu("paste"))}
 				menu={
 					<Menu>
-						<MenuItem
-							label="Paste"
-							icon="paste"
-							shortcut="Ctrl+V"
-						/>
-						<MenuItem
-							label="Paste from…"
-							icon="open"
-						/>
+						<MenuItem label="Paste" icon="paste" shortcut="Ctrl+V" />
+						<MenuItem label="Paste from…" icon="open" />
 					</Menu>
 				}
 			/>

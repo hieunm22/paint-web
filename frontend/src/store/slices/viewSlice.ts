@@ -1,10 +1,11 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit"
-import type { ViewState } from "../types"
+import type { Point, ViewState } from "../types"
 
 export const ZOOM_STEPS = [0.125, 0.25, 0.5, 1, 2, 3, 4, 5, 6, 7, 8]
 
 const initialState: ViewState = {
 	zoom: 1,
+	focus: null,
 	showRuler: false,
 	showGrid: false,
 	showStatusBar: true,
@@ -22,6 +23,12 @@ const viewSlice = createSlice({
 		setZoom(state, action: PayloadAction<number>) {
 			state.zoom = action.payload
 		},
+		/** the magnifier zooms about the pixel that was clicked, as Paint does. */
+		zoomAt(state, action: PayloadAction<{ zoom: number; at: Point }>) {
+			const { zoom, at } = action.payload
+			state.zoom = zoom
+			state.focus = { x: at.x, y: at.y, zoom }
+		},
 		zoomIn(state) {
 			state.zoom = ZOOM_STEPS.find((z) => z > state.zoom) ?? state.zoom
 		},
@@ -35,5 +42,6 @@ const viewSlice = createSlice({
 	},
 })
 
-export const { setZoom, zoomIn, zoomOut, toggleView } = viewSlice.actions
+export const { setZoom, zoomAt, zoomIn, zoomOut, toggleView } =
+	viewSlice.actions
 export default viewSlice.reducer

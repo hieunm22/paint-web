@@ -8,9 +8,11 @@ import type {
 	ToolId,
 	ToolState,
 } from "../types"
+import { pickerPicked } from "../actions"
 
 const initialState: ToolState = {
 	active: "pencil",
+	prevTool: "pencil",
 	brush: "brush",
 	shape: "line",
 	size: 1,
@@ -34,6 +36,8 @@ const toolSlice = createSlice({
 	initialState,
 	reducers: {
 		setTool(state, action: PayloadAction<ToolId>) {
+			if (action.payload === state.active) return
+			state.prevTool = state.active
 			state.active = action.payload
 		},
 		setBrush(state, action: PayloadAction<BrushKind>) {
@@ -61,6 +65,12 @@ const toolSlice = createSlice({
 		setTextOptions(state, action: PayloadAction<Partial<TextOptions>>) {
 			Object.assign(state.text, action.payload)
 		},
+	},
+	extraReducers: (builder) => {
+		// picking a colour hands the previous tool back, the way Paint does
+		builder.addCase(pickerPicked, (state) => {
+			state.active = state.prevTool
+		})
 	},
 })
 

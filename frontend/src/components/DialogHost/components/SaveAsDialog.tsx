@@ -1,7 +1,7 @@
 import { useState } from "react"
-import { useAppSelector } from "store"
-import type { ImageFormat } from "store/types"
 import { FORMAT_HINTS, SAVE_FORMATS } from "../constant"
+import { useAppSelector } from "store/hooks"
+import type { ImageFormat } from "store/types"
 import { Dialog } from "./Dialog"
 
 /** fallback for browsers without the File System Access API. */
@@ -11,10 +11,7 @@ export function SaveAsDialog() {
 	const lossy = format === "jpeg" || format === "webp"
 
 	return (
-		<Dialog
-			title="Save As"
-			width={396}
-		>
+		<Dialog title="Save As" width={396}>
 			<div className="dialog__body">
 				<div className="dialog__row dialog__row--flush">
 					<span className="dialog__label">File name:</span>
@@ -31,10 +28,7 @@ export function SaveAsDialog() {
 						onChange={(e) => setFormat(e.target.value as ImageFormat)}
 					>
 						{SAVE_FORMATS.map((f) => (
-							<option
-								key={f.id}
-								value={f.id}
-							>
+							<option key={f.id} value={f.id}>
 								{f.label} ({f.ext})
 							</option>
 						))}

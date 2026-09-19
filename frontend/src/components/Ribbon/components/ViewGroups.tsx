@@ -1,6 +1,6 @@
 import { LargeButton, SmallButton } from "components/RibbonButton"
 import { ButtonStack, RibbonGroup } from "components/RibbonGroup"
-import { useAppDispatch, useAppSelector } from "store"
+import { useAppDispatch, useAppSelector } from "store/hooks"
 import { setZoom, toggleView, zoomIn, zoomOut } from "store/slices/viewSlice"
 
 /** View tab: Zoom, Show or hide, Display. */
@@ -35,19 +35,22 @@ export function ViewTabGroups() {
 				<ButtonStack>
 					{/* rulers need zoom >= 1, gridlines need zoom >= 4. */}
 					<SmallButton
-						label={`${view.showRuler ? "☑" : "☐"} Rulers`}
+						label="Rulers"
+						icon={view.showRuler ? "checked" : "unchecked"}
 						title="Rulers (Ctrl+R)"
 						disabled={view.zoom < 1}
 						onClick={() => dispatch(toggleView("showRuler"))}
 					/>
 					<SmallButton
-						label={`${view.showGrid ? "☑" : "☐"} Gridlines`}
-						title="Gridlines (Ctrl+G) — cần zoom ≥ 400%"
+						label="Gridlines"
+						icon={view.showGrid ? "checked" : "unchecked"}
+						title="Gridlines (Ctrl+G) - cần zoom >= 400%"
 						disabled={view.zoom < 4}
 						onClick={() => dispatch(toggleView("showGrid"))}
 					/>
 					<SmallButton
-						label={`${view.showStatusBar ? "☑" : "☐"} Status bar`}
+						label="Status bar"
+						icon={view.showStatusBar ? "checked" : "unchecked"}
 						onClick={() => dispatch(toggleView("showStatusBar"))}
 					/>
 				</ButtonStack>

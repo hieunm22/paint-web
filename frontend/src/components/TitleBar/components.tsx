@@ -1,21 +1,22 @@
+import { WINDOW_BUTTONS } from "./constant"
 import { Icon } from "components/Icon"
-import { QAT_ITEMS, WINDOW_BUTTONS } from "./constant"
+import { useQatItems } from "./hooks"
 
 export function QuickAccessToolbar() {
+	const items = useQatItems()
+
 	return (
 		<div className="title-bar__qat">
-			{QAT_ITEMS.map((item) => (
+			{items.map((item) => (
 				<button
 					key={item.id}
 					type="button"
 					className="title-bar__qat-btn"
 					title={item.title}
 					disabled={item.disabled}
+					onClick={item.onClick}
 				>
-					<Icon
-						name={item.icon}
-						size={14}
-					/>
+					<Icon name={item.icon} size={14} />
 				</button>
 			))}
 			<button
@@ -23,10 +24,7 @@ export function QuickAccessToolbar() {
 				className="title-bar__qat-btn title-bar__qat-btn--caret"
 				title="Customise Quick Access Toolbar"
 			>
-				<Icon
-					name="caretDown"
-					size={9}
-				/>
+				<Icon name="caretDown" size={9} />
 			</button>
 		</div>
 	)
@@ -43,10 +41,7 @@ export function WindowButtons() {
 					title={btn.title}
 					disabled={btn.disabled}
 				>
-					<Icon
-						name={btn.icon}
-						size={btn.size}
-					/>
+					<Icon name={btn.icon} size={btn.size} />
 				</button>
 			))}
 		</div>

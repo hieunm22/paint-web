@@ -1,4 +1,6 @@
-import type { Size, SurfaceContexts, SurfaceLayers } from "./types"
+import type { Rect } from "store/types"
+import type { RGBA, Size, SurfaceContexts, SurfaceLayers } from "./types"
+import { readPixel } from "./raster"
 
 const PAPER = "#ffffff"
 const EMPTY: Size = { width: 0, height: 0 }
@@ -33,6 +35,7 @@ export class Surface {
 	private ctx: SurfaceContexts | null = null
 	private docSize: Size = EMPTY
 	private overlayCss: Size = EMPTY
+	private scratch: CanvasRenderingContext2D | null = null
 
 	/**
 	 * the recorded sizes are dropped, forcing the next resize to re-sync. that is
@@ -116,6 +119,37 @@ export class Surface {
 		layers.overlay.height = Math.round(height * dpr)
 		ctx.overlay.setTransform(dpr, 0, 0, dpr, 0, 0)
 		this.overlayCss = { width, height }
+	}
+
+	/** committed pixels of a box, clipped by the caller to the document. */
+	readRegion({ x, y, w, h }: Rect): ImageData | null {
+		return this.ctx?.base.getImageData(x, y, w, h) ?? null
+	}
+
+	/** writes pixels back at an image-space position, replacing what was there. */
+	writeRegion(data: ImageData, x: number, y: number): void {
+		this.ctx?.base.putImageData(data, x, y)
+	}
+
+	/**
+	 * one committed pixel, read through a 1x1 scratch canvas. willReadFrequently
+	 * belongs on that canvas and never on base, which it would pin to the CPU.
+	 */
+	readPixel(x: number, y: number): RGBA | null {
+		const { layers } = this
+		if (!layers) return null
+
+		if (!this.scratch) {
+			const canvas = document.createElement("canvas")
+			canvas.width = 1
+			canvas.height = 1
+			this.scratch = canvas.getContext("2d", { willReadFrequently: true })
+		}
+		if (!this.scratch) return null
+
+		this.scratch.clearRect(0, 0, 1, 1)
+		this.scratch.drawImage(layers.base, -x, -y)
+		return readPixel(this.scratch.getImageData(0, 0, 1, 1), 0, 0)
 	}
 
 	clearPreview(): void {

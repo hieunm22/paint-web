@@ -95,6 +95,8 @@ export interface TextOptions {
 
 export interface ToolState {
 	active: ToolId
+	/** the tool the picker returns to once it has read a pixel. */
+	prevTool: ToolId
 	brush: BrushKind
 	shape: ShapeKind
 	size: BrushSize
@@ -103,21 +105,45 @@ export interface ToolState {
 	text: TextOptions
 }
 
+export type ColorSlotId = "color1" | "color2"
+
+/** one pixel read by the colour picker, with the swatch it lands in. */
+export interface PickedColor {
+	which: ColorSlotId
+	hex: string
+}
+
 export interface ColorState {
 	color1: string
 	color2: string
-	editing: "color1" | "color2"
+	editing: ColorSlotId
 	palette: readonly string[]
 	custom: (string | null)[]
 }
 
+/**
+ * an image point the viewport should centre on, carrying the zoom it was asked
+ * at: the effect that applies it must not fire again when zoom alone changes.
+ */
+export interface ZoomFocus {
+	x: number
+	y: number
+	zoom: number
+}
+
 export interface ViewState {
 	zoom: number
+	focus: ZoomFocus | null
 	showRuler: boolean
 	showGrid: boolean
 	showStatusBar: boolean
 	showThumbnail: boolean
 	fullScreen: boolean
+}
+
+export interface HistoryState {
+	canUndo: boolean
+	canRedo: boolean
 }
 
 export interface SelectionState {

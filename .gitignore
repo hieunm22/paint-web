@@ -5,3 +5,6 @@ dist
 
 # vite dep-optimizer cache, written inside frontend/ on every dev run
 .vite
+
+# emitted by tsc -b
+*.tsbuildinfo

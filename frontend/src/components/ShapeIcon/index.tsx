@@ -1,5 +1,5 @@
-import type { ShapeIconProps } from "./types"
 import { SHAPE_PATHS } from "./constant"
+import type { ShapeIconProps } from "./types"
 
 export function ShapeIcon({ kind, size = 24 }: ShapeIconProps) {
 	return (

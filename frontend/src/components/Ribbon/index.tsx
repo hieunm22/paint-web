@@ -1,5 +1,4 @@
-import { useAppDispatch, useAppSelector } from "store"
-import { openBackstage, setTab } from "store/slices/uiSlice"
+import { RIBBON_TABS } from "./constant"
 import { BrushesGroup } from "./components/BrushesGroup"
 import { ClipboardGroup } from "./components/ClipboardGroup"
 import { ColorsGroup } from "./components/ColorsGroup"
@@ -9,7 +8,8 @@ import { ShapesGroup } from "./components/ShapesGroup"
 import { SizeGroup } from "./components/SizeGroup"
 import { ToolsGroup } from "./components/ToolsGroup"
 import { ViewTabGroups } from "./components/ViewGroups"
-import { RIBBON_TABS } from "./constant"
+import { useAppDispatch, useAppSelector } from "store/hooks"
+import { openBackstage, setTab } from "store/slices/uiSlice"
 import "./Ribbon.scss"
 
 export function Ribbon() {
@@ -18,10 +18,7 @@ export function Ribbon() {
 
 	return (
 		<>
-			<div
-				className="ribbon__tab-strip"
-				role="tablist"
-			>
+			<div className="ribbon__tab-strip" role="tablist">
 				<button
 					type="button"
 					className="ribbon__tab ribbon__tab--file"
@@ -43,10 +40,7 @@ export function Ribbon() {
 				))}
 			</div>
 
-			<div
-				className="ribbon__content"
-				role="tabpanel"
-			>
+			<div className="ribbon__content" role="tabpanel">
 				{tab === "home" ? (
 					<>
 						<ClipboardGroup />

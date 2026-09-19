@@ -1,10 +1,10 @@
+import { SIZES } from "../constant"
 import { Menu } from "components/Menu"
 import { SplitButton } from "components/RibbonButton"
 import { RibbonGroup } from "components/RibbonGroup"
-import { useAppDispatch, useAppSelector } from "store"
+import { useAppDispatch, useAppSelector } from "store/hooks"
 import { setSize } from "store/slices/toolSlice"
 import { toggleMenu } from "store/slices/uiSlice"
-import { SIZES } from "../constant"
 
 /** the menu renders real 1, 3, 5 and 8 px rules. */
 export function SizeGroup() {
@@ -42,10 +42,7 @@ export function SizeGroup() {
 								aria-checked={size === s}
 								onClick={() => dispatch(setSize(s))}
 							>
-								<div
-									className="size-line"
-									style={{ height: s, width: 70 }}
-								/>
+								<div className="size-line" style={{ height: s, width: 70 }} />
 							</button>
 						))}
 					</Menu>

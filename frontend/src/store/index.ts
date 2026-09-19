@@ -1,7 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit"
-import { useDispatch, useSelector } from "react-redux"
 import colors from "./slices/colorsSlice"
 import doc from "./slices/docSlice"
+import history from "./slices/historySlice"
 import selection from "./slices/selectionSlice"
 import tool from "./slices/toolSlice"
 import ui from "./slices/uiSlice"
@@ -14,12 +14,10 @@ export const store = configureStore({
 		colors,
 		view,
 		selection,
+		history,
 		ui,
 	},
 })
 
 export type RootState = ReturnType<typeof store.getState>
 export type AppDispatch = typeof store.dispatch
-
-export const useAppDispatch = useDispatch.withTypes<AppDispatch>()
-export const useAppSelector = useSelector.withTypes<RootState>()

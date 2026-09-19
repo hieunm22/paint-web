@@ -1,6 +1,6 @@
 import { Icon } from "components/Icon"
-import { useAppSelector } from "store"
 import { QuickAccessToolbar, WindowButtons } from "./components"
+import { useAppSelector } from "store/hooks"
 import "./TitleBar.scss"
 
 /** Quick Access Toolbar, window title and the three window buttons. */
@@ -9,14 +9,8 @@ export function TitleBar() {
 
 	return (
 		<div className="title-bar">
-			<span
-				className="title-bar__app-icon"
-				aria-hidden
-			>
-				<Icon
-					name="brush"
-					size={9}
-				/>
+			<span className="title-bar__app-icon" aria-hidden>
+				<Icon name="brush" size={9} />
 			</span>
 
 			<QuickAccessToolbar />

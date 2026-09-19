@@ -1,10 +1,13 @@
 import type { IconName } from "components/Icon/types"
 
+export type QatItemId = "save" | "undo" | "redo"
+
 export interface QatItem {
-	id: string
+	id: QatItemId
 	icon: IconName
 	title: string
 	disabled?: boolean
+	onClick?: () => void
 }
 
 export interface WindowButton {

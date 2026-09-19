@@ -1,9 +1,9 @@
+import { CELL_ICONS } from "./constant"
+import { StatusCell, ZoomControl } from "./components"
 import { estimateFileSize, formatZoomPercent, zoomStepIndex } from "./common"
 import { useCursorPosition } from "./hooks"
-import { useAppDispatch, useAppSelector } from "store"
+import { useAppDispatch, useAppSelector } from "store/hooks"
 import { setZoom, ZOOM_STEPS, zoomIn, zoomOut } from "store/slices/viewSlice"
-import { StatusCell, ZoomControl } from "./components"
-import { CELL_ICONS } from "./constant"
 import "./StatusBar.scss"
 
 /** four info cells plus the zoom slider on the right. */

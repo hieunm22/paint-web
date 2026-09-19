@@ -1,7 +1,7 @@
 import { useRef } from "react"
 import { createPortal } from "react-dom"
 import { Icon } from "components/Icon"
-import { useMenuPlacement } from "./hooks"
+import { useMenuDismiss, useMenuPlacement } from "./hooks"
 import type { MenuItemProps, MenuProps, MenuSectionLabelProps } from "./types"
 import "./Menu.scss"
 
@@ -12,6 +12,7 @@ import "./Menu.scss"
 export function Menu({ children, width }: MenuProps) {
 	const ref = useRef<HTMLDivElement>(null)
 	const position = useMenuPlacement(ref)
+	const dismiss = useMenuDismiss()
 
 	return createPortal(
 		<div
@@ -19,6 +20,7 @@ export function Menu({ children, width }: MenuProps) {
 			className="menu"
 			role="menu"
 			data-menu-root
+			onClick={dismiss}
 			style={{
 				minWidth: width,
 				top: position?.top ?? 0,
@@ -53,22 +55,11 @@ export function MenuItem({
 			<span className="menu__item-icon">
 				{checked !== undefined
 					? checked && <span className="menu__check">✓</span>
-					: icon && (
-							<Icon
-								name={icon}
-								size={14}
-							/>
-						)}
+					: icon && <Icon name={icon} size={14} />}
 			</span>
 			<span className="menu__item-label">{label}</span>
 			{shortcut && <span className="menu__item-shortcut">{shortcut}</span>}
-			{submenu && (
-				<Icon
-					name="caretDown"
-					size={8}
-					className="menu__caret"
-				/>
-			)}
+			{submenu && <Icon name="caretDown" size={8} className="menu__caret" />}
 		</button>
 	)
 }
@@ -78,12 +69,7 @@ export function MenuSectionLabel({ children }: MenuSectionLabelProps) {
 }
 
 export function MenuSeparator() {
-	return (
-		<div
-			className="menu__sep"
-			role="separator"
-		/>
-	)
+	return <div className="menu__sep" role="separator" />
 }
 
 export { MenuAnchor } from "./components"

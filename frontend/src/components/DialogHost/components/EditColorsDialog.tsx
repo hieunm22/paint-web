@@ -1,14 +1,13 @@
 import { useState } from "react"
-import { useAppDispatch } from "store"
+import { BASIC_COLORS } from "../constant"
+import { useAppDispatch } from "store/hooks"
 import { addCustomColor, applyColor } from "store/slices/colorsSlice"
 import { closeDialog } from "store/slices/uiSlice"
 import type { NumFieldProps } from "../types"
-import { BASIC_COLORS } from "../constant"
 import { Dialog } from "./Dialog"
 
 /**
  * recreates the classic Windows "Edit Colors" dialog.
- * Windows scales are Hue 0-239, Sat 0-240, Lum 0-240, not 0-360 and 0-100.
  */
 export function EditColorsDialog() {
 	const dispatch = useAppDispatch()
@@ -74,38 +73,17 @@ export function EditColorsDialog() {
 					<div className="dialog__color-fields">
 						<div>
 							<div className="dialog__edit-colors-caption">Color|Solid:</div>
-							<div
-								className="dialog__preview"
-								style={{ background: hex }}
-							/>
+							<div className="dialog__preview" style={{ background: hex }} />
 						</div>
 						<div>
-							<NumField
-								label="Hue:"
-								value={160}
-							/>
-							<NumField
-								label="Sat:"
-								value={0}
-							/>
-							<NumField
-								label="Lum:"
-								value={0}
-							/>
+							<NumField label="Hue:" value={160} />
+							<NumField label="Sat:" value={0} />
+							<NumField label="Lum:" value={0} />
 						</div>
 						<div>
-							<NumField
-								label="Red:"
-								value={0}
-							/>
-							<NumField
-								label="Green:"
-								value={0}
-							/>
-							<NumField
-								label="Blue:"
-								value={0}
-							/>
+							<NumField label="Red:" value={0} />
+							<NumField label="Green:" value={0} />
+							<NumField label="Blue:" value={0} />
 						</div>
 					</div>
 				</div>
@@ -118,10 +96,7 @@ function NumField({ label, value }: NumFieldProps) {
 	return (
 		<div className="dialog__num-field">
 			<span className="dialog__num-field-label">{label}</span>
-			<input
-				className="dialog__num dialog__num--narrow"
-				defaultValue={value}
-			/>
+			<input className="dialog__num dialog__num--narrow" defaultValue={value} />
 		</div>
 	)
 }

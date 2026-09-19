@@ -1,8 +1,8 @@
-import { strokeStyleLabel } from "../common"
+import { STROKE_STYLES } from "../constant"
 import { Icon } from "components/Icon"
 import { Menu, MenuAnchor, MenuItem } from "components/Menu"
+import { strokeStyleLabel } from "../common"
 import type { StrokeMenuButtonProps } from "../types"
-import { STROKE_STYLES } from "../constant"
 
 /** seven-item menu shared by Outline and Fill. */
 export function StrokeMenuButton({
@@ -26,11 +26,7 @@ export function StrokeMenuButton({
 				onClick={onToggle}
 			>
 				<span className="ribbon-btn__label">{label}</span>
-				<Icon
-					name="caretDown"
-					size={8}
-					className="ribbon-btn__caret"
-				/>
+				<Icon name="caretDown" size={8} className="ribbon-btn__caret" />
 			</button>
 			{open && !disabled && (
 				<Menu width={160}>

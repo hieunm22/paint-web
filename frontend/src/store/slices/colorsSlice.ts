@@ -1,6 +1,7 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit"
 import { CUSTOM_SLOTS, PAINT_PALETTE } from "engine/color"
-import type { ColorState } from "../types"
+import type { ColorSlotId, ColorState, PickedColor } from "../types"
+import { pickerPicked } from "../actions"
 
 const initialState: ColorState = {
 	color1: "#000000",
@@ -14,17 +15,14 @@ const colorsSlice = createSlice({
 	name: "colors",
 	initialState,
 	reducers: {
-		setEditingSwatch(state, action: PayloadAction<"color1" | "color2">) {
+		setEditingSwatch(state, action: PayloadAction<ColorSlotId>) {
 			state.editing = action.payload
 		},
 		/** assigns a color to whichever slot is currently being edited. */
 		applyColor(state, action: PayloadAction<string>) {
 			state[state.editing] = action.payload
 		},
-		setColor(
-			state,
-			action: PayloadAction<{ which: "color1" | "color2"; hex: string }>,
-		) {
+		setColor(state, action: PayloadAction<PickedColor>) {
 			state[action.payload.which] = action.payload.hex
 		},
 		/** fills the first empty custom slot, overwriting FIFO when full. */
@@ -36,6 +34,11 @@ const colorsSlice = createSlice({
 				state.custom.push(action.payload)
 			}
 		},
+	},
+	extraReducers: (builder) => {
+		builder.addCase(pickerPicked, (state, action) => {
+			state[action.payload.which] = action.payload.hex
+		})
 	},
 })
 

@@ -7,10 +7,7 @@ export function ResizeSkewDialog() {
 	const [ratio, setRatio] = useState(true)
 
 	return (
-		<Dialog
-			title="Resize and Skew"
-			width={318}
-		>
+		<Dialog title="Resize and Skew" width={318}>
 			<div className="dialog__body">
 				<div className="dialog__section">
 					<div className="dialog__section-title">Resize</div>
@@ -65,17 +62,11 @@ export function ResizeSkewDialog() {
 					<div className="dialog__section-title">Skew (Degrees)</div>
 					<div className="dialog__row">
 						<span className="dialog__label">↔ Horizontal:</span>
-						<input
-							className="dialog__num"
-							defaultValue={0}
-						/>
+						<input className="dialog__num" defaultValue={0} />
 					</div>
 					<div className="dialog__row">
 						<span className="dialog__label">↕ Vertical:</span>
-						<input
-							className="dialog__num"
-							defaultValue={0}
-						/>
+						<input className="dialog__num" defaultValue={0} />
 					</div>
 					<div className="dialog__hint">
 						Giới hạn ±89° — tránh ma trận suy biến.

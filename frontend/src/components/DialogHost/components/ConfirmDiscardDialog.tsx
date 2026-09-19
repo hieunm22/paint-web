@@ -1,4 +1,4 @@
-import { useAppDispatch, useAppSelector } from "store"
+import { useAppDispatch, useAppSelector } from "store/hooks"
 import { closeDialog } from "store/slices/uiSlice"
 import { Dialog } from "./Dialog"
 
@@ -21,18 +21,10 @@ export function ConfirmDiscardDialog() {
 					>
 						Save
 					</button>
-					<button
-						type="button"
-						className="dialog__btn"
-						onClick={close}
-					>
+					<button type="button" className="dialog__btn" onClick={close}>
 						Don't Save
 					</button>
-					<button
-						type="button"
-						className="dialog__btn"
-						onClick={close}
-					>
+					<button type="button" className="dialog__btn" onClick={close}>
 						Cancel
 					</button>
 				</>

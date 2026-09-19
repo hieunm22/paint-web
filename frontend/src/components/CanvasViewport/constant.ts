@@ -13,14 +13,18 @@ export const HANDLES: HandlePosition[] = [
 	"se",
 ]
 
-/** cursor changes with the active tool. */
+/**
+ * the five tools that draw their own cursor on the overlay hide the system
+ * one: macOS scales a css cursor by its accessibility pointer size, and these
+ * have to keep the size they were drawn at.
+ */
 export const TOOL_CURSORS: Record<ToolId, string> = {
-	pencil: "crosshair",
-	fill: "crosshair",
+	pencil: "none",
+	fill: "none",
 	text: "text",
-	eraser: "crosshair",
-	picker: "crosshair",
-	magnifier: "zoom-in",
+	eraser: "none",
+	picker: "none",
+	magnifier: "none",
 	brush: "crosshair",
 	shape: "crosshair",
 	"select-rect": "crosshair",

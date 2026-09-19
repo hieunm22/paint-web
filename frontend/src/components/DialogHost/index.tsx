@@ -1,10 +1,10 @@
-import { useAppSelector } from "store"
 import { AboutDialog } from "./components/AboutDialog"
 import { ConfirmDiscardDialog } from "./components/ConfirmDiscardDialog"
 import { EditColorsDialog } from "./components/EditColorsDialog"
 import { ImagePropertiesDialog } from "./components/ImagePropertiesDialog"
 import { ResizeSkewDialog } from "./components/ResizeSkewDialog"
 import { SaveAsDialog } from "./components/SaveAsDialog"
+import { useAppSelector } from "store/hooks"
 import "./DialogHost.scss"
 
 export function DialogHost() {

@@ -23,13 +23,7 @@ export function LargeButton({
 			onClick={onClick}
 		>
 			<span className="ribbon-btn__icon ribbon-btn__icon--large">
-				{iconNode ??
-					(icon && (
-						<Icon
-							name={icon}
-							size={30}
-						/>
-					))}
+				{iconNode ?? (icon && <Icon name={icon} size={30} />)}
 			</span>
 			<span className="ribbon-btn__label ribbon-btn__label--large">
 				{label}
@@ -58,13 +52,7 @@ export function SmallButton({
 			onClick={onClick}
 		>
 			<span className="ribbon-btn__icon ribbon-btn__icon--small">
-				{iconNode ??
-					(icon && (
-						<Icon
-							name={icon}
-							size={15}
-						/>
-					))}
+				{iconNode ?? (icon && <Icon name={icon} size={15} />)}
 			</span>
 			<span className="ribbon-btn__label">{label}</span>
 		</button>
@@ -91,13 +79,7 @@ export function IconButton({
 			aria-pressed={selected}
 			onClick={onClick}
 		>
-			{iconNode ??
-				(icon && (
-					<Icon
-						name={icon}
-						size={16}
-					/>
-				))}
+			{iconNode ?? (icon && <Icon name={icon} size={16} />)}
 		</button>
 	)
 }
@@ -125,16 +107,13 @@ export function SplitButton({
 				className={`ribbon-split__top${selected ? " ribbon-btn--selected" : ""}`}
 				title={title ?? label}
 				disabled={disabled}
-				onClick={onClick}
+				onClick={() => {
+					onClick?.()
+					if (open) onToggleMenu?.()
+				}}
 			>
 				<span className="ribbon-btn__icon ribbon-btn__icon--large">
-					{iconNode ??
-						(icon && (
-							<Icon
-								name={icon}
-								size={30}
-							/>
-						))}
+					{iconNode ?? (icon && <Icon name={icon} size={30} />)}
 				</span>
 			</button>
 			<button
@@ -147,11 +126,7 @@ export function SplitButton({
 			>
 				<span className="ribbon-split__label-row">
 					{label}
-					<Icon
-						name="caretDown"
-						size={8}
-						className="ribbon-btn__caret"
-					/>
+					<Icon name="caretDown" size={8} className="ribbon-btn__caret" />
 				</span>
 			</button>
 			{open && menu}

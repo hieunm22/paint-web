@@ -1,6 +1,6 @@
 import { useState } from "react"
-import { maxGalleryRow } from "./common"
 import { SHAPE_GALLERY_COLS, SHAPE_GALLERY_VISIBLE_ROWS } from "./constant"
+import { maxGalleryRow } from "./common"
 
 /** scrolls the shape gallery one row at a time. */
 export function useShapeGalleryScroll(totalShapes: number) {
