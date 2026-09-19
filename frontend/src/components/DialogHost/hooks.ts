@@ -4,8 +4,12 @@ import {
 	useState,
 	type PointerEvent as ReactPointerEvent,
 } from "react"
+import { DEFAULT_QUALITY } from "./constant"
+import { stemOf } from "common/format"
 import { clampDragOffset } from "./common"
-import type { DragSession, Point } from "./types"
+import { documentName } from "store/common"
+import type { ImageFormat } from "store/types"
+import type { DragSession, Point, SaveAsForm } from "./types"
 
 const NO_OFFSET: Point = { x: 0, y: 0 }
 
@@ -76,4 +80,16 @@ export function useDialogDrag() {
 			onPointerCancel: onPointerUp,
 		},
 	}
+}
+
+/** holds the Save As fields; the picker only sees them once OK is pressed. */
+export function useSaveAsForm(
+	fileName: string,
+	initialFormat: ImageFormat,
+): SaveAsForm {
+	const [name, setName] = useState(() => stemOf(documentName(fileName)))
+	const [format, setFormat] = useState(initialFormat)
+	const [quality, setQuality] = useState(DEFAULT_QUALITY)
+
+	return { name, format, quality, setName, setFormat, setQuality }
 }

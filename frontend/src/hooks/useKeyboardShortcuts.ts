@@ -1,44 +1,49 @@
 import { useEffect } from "react"
+import { isTypingTarget } from "common/dom"
 import { isPrimaryModifier } from "common/platform"
 import { paint } from "engine/PaintEngine"
 import { useAppDispatch, useAppSelector } from "store/hooks"
 import { stepSize } from "store/slices/toolSlice"
+import { openDialog } from "store/slices/uiSlice"
 import { toggleView, zoomIn, zoomOut } from "store/slices/viewSlice"
-
-const EDITABLE = ["INPUT", "TEXTAREA", "SELECT"]
-
-/** a shortcut must not fire while the user is typing into a field. */
-function isTyping(target: EventTarget | null): boolean {
-	const el = target as HTMLElement | null
-	if (!el) return false
-
-	return EDITABLE.includes(el.tagName) || el.isContentEditable
-}
+import { useFileCommands } from "./useFileCommands"
 
 /**
- * Paint's keys. undo, redo, zoom and the four brush sizes take Cmd on macOS,
- * while the keys Paint alone owns keep Ctrl on every platform.
+ * Paint's keys. undo, redo, zoom, the file commands and the four brush sizes
+ * take Cmd on macOS, while the keys Paint alone owns keep Ctrl everywhere.
  */
 export function useKeyboardShortcuts() {
 	const dispatch = useAppDispatch()
 	const zoom = useAppSelector((s) => s.view.zoom)
+	const files = useFileCommands()
 
 	useEffect(() => {
 		const onKeyDown = (e: KeyboardEvent) => {
-			if (isTyping(e.target) || e.altKey) return
+			if (isTypingTarget(e.target) || e.altKey) return
 
 			if (isPrimaryModifier(e)) {
-				switch (e.key) {
+				switch (e.key.toLowerCase()) {
 					case "z":
-					case "Z":
 						e.preventDefault()
 						if (e.shiftKey) paint.redo()
 						else paint.undo()
 						return
 					case "y":
-					case "Y":
 						e.preventDefault()
 						paint.redo()
+						return
+					case "n":
+						e.preventDefault()
+						files.newDocument()
+						return
+					case "o":
+						e.preventDefault()
+						void files.openDocument()
+						return
+					case "s":
+						e.preventDefault()
+						if (e.shiftKey) dispatch(openDialog("save-as"))
+						else void files.save()
 						return
 					case "=":
 					case "+":
@@ -50,6 +55,9 @@ export function useKeyboardShortcuts() {
 						e.preventDefault()
 						dispatch(stepSize(-1))
 						return
+				}
+
+				switch (e.key) {
 					case "PageUp":
 						e.preventDefault()
 						dispatch(zoomIn())
@@ -63,7 +71,10 @@ export function useKeyboardShortcuts() {
 
 			// rulers need zoom >= 1 and gridlines zoom >= 4, as in the ribbon
 			if (e.ctrlKey && !e.metaKey && !e.shiftKey) {
-				if (e.key === "r" && zoom >= 1) {
+				if (e.key === "e") {
+					e.preventDefault()
+					dispatch(openDialog("image-properties"))
+				} else if (e.key === "r" && zoom >= 1) {
 					e.preventDefault()
 					dispatch(toggleView("showRuler"))
 				} else if (e.key === "g" && zoom >= 4) {
@@ -75,5 +86,5 @@ export function useKeyboardShortcuts() {
 
 		window.addEventListener("keydown", onKeyDown)
 		return () => window.removeEventListener("keydown", onKeyDown)
-	}, [dispatch, zoom])
+	}, [dispatch, zoom, files])
 }

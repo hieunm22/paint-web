@@ -86,6 +86,18 @@ export interface FillResponse {
 	dirty: Rect | null
 }
 
+/** what crosses to the gif worker; the pixel buffer travels, it is not copied. */
+export interface GifRequest {
+	buffer: ArrayBuffer
+	width: number
+	height: number
+}
+
+export interface GifResponse {
+	/** the finished gif file, ready to wrap in a Blob. */
+	buffer: ArrayBuffer
+}
+
 export interface Tool {
 	readonly id: ToolId
 	/** history label for the step this tool pushes, already translated. */

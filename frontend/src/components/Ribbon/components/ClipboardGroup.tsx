@@ -2,6 +2,7 @@ import { useTranslation } from "react-i18next"
 import { Menu, MenuItem } from "components/Menu"
 import { SmallButton, SplitButton } from "components/RibbonButton"
 import { ButtonStack, RibbonGroup } from "components/RibbonGroup"
+import { useFileCommands } from "hooks/useFileCommands"
 import { tooltipWithShortcut } from "locales/common"
 import { useAppDispatch, useAppSelector } from "store/hooks"
 import { toggleMenu } from "store/slices/uiSlice"
@@ -10,6 +11,7 @@ import { toggleMenu } from "store/slices/uiSlice"
 export function ClipboardGroup() {
 	const { t } = useTranslation()
 	const dispatch = useAppDispatch()
+	const files = useFileCommands()
 	const open = useAppSelector((s) => s.ui.openMenu) === "paste"
 	const hasSelection = useAppSelector((s) => s.selection.kind) !== "none"
 
@@ -23,6 +25,7 @@ export function ClipboardGroup() {
 					"shortcut.edit.paste",
 				)}
 				open={open}
+				onClick={() => void files.pasteImage()}
 				onToggleMenu={() => dispatch(toggleMenu("paste"))}
 				menu={
 					<Menu>
@@ -30,8 +33,13 @@ export function ClipboardGroup() {
 							label={t("ribbon.clipboard.paste")}
 							icon="paste"
 							shortcut={t("shortcut.edit.paste")}
+							onClick={() => void files.pasteImage()}
 						/>
-						<MenuItem label={t("ribbon.clipboard.paste-from")} icon="open" />
+						<MenuItem
+							label={t("ribbon.clipboard.paste-from")}
+							icon="open"
+							onClick={() => void files.pasteFrom()}
+						/>
 					</Menu>
 				}
 			/>

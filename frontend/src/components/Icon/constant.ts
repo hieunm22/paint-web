@@ -9,6 +9,7 @@ export const ICONS = {
 	undo: "fa-solid fa-rotate-left",
 	redo: "fa-solid fa-rotate-right",
 	caretDown: "fa-solid fa-caret-down",
+	caretUp: "fa-solid fa-caret-up",
 	minimize: "fa-solid fa-window-minimize",
 	maximize: "fa-solid fa-window-maximize",
 	close: "fa-solid fa-xmark",
@@ -18,6 +19,13 @@ export const ICONS = {
 	cut: "fa-solid fa-scissors",
 	copy: "fa-solid fa-copy",
 	clipboard: "fa-solid fa-clipboard",
+
+	// shared marks that used to be typed as literal glyphs
+	check: "fa-solid fa-check",
+	minus: "fa-solid fa-minus",
+	plus: "fa-solid fa-plus",
+	arrowsH: "fa-solid fa-arrows-left-right",
+	arrowsV: "fa-solid fa-arrows-up-down",
 
 	// Image
 	select: "fa-solid fa-draw-square",
@@ -43,6 +51,10 @@ export const ICONS = {
 	marker: "fa-solid fa-highlighter",
 	"natural-pencil": "fa-solid fa-pen-fancy",
 	watercolor: "fa-solid fa-droplet",
+
+	// Status bar cells
+	crosshairs: "fa-solid fa-crosshairs",
+	folder: "fa-solid fa-folder",
 
 	// Size
 	size: "fa-solid fa-grip-lines",

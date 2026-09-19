@@ -8,7 +8,7 @@
 		"clipboard": {
 			"label": "Clipboard",
 			"paste": "Paste",
-			"paste-from": "Paste from…",
+			"paste-from": "Paste from...",
 			"cut": "Cut",
 			"copy": "Copy"
 		},
@@ -25,7 +25,7 @@
 			"transparent-selection": "Transparent selection",
 			"crop": "Crop",
 			"resize": "Resize",
-			"rotate": "Rotate ▾",
+			"rotate": "Rotate",
 			"rotate-right": "Rotate right 90°",
 			"rotate-left": "Rotate left 90°",
 			"rotate-180": "Rotate 180°",
@@ -135,6 +135,7 @@
 			"new": "Ctrl+N",
 			"open": "Ctrl+O",
 			"save": "Ctrl+S",
+			"save-as": "Ctrl+Shift+S",
 			"properties": "Ctrl+E"
 		},
 		"edit": {
@@ -204,6 +205,7 @@
 			"new": "New",
 			"open": "Open",
 			"save": "Save",
+			"save-note": "This browser downloads the file to your Downloads folder",
 			"save-as": "Save as",
 			"print": "Print",
 			"from-camera": "From camera",
@@ -213,9 +215,14 @@
 			"about": "About Paint",
 			"exit": "Exit"
 		},
+		"save-as": {
+			"option": "{0} ({1})",
+			"other": "Other formats..."
+		},
 		"recent": {
 			"title": "Recent pictures",
-			"meta": "{0} · {1} days ago"
+			"meta": "{0} - {1}",
+			"empty": "Nothing here yet - pictures you open appear in this list"
 		},
 		"language": {
 			"label": "Language",
@@ -278,11 +285,11 @@
 			"by": "By:",
 			"percentage": "Percentage",
 			"pixels": "Pixels",
-			"horizontal": "↔ Horizontal:",
-			"vertical": "↕ Vertical:",
+			"horizontal": "Horizontal:",
+			"vertical": "Vertical:",
 			"maintain-ratio": "Maintain aspect ratio",
 			"skew": "Skew (Degrees)",
-			"hint": "Limited to ±89° - a wider angle makes the matrix degenerate."
+			"hint": "Limited to 89° either way - a wider angle makes the matrix degenerate."
 		},
 		"save-as": {
 			"title": "Save As",
@@ -302,13 +309,30 @@
 			"untitled": "Untitled"
 		}
 	},
+	"toast": {
+		"file": {
+			"gif-flattened": "An animated GIF opens as its first frame only",
+			"too-large": "That picture is larger than 8000 pixels on a side",
+			"open-failed": "That file could not be opened as a picture",
+			"save-failed": "The file could not be written",
+			"downloaded": "Saved to your Downloads folder",
+			"permission-denied": "Permission to use that file was refused",
+			"close-blocked": "A tab can only be closed from the browser itself"
+		},
+		"clipboard": {
+			"no-image": "The clipboard holds no picture",
+			"copy-failed": "The picture could not be copied",
+			"paste-shortcut": "This browser only pastes with the keyboard shortcut"
+		}
+	},
 	"history": {
 		"label": {
 			"pencil": "Pencil",
 			"eraser": "Eraser",
 			"fill": "Fill with colour",
 			"picker": "Pick colour",
-			"magnifier": "Magnifier"
+			"magnifier": "Magnifier",
+			"paste": "Paste"
 		}
 	}
 }

@@ -4,7 +4,7 @@ ribbon.tab.home;Home;Trang chủ
 ribbon.tab.view;View;Xem
 ribbon.clipboard.label;Clipboard;Bảng tạm
 ribbon.clipboard.paste;Paste;Dán
-ribbon.clipboard.paste-from;Paste from…;Dán từ…
+ribbon.clipboard.paste-from;Paste from...;Dán từ...
 ribbon.clipboard.cut;Cut;Cắt
 ribbon.clipboard.copy;Copy;Sao chép
 ribbon.image.label;Image;Ảnh
@@ -19,7 +19,7 @@ ribbon.image.delete;Delete;Xoá
 ribbon.image.transparent-selection;Transparent selection;Vùng chọn trong suốt
 ribbon.image.crop;Crop;Cắt xén
 ribbon.image.resize;Resize;Đổi cỡ
-ribbon.image.rotate;Rotate ▾;Xoay ▾
+ribbon.image.rotate;Rotate;Xoay
 ribbon.image.rotate-right;Rotate right 90°;Xoay phải 90°
 ribbon.image.rotate-left;Rotate left 90°;Xoay trái 90°
 ribbon.image.rotate-180;Rotate 180°;Xoay 180°
@@ -105,6 +105,7 @@ ribbon.display.thumbnail;Thumbnail;Ảnh thu nhỏ
 shortcut.file.new;Ctrl+N;Ctrl+N
 shortcut.file.open;Ctrl+O;Ctrl+O
 shortcut.file.save;Ctrl+S;Ctrl+S
+shortcut.file.save-as;Ctrl+Shift+S;Ctrl+Shift+S
 shortcut.file.properties;Ctrl+E;Ctrl+E
 shortcut.edit.undo;Ctrl+Z;Ctrl+Z
 shortcut.edit.redo;Ctrl+Y;Ctrl+Y
@@ -142,6 +143,7 @@ filemenu.nav.back;Back;Quay lại
 filemenu.item.new;New;Mới
 filemenu.item.open;Open;Mở
 filemenu.item.save;Save;Lưu
+filemenu.item.save-note;This browser downloads the file to your Downloads folder;Trình duyệt này sẽ tải tệp về thư mục Downloads
 filemenu.item.save-as;Save as;Lưu thành
 filemenu.item.print;Print;In
 filemenu.item.from-camera;From camera;Từ máy ảnh
@@ -150,8 +152,11 @@ filemenu.item.copy-image;Copy image;Chép ảnh
 filemenu.item.properties;Properties;Thuộc tính
 filemenu.item.about;About Paint;Giới thiệu Paint
 filemenu.item.exit;Exit;Thoát
+filemenu.save-as.option;{0} ({1});{0} ({1})
+filemenu.save-as.other;Other formats...;Định dạng khác...
 filemenu.recent.title;Recent pictures;Ảnh gần đây
-filemenu.recent.meta;{0} · {1} days ago;{0} · {1} ngày trước
+filemenu.recent.meta;{0} - {1};{0} - {1}
+filemenu.recent.empty;Nothing here yet - pictures you open appear in this list;Chưa có gì - ảnh bạn mở sẽ hiện trong danh sách này
 filemenu.language.label;Language;Ngôn ngữ
 filemenu.language.en;English;English
 filemenu.language.vi;Tiếng Việt;Tiếng Việt
@@ -198,11 +203,11 @@ dialog.resize-skew.resize;Resize;Đổi cỡ
 dialog.resize-skew.by;By:;Theo:
 dialog.resize-skew.percentage;Percentage;Phần trăm
 dialog.resize-skew.pixels;Pixels;Điểm ảnh
-dialog.resize-skew.horizontal;↔ Horizontal:;↔ Ngang:
-dialog.resize-skew.vertical;↕ Vertical:;↕ Dọc:
+dialog.resize-skew.horizontal;Horizontal:;Ngang:
+dialog.resize-skew.vertical;Vertical:;Dọc:
 dialog.resize-skew.maintain-ratio;Maintain aspect ratio;Giữ tỉ lệ khung hình
 dialog.resize-skew.skew;Skew (Degrees);Nghiêng (độ)
-dialog.resize-skew.hint;Limited to ±89° - a wider angle makes the matrix degenerate.;Giới hạn ±89° - tránh ma trận suy biến.
+dialog.resize-skew.hint;Limited to 89° either way - a wider angle makes the matrix degenerate.;Giới hạn 89° mỗi chiều - tránh ma trận suy biến.
 dialog.save-as.title;Save As;Lưu thành
 dialog.save-as.file-name;File name:;Tên tệp:
 dialog.save-as.type;Save as type:;Lưu kiểu:
@@ -214,8 +219,19 @@ dialog.save-as.hint-bmp;BMP is written by a hand-rolled encoder, 24-bit uncompre
 dialog.save-as.hint-gif;GIF is quantised to 256 colours with 1-bit alpha.;GIF lượng tử hoá về 256 màu, alpha 1-bit.
 dialog.save-as.hint-webp;"WEBP keeps alpha; Safari 16 and later.";"WEBP giữ alpha; Safari 16 trở lên."
 document.name.untitled;Untitled;Chưa đặt tên
+toast.file.gif-flattened;An animated GIF opens as its first frame only;Ảnh GIF động chỉ mở được khung hình đầu tiên
+toast.file.too-large;That picture is larger than 8000 pixels on a side;Ảnh đó có cạnh lớn hơn 8000 điểm ảnh
+toast.file.open-failed;That file could not be opened as a picture;Không mở được tệp đó như một ảnh
+toast.file.save-failed;The file could not be written;Không ghi được tệp
+toast.file.downloaded;Saved to your Downloads folder;Đã lưu vào thư mục Tải xuống
+toast.file.permission-denied;Permission to use that file was refused;Quyền dùng tệp đó đã bị từ chối
+toast.file.close-blocked;A tab can only be closed from the browser itself;Chỉ có thể đóng thẻ từ chính trình duyệt
+toast.clipboard.no-image;The clipboard holds no picture;Bảng tạm không có ảnh nào
+toast.clipboard.copy-failed;The picture could not be copied;Không sao chép được ảnh
+toast.clipboard.paste-shortcut;This browser only pastes with the keyboard shortcut;Trình duyệt này chỉ dán được bằng phím tắt
 history.label.pencil;Pencil;Bút chì
 history.label.eraser;Eraser;Tẩy
 history.label.fill;Fill with colour;Tô màu
 history.label.picker;Pick colour;Lấy màu
 history.label.magnifier;Magnifier;Kính lúp
+history.label.paste;Paste;Dán

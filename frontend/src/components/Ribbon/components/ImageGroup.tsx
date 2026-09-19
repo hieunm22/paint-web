@@ -92,6 +92,7 @@ export function ImageGroup() {
 					<SmallButton
 						label={t("ribbon.image.rotate")}
 						icon="rotate"
+						caret
 						onClick={() => dispatch(toggleMenu("rotate"))}
 					/>
 					{openMenu === "rotate" && (

@@ -1,7 +1,8 @@
 import type { ReactNode } from "react"
+import type { IconName } from "components/Icon/types"
 
 export interface StatusCellProps {
-	icon: string
+	icon: IconName
 	children: ReactNode
 }
 

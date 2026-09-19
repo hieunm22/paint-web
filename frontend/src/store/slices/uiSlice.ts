@@ -1,11 +1,18 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit"
-import type { DialogId, RibbonTabId, UiState } from "../types"
+import type {
+	DialogId,
+	PendingFileAction,
+	RibbonTabId,
+	UiState,
+} from "../types"
 
 const initialState: UiState = {
 	tab: "home",
 	backstageOpen: false,
 	openMenu: null,
 	dialog: null,
+	pending: null,
+	toast: null,
 }
 
 const uiSlice = createSlice({
@@ -37,6 +44,21 @@ const uiSlice = createSlice({
 		},
 		closeDialog(state) {
 			state.dialog = null
+			state.pending = null
+		},
+		/** asks about unsaved work, remembering what it is holding back. */
+		confirmDiscard(state, action: PayloadAction<PendingFileAction>) {
+			state.dialog = "confirm-discard"
+			state.pending = action.payload
+			state.openMenu = null
+			state.backstageOpen = false
+		},
+		/** the payload is a translation key: the text follows the language. */
+		showToast(state, action: PayloadAction<string>) {
+			state.toast = action.payload
+		},
+		dismissToast(state) {
+			state.toast = null
 		},
 	},
 })
@@ -49,5 +71,8 @@ export const {
 	closeMenu,
 	openDialog,
 	closeDialog,
+	confirmDiscard,
+	showToast,
+	dismissToast,
 } = uiSlice.actions
 export default uiSlice.reducer

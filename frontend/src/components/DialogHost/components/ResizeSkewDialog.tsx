@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
+import { Icon } from "components/Icon"
 import { Dialog } from "./Dialog"
 
 /** Resize and Skew dialog (Ctrl+W). */
@@ -38,6 +39,7 @@ export function ResizeSkewDialog() {
 					</div>
 					<div className="dialog__row">
 						<span className="dialog__label">
+							<Icon name="arrowsH" size={11} />{" "}
 							{t("dialog.resize-skew.horizontal")}
 						</span>
 						<input
@@ -47,6 +49,7 @@ export function ResizeSkewDialog() {
 					</div>
 					<div className="dialog__row">
 						<span className="dialog__label">
+							<Icon name="arrowsV" size={11} />{" "}
 							{t("dialog.resize-skew.vertical")}
 						</span>
 						<input
@@ -72,12 +75,14 @@ export function ResizeSkewDialog() {
 					</div>
 					<div className="dialog__row">
 						<span className="dialog__label">
+							<Icon name="arrowsH" size={11} />{" "}
 							{t("dialog.resize-skew.horizontal")}
 						</span>
 						<input className="dialog__num" defaultValue={0} />
 					</div>
 					<div className="dialog__row">
 						<span className="dialog__label">
+							<Icon name="arrowsV" size={11} />{" "}
 							{t("dialog.resize-skew.vertical")}
 						</span>
 						<input className="dialog__num" defaultValue={0} />

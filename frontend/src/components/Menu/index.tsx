@@ -54,7 +54,11 @@ export function MenuItem({
 		>
 			<span className="menu__item-icon">
 				{checked !== undefined
-					? checked && <span className="menu__check">✓</span>
+					? checked && (
+							<span className="menu__check">
+								<Icon name="check" size={11} />
+							</span>
+						)
 					: icon && <Icon name={icon} size={14} />}
 			</span>
 			<span className="menu__item-label">{label}</span>

@@ -26,8 +26,14 @@ const VIETNAMESE = /[À-ÖØ-öø-ỹ]/
 /** an <area>.<group>.<element> key, the only shape the csv emits. */
 const KEY_SHAPE = /^[a-z][a-z0-9-]*\.[a-z0-9-]+\.[a-z0-9-]+$/
 
-/** a run of letters, which is what separates prose from a glyph like "✓". */
+/** a run of letters, which is what separates prose from a lone mark. */
 const PROSE = /[A-Za-z]{2}/
+
+/**
+ * anything outside printable ascii, bar the degree sign. a symbol the interface
+ * needs is an icon in the registry, not a character nobody can type.
+ */
+const NON_ASCII = /[^\t\n\r\x20-\x7e\u00b0]/u
 
 /**
  * every exemption needs a reason. paths are relative to src/.
@@ -41,18 +47,7 @@ const EXEMPT_FILES = [
 	"locales/constant.ts",
 ]
 
-const EXEMPT_RULES = [
-	{
-		// format names are proper nouns: PNG, JPEG, BMP (24-bit)
-		file: "components/DialogHost/constant.ts",
-		prop: "name",
-	},
-	{
-		// placeholder file names standing in for real recent-file entries
-		file: "components/FileMenu/constant.ts",
-		prop: "name",
-	},
-]
+const EXEMPT_RULES = []
 
 function isExempt(file, prop) {
 	return EXEMPT_RULES.some((rule) => rule.file === file && rule.prop === prop)
@@ -140,7 +135,18 @@ function check(path) {
 	walk(source)
 
 	text.split("\n").forEach((line, i) => {
-		if (VIETNAMESE.test(line)) problems.push(`${file}:${i + 1}  vietnamese text`)
+		if (VIETNAMESE.test(line)) {
+			problems.push(`${file}:${i + 1}  vietnamese text`)
+			return
+		}
+
+		const [found] = line.match(NON_ASCII) ?? []
+		if (found) {
+			const point = found.codePointAt(0).toString(16).toUpperCase()
+			problems.push(
+				`${file}:${i + 1}  non-ascii ${JSON.stringify(found)} (U+${point.padStart(4, "0")})`,
+			)
+		}
 	})
 
 	return problems
@@ -149,10 +155,12 @@ function check(path) {
 const problems = sources(SRC).flatMap(check)
 
 if (problems.length > 0) {
-	console.error(`${problems.length} hard-coded string(s):\n`)
+	console.error(`${problems.length} problem(s):\n`)
 	for (const problem of problems) console.error(`  ${problem}`)
-	console.error("\nmove them into tools/language.csv and rerun the generator.")
+	console.error(
+		"\ntext belongs in tools/language.csv; a symbol belongs in the icon registry.",
+	)
 	process.exit(1)
 }
 
-console.log("check:i18n  no hard-coded user-visible strings")
+console.log("check:i18n  no hard-coded strings, no untypeable characters")

@@ -9,7 +9,7 @@
 	border: 1px solid var(--menu-bd);
 	box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.2);
 	padding: 2px;
-	z-index: 50;
+	z-index: var(--z-menu);
 
 	&__item {
 		display: flex;

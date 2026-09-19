@@ -1,15 +1,19 @@
 import { useTranslation } from "react-i18next"
+import { useFileCommands } from "hooks/useFileCommands"
 import { documentName } from "store/common"
-import { useAppDispatch, useAppSelector } from "store/hooks"
-import { closeDialog } from "store/slices/uiSlice"
+import { useAppSelector } from "store/hooks"
 import { Dialog } from "./Dialog"
 
 /** confirms before discarding unsaved changes. */
 export function ConfirmDiscardDialog() {
 	const { t } = useTranslation()
-	const dispatch = useAppDispatch()
+	const files = useFileCommands()
 	const fileName = useAppSelector((s) => s.doc.fileName)
-	const close = () => dispatch(closeDialog())
+
+	// a save the user backed out of must not take the document with it
+	const saveThenResume = async () => {
+		if (await files.save()) files.resume()
+	}
 
 	return (
 		<Dialog
@@ -20,14 +24,22 @@ export function ConfirmDiscardDialog() {
 					<button
 						type="button"
 						className="dialog__btn dialog__btn--primary"
-						onClick={close}
+						onClick={() => void saveThenResume()}
 					>
 						{t("dialog.confirm-discard.save")}
 					</button>
-					<button type="button" className="dialog__btn" onClick={close}>
+					<button
+						type="button"
+						className="dialog__btn"
+						onClick={() => files.resume()}
+					>
 						{t("dialog.confirm-discard.dont-save")}
 					</button>
-					<button type="button" className="dialog__btn" onClick={close}>
+					<button
+						type="button"
+						className="dialog__btn"
+						onClick={() => files.cancelPending()}
+					>
 						{t("dialog.common.cancel")}
 					</button>
 				</>

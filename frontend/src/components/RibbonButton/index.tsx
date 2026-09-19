@@ -40,6 +40,7 @@ export function SmallButton({
 	title,
 	disabled,
 	selected,
+	caret,
 	onClick,
 }: RibbonButtonProps) {
 	return (
@@ -55,6 +56,9 @@ export function SmallButton({
 				{iconNode ?? (icon && <Icon name={icon} size={15} />)}
 			</span>
 			<span className="ribbon-btn__label">{label}</span>
+			{caret && (
+				<Icon name="caretDown" size={8} className="ribbon-btn__caret" />
+			)}
 		</button>
 	)
 }

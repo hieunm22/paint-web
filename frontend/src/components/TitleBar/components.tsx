@@ -1,6 +1,7 @@
 import { useTranslation } from "react-i18next"
 import { WINDOW_BUTTONS } from "./constant"
 import { Icon } from "components/Icon"
+import { useFileCommands } from "hooks/useFileCommands"
 import { useQatItems } from "./hooks"
 
 export function QuickAccessToolbar() {
@@ -34,6 +35,7 @@ export function QuickAccessToolbar() {
 
 export function WindowButtons() {
 	const { t } = useTranslation()
+	const files = useFileCommands()
 
 	return (
 		<div className="title-bar__window-btns">
@@ -44,6 +46,7 @@ export function WindowButtons() {
 					className={`title-bar__window-btn title-bar__window-btn--${btn.id}`}
 					title={t(btn.titleKey)}
 					disabled={btn.disabled}
+					onClick={btn.id === "close" ? () => files.exit() : undefined}
 				>
 					<Icon name={btn.icon} size={btn.size} />
 				</button>

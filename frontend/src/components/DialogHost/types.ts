@@ -34,10 +34,14 @@ export interface DialogProps {
 	footer?: ReactNode
 }
 
-export interface FormatDef {
-	id: ImageFormat
+/** what the Save As dialog collects before it hands over to the picker. */
+export interface SaveAsForm {
 	name: string
-	ext: string
+	format: ImageFormat
+	quality: number
+	setName(name: string): void
+	setFormat(format: ImageFormat): void
+	setQuality(quality: number): void
 }
 
 export interface NumFieldProps {

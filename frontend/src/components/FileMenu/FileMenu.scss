@@ -3,7 +3,7 @@
 	inset: var(--title-height) 0 0 0;
 	display: flex;
 	background: #fff;
-	z-index: 60;
+	z-index: var(--z-backstage);
 
 	&__left {
 		width: 232px;
@@ -61,6 +61,10 @@
 	&__item-shortcut {
 		font-size: 11px;
 		opacity: 0.8;
+	}
+
+	&__anchor {
+		width: 100%;
 	}
 
 	&__sep {
@@ -142,11 +146,14 @@
 		border: 1px solid #c8c8c8;
 		background: repeating-conic-gradient(#f4f4f4 0 25%, #fff 0 50%) 0 0 / 12px
 			12px;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		color: #9a9a9a;
+		object-fit: contain;
 		flex: 0 0 auto;
+	}
+
+	&__recent-empty {
+		max-width: 420px;
+		color: #707070;
+		font-size: 12px;
 	}
 
 	&__recent-name {

@@ -65,7 +65,7 @@ export function ShapesGroup() {
 						disabled={!scroll.canScrollUp}
 						onClick={scroll.scrollUp}
 					>
-						▲
+						<Icon name="caretUp" size={8} />
 					</button>
 					<button
 						type="button"
@@ -74,7 +74,7 @@ export function ShapesGroup() {
 						disabled={!scroll.canScrollDown}
 						onClick={scroll.scrollDown}
 					>
-						▼
+						<Icon name="caretDown" size={8} />
 					</button>
 					<button
 						type="button"
