@@ -10,6 +10,7 @@ import csv
 import json
 import os
 import sys
+import unicodedata
 
 DELIMITER = ";"
 
@@ -21,6 +22,28 @@ OUTPUT_DIR = os.path.join("..", "frontend", "src", "locales")
 
 # keys read <area>.<group>.<element> - no more, no fewer
 KEY_DEPTH = 3
+
+
+# the one symbol that survived the typeable-characters rule
+DEGREE_SIGN = "\u00b0"
+
+
+def check_typeable(line, key, column, value):
+    """Reject a character nobody can type straight off a keyboard.
+
+    Letters pass whatever the language: Vietnamese diacritics are typed with a
+    Vietnamese input method. Symbols do not - an interface glyph is an icon.
+    """
+    for char in value:
+        if " " <= char <= "~" or char == DEGREE_SIGN:
+            continue
+        if unicodedata.category(char)[0] in ("L", "M"):
+            continue
+        name = unicodedata.name(char, "unnamed")
+        raise SystemExit(
+            f"line {line}: '{key}' {column} uses U+{ord(char):04X} {name} - "
+            "only characters a keyboard types directly belong here"
+        )
 
 
 def nest(flat):
@@ -70,6 +93,7 @@ def read_rows(path):
             for name, index in columns.items():
                 if index >= len(row) or not row[index]:
                     raise SystemExit(f"line {line}: '{key}' has no {name} text")
+                check_typeable(line, key, name, row[index])
                 tables[name][key] = row[index]
         return tables
 

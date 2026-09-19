@@ -42,6 +42,11 @@ const colorsSlice = createSlice({
 	},
 })
 
-export const { setEditingSwatch, applyColor, setColor, addCustomColor } =
+export const {
+	setEditingSwatch,
+	applyColor,
+	setColor,
+	addCustomColor,
+} =
 	colorsSlice.actions
 export default colorsSlice.reducer

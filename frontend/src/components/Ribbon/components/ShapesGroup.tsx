@@ -9,6 +9,7 @@ import { RibbonGroup } from "components/RibbonGroup"
 import { ShapeIcon } from "components/ShapeIcon"
 import { SHAPE_LABEL_KEYS, SHAPE_ORDER } from "components/ShapeIcon/constant"
 import { shapeHasInterior } from "../common"
+import { TOOLS as IMPLEMENTED } from "engine/tools/registry"
 import { useShapeGalleryScroll } from "../hooks"
 import { useAppDispatch, useAppSelector } from "store/hooks"
 import { setFill, setOutline, setShape } from "store/slices/toolSlice"
@@ -23,6 +24,7 @@ export function ShapesGroup() {
 	const openMenu = useAppSelector((s) => s.ui.openMenu)
 	const scroll = useShapeGalleryScroll(SHAPE_ORDER.length)
 	const hasInterior = shapeHasInterior(shape)
+	const ready = Boolean(IMPLEMENTED.shape)
 
 	return (
 		<RibbonGroup label={t("ribbon.shapes.label")}>
@@ -45,10 +47,13 @@ export function ShapesGroup() {
 								key={kind}
 								type="button"
 								className={`shape-gallery__cell${
-									shape === kind ? " shape-gallery__cell--selected" : ""
+									ready && shape === kind
+										? " shape-gallery__cell--selected"
+										: ""
 								}`}
 								title={t(SHAPE_LABEL_KEYS[kind])}
 								aria-label={t(SHAPE_LABEL_KEYS[kind])}
+								disabled={!ready}
 								onClick={() => dispatch(setShape(kind))}
 							>
 								<ShapeIcon kind={kind} size={18} />
@@ -65,7 +70,7 @@ export function ShapesGroup() {
 						disabled={!scroll.canScrollUp}
 						onClick={scroll.scrollUp}
 					>
-						▲
+						<Icon name="caretUp" size={8} />
 					</button>
 					<button
 						type="button"
@@ -74,12 +79,13 @@ export function ShapesGroup() {
 						disabled={!scroll.canScrollDown}
 						onClick={scroll.scrollDown}
 					>
-						▼
+						<Icon name="caretDown" size={8} />
 					</button>
 					<button
 						type="button"
 						className="shape-gallery__scroll-btn"
 						title={t("ribbon.shapes.show-all")}
+						disabled
 					>
 						<Icon name="caretDown" size={8} />
 					</button>
@@ -90,7 +96,7 @@ export function ShapesGroup() {
 						menuId="outline"
 						label={t("ribbon.shapes.outline")}
 						value={outline}
-						disabled={!hasInterior}
+						disabled={!ready || !hasInterior}
 						open={openMenu === "outline"}
 						onToggle={() => dispatch(toggleMenu("outline"))}
 						onPick={(style) => dispatch(setOutline(style))}
@@ -99,7 +105,7 @@ export function ShapesGroup() {
 						menuId="fill"
 						label={t("ribbon.shapes.fill")}
 						value={fill}
-						disabled={!hasInterior}
+						disabled={!ready || !hasInterior}
 						open={openMenu === "fill"}
 						onToggle={() => dispatch(toggleMenu("fill"))}
 						onPick={(style) => dispatch(setFill(style))}

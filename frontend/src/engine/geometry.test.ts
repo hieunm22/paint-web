@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest"
-import { clampRect, constrainToAxis, contains, segmentBounds } from "./geometry"
+import {
+	clampRect,
+	constrainToAxis,
+	contains,
+	segmentBounds,
+} from "./geometry"
 
 const DOC = { width: 5, height: 5 }
 

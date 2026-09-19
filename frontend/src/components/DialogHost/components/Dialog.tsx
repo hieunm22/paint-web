@@ -5,7 +5,12 @@ import { useAppDispatch } from "store/hooks"
 import { closeDialog } from "store/slices/uiSlice"
 import type { DialogProps } from "../types"
 
-export function Dialog({ title, width, children, footer }: DialogProps) {
+export function Dialog({
+	title,
+	width,
+	children,
+	footer,
+}: DialogProps) {
 	const { t } = useTranslation()
 	const dispatch = useAppDispatch()
 	const { dialogRef, offset, handleProps } = useDialogDrag()

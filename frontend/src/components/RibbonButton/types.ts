@@ -8,6 +8,8 @@ export interface RibbonButtonProps {
 	title?: string
 	disabled?: boolean
 	selected?: boolean
+	/** shows the dropdown caret, for a button that opens a menu. */
+	caret?: boolean
 	onClick?: () => void
 }
 

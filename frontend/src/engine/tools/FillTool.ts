@@ -1,6 +1,11 @@
 import { translate } from "locales/translate"
 import type { Point, Rect } from "store/types"
-import type { Modifiers, RGBA, Tool, ToolContext } from "../types"
+import type {
+	Modifiers,
+	RGBA,
+	Tool,
+	ToolContext,
+} from "../types"
 import { hexToRgba } from "../color"
 import { floodFillOffThread } from "../fillWorker"
 import { contains } from "../geometry"

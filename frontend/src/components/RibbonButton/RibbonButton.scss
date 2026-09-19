@@ -12,6 +12,13 @@
 		@include m.rb-active;
 	}
 
+	// redefining the ink here is what greys the icon: the glyph inherits it,
+	// which a descendant selector would otherwise be needed to reach
+	&:disabled {
+		--rb-ink: var(--rb-ink-disabled);
+		cursor: default;
+	}
+
 	&--selected,
 	&--selected:hover {
 		@include m.rb-selected;
@@ -42,14 +49,13 @@
 		height: 24px;
 		align-items: center;
 		justify-content: center;
-		color: #4a4a4a;
 	}
 
 	&__icon {
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		color: #4a4a4a;
+		color: var(--rb-ink);
 
 		&--large {
 			height: 34px;
@@ -74,7 +80,7 @@
 
 	&__caret {
 		font-size: 8px;
-		color: #555;
+		color: var(--rb-ink);
 	}
 }
 
@@ -94,11 +100,17 @@
 		border-radius: 2px;
 		color: #1a1a1a;
 
-		&:hover {
+		&:hover:not(:disabled) {
 			@include m.rb-hover;
 		}
-		&:active {
+		&:active:not(:disabled) {
 			@include m.rb-active;
+		}
+
+		// the split halves are not .ribbon-btn, so they carry the rule too
+		&:disabled {
+			--rb-ink: var(--rb-ink-disabled);
+			cursor: default;
 		}
 	}
 

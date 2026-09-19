@@ -4,9 +4,12 @@ import { Dialog } from "./Dialog"
 
 /** image properties dialog (Ctrl+E). */
 export function ImagePropertiesDialog() {
-	const { t } = useTranslation()
+	const { t, i18n } = useTranslation()
 	const doc = useAppSelector((s) => s.doc)
 	const sizeKB = Math.round((doc.width * doc.height * 3) / 1024)
+	const savedAt = doc.savedAt
+		? new Date(doc.savedAt).toLocaleString(i18n.language)
+		: t("dialog.image-properties.not-available")
 
 	return (
 		<Dialog title={t("dialog.image-properties.title")} width={332}>
@@ -17,7 +20,7 @@ export function ImagePropertiesDialog() {
 					</div>
 					<div className="dialog__kv">
 						<span>{t("dialog.image-properties.last-saved")}</span>
-						<span>{t("dialog.image-properties.not-available")}</span>
+						<span>{savedAt}</span>
 						<span>{t("dialog.image-properties.size-on-disk")}</span>
 						<span>
 							{t("dialog.image-properties.size-estimate", { 0: sizeKB })}

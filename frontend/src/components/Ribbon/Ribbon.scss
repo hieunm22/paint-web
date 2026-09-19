@@ -118,14 +118,20 @@
 		justify-content: center;
 		border: 1px solid transparent;
 		border-radius: 2px;
+		color: var(--rb-ink);
 
-		&:hover {
+		&:hover:not(:disabled) {
 			@include m.rb-hover;
 		}
 
 		&--selected,
 		&--selected:hover {
 			@include m.rb-selected;
+		}
+
+		&:disabled {
+			--rb-ink: var(--rb-ink-disabled);
+			cursor: default;
 		}
 	}
 

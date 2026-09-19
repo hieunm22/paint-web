@@ -3,7 +3,12 @@ import { LargeButton, SmallButton } from "components/RibbonButton"
 import { ButtonStack, RibbonGroup } from "components/RibbonGroup"
 import { tooltipWithShortcut } from "locales/common"
 import { useAppDispatch, useAppSelector } from "store/hooks"
-import { setZoom, toggleView, zoomIn, zoomOut } from "store/slices/viewSlice"
+import {
+	setZoom,
+	toggleView,
+	zoomIn,
+	zoomOut,
+} from "store/slices/viewSlice"
 
 /** View tab: Zoom, Show or hide, Display. */
 export function ViewTabGroups() {
@@ -73,6 +78,7 @@ export function ViewTabGroups() {
 						"ribbon.display.full-screen",
 						"shortcut.view.full-screen",
 					)}
+					disabled
 					selected={view.fullScreen}
 					onClick={() => dispatch(toggleView("fullScreen"))}
 				/>

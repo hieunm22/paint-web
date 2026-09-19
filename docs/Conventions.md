@@ -183,18 +183,28 @@ Rows sharing a prefix stay contiguous in `language.csv`, label first, so a group
 as one block. The generator refuses any key that is not three levels deep.
 
 A constant table holds the key, not the text: `labelKey`, `titleKey`, `shortcutKey`,
-and the component translates at render.
+and the component translates at render. The same goes for state: `ui.toast` holds a
+key, never a sentence, which is what lets a notice already on screen follow a language
+change.
 
 React reaches keys through `useTranslation()`; the engine, which must not import
 `react-i18next`, goes through `translate()`. A tool's history label is therefore a
 getter, not a field - a field would freeze the text at module load.
 
 `yarn check:i18n` (`scripts/check-i18n.mjs`) parses every `.ts`/`.tsx` with the
-TypeScript compiler API and fails on four things: JSX prose, a literal passed to
+TypeScript compiler API and fails on five things: JSX prose, a literal passed to
 `label`, `title`, `aria-label`, `shortcut`, `placeholder` or `note`, any Vietnamese
-character, and a key-shaped literal that `en.json` does not define - which is what
-catches a typo or a rename that missed a call site. Its exemption list lives in the
-script, each entry with a reason. Run it alongside `typecheck` before calling work done.
+character, any character outside printable ASCII apart from `°`, and a key-shaped
+literal that `en.json` does not define - which is what catches a typo or a rename that
+missed a call site. Its exemption list lives in the script, each entry with a reason.
+Run it alongside `typecheck` before calling work done.
+
+The same character rule is enforced on the CSV itself by `convert-to-json.py`, which is
+where user-visible text actually lives; `yarn i18n` refuses a row and names the
+codepoint. Letters pass in any language - Vietnamese diacritics are typed directly -
+and only symbols are rejected. A mark the interface needs (a tick, a caret, an axis
+arrow, the minus on the zoom button) goes in `components/Icon/constant.ts` and renders
+through `<Icon>`, never as a literal in a string or in JSX.
 
 A value containing a `;` **must** be wrapped in double quotes, or the CSV splits it
 into extra columns. That silently put English text in `vi.json` once; the generator
@@ -202,15 +212,144 @@ now counts columns per row and stops.
 
 ---
 
-## 7. Commands
+## 7. File I/O, overlays and untyped browser APIs
+
+### Where the pieces live
+
+```
+common/format.ts      # mime, extensions, picker accept maps - no engine, no store
+common/fileSystem.ts  # pickers, handle writes, download fallback, permissions
+common/fileSession.ts # the open file's handle, and a file parked behind a dialog
+common/recents.ts     # IndexedDB rows for the backstage list
+engine/codec.ts       # encode and decode against the surface's pixels
+engine/bmp.ts         # 24-bit BMP, written by hand
+engine/gif.worker.ts  # quantise plus encode, off the main thread
+hooks/useFileCommands.ts  # the one place New, Open, Save and Paste are wired
+```
+
+The format table sits in `common/` rather than beside the encoders because `common/`
+may not import the engine, and `common/fileSystem.ts` needs the extensions to build a
+picker. `engine/codec.ts` imports down into `common/`; nothing goes the other way.
+
+### Non-serializable file state never reaches the store
+
+Same rule as bitmaps, for the same reason. A `FileSystemFileHandle` and a `File` are
+not serializable and nothing renders from either, so they live in
+`common/fileSession.ts` as module state. The store holds `fileName`, `format`,
+`isDirty` and `savedAt` - what the title bar and Properties actually read. Adding a
+handle to a slice would mean maintaining `serializableCheck.ignoredPaths`,
+`ignoredActions` and `immutableCheck.ignoredPaths` forever; the module is cheaper.
+
+A command that has to ask before it destroys the document parks its payload with
+`deferOpen` and puts the *kind* of command in `ui.pending`. The dialog answers, and
+`resume()` picks the payload back up.
+
+### Untyped browser APIs
+
+`showOpenFilePicker`, `showSaveFilePicker` and `FileSystemHandle.queryPermission` are
+not in `lib.dom`. They are declared as ordinary interfaces in `common/types.ts` and
+reached with one cast at the call site - **not** with an ambient `.d.ts` that widens
+`Window` globally. That keeps the declarations in a types file where the rest of the
+repo's types are, and keeps a missing feature a runtime check rather than a silent
+`undefined` call.
+
+The single ambient declaration in the repo is `engine/gifenc.d.ts`, because `gifenc`
+ships no types at all and a `declare module` is the only way to type a package.
+
+### Stacking order
+
+Every overlay reads its `z-index` from a token in `styles/tokens.scss`:
+
+| Token            | Value | Layer                           |
+| ---------------- | ----- | ------------------------------- |
+| `--z-backstage`  | 60    | File tab panel                  |
+| `--z-menu`       | 70    | any portalled dropdown          |
+| `--z-toast`      | 80    | transient notice                |
+| `--z-dialog`     | 100   | modal dialogs                   |
+
+Menus sit **above** the backstage: the Save as flyout is opened from inside it, and a
+lower menu layer hid it completely. A new overlay takes a token; a hard-coded
+`z-index` outside this table is a bug waiting to repeat that one.
+
+### Save behaves differently per browser
+
+`CAN_SAVE_IN_PLACE` is the switch. With the File System Access API, Save overwrites
+through a handle and Save as goes through the native picker. Without it, both end in
+a download and the backstage Save row grows a tooltip saying so. The recents list only
+records rows that carry a handle, so on Firefox and Safari it stays empty rather than
+filling with entries that cannot be reopened.
+
+---
+
+## 8. A control with no behaviour is disabled
+
+The ribbon and the backstage are built from the full Paint design long before the
+features behind them exist. Every control that does nothing yet carries `disabled`, so
+the app never invites a click into a void.
+
+**Derive it, do not list it.** Anything tool-shaped reads
+`engine/tools/registry`, which is the real answer to "does this draw yet":
+
+```tsx
+import { TOOLS as IMPLEMENTED } from "engine/tools/registry"
+disabled={!IMPLEMENTED[tool.id]}
+```
+
+Tools, brushes, shapes and selection all gate this way, so adding `ShapeTool` to the
+registry lights the whole Shapes gallery up with no change in `components/`. Only a
+feature with nothing to derive from - Print, From camera - gets a literal `disabled` or
+a `pending` flag in its constant table.
+
+**Disabled has to look disabled, and that is easy to get wrong.** `reset.scss` sets
+`button:disabled { color: #a0a0a0 }`, which only reaches things that inherit colour.
+Two habits break it:
+
+- an icon with a hard-coded colour. `ShapeIcon` must use `stroke="currentColor"`, and
+  an icon wrapper takes `color: var(--rb-ink)` rather than a literal grey.
+- a `&:hover` without `:not(:disabled)`, which keeps lighting a dead button up.
+
+The ink is a pair of tokens, `--rb-ink` and `--rb-ink-disabled`. A block redefines
+`--rb-ink` on its own `&:disabled` and the glyph inside inherits it, which is how the
+rule stays flat instead of needing a `.block:disabled .block__icon` descendant
+selector. `.ribbon-split__top` and `.ribbon-split__bottom` are not `.ribbon-btn`, so
+they carry their own copy of that rule - a split button was the one control that stayed
+black after the first pass.
+
+Do not paint a selected state on a disabled control either. A greyed-out gallery with
+one cell still highlighted reads as a live choice.
+
+---
+
+## 9. Formatting runs in two passes
+
+`yarn format` is `prettier --write` followed by `scripts/wrap-members.mjs`, and the
+order is load-bearing. Prettier decides line breaks by column count; the member-count
+rule for imports, exports and destructuring cannot be written as a Prettier option, and
+Prettier rejoins any list it thinks fits. The second pass breaks those lists back apart
+using the TypeScript compiler API, so it has to go last.
+
+Consequences:
+
+- **Do not run bare `prettier --write`**, and do not point an editor's format-on-save at
+  Prettier alone - both re-join four-member lists. `yarn format` is the entry point.
+- **Do not add `prettier --check` to CI.** It would fail on exactly the lines the second
+  pass is there to produce. `yarn check:format` is the check that belongs there, and it
+  reports file and line without writing.
+- The pass is idempotent and skips a list that already spans lines, so running it twice
+  changes nothing.
+
+---
+
+## 10. Commands
 
 ```sh
 cd frontend
 yarn dev           # http://localhost:3004
-yarn format        # prettier over src, import order included
+yarn format        # prettier over src, import order included, then wrap-members
 yarn test          # vitest, one pass
 yarn test:watch    # vitest, watching
 yarn typecheck     # must print nothing
+yarn check:format  # every list of more than three members is wrapped
 yarn check:i18n    # no hard-coded user-visible strings
 yarn i18n          # language.csv -> src/locales/{en,vi}.json
 yarn build         # typecheck then build, no warnings

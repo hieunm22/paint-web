@@ -1,4 +1,9 @@
-import { beforeEach, describe, expect, it } from "vitest"
+import {
+	beforeEach,
+	describe,
+	expect,
+	it,
+} from "vitest"
 import type { AppDispatch } from "store"
 import type { Rect } from "store/types"
 import type { Modifiers, ToolContext } from "../types"
@@ -73,7 +78,12 @@ function harness(size = 1, zoom = 1): Harness {
 	}
 
 	const surface = {
-		readRegion({ x, y, w, h }: Rect) {
+		readRegion({
+			x,
+			y,
+			w,
+			h,
+		}: Rect) {
 			const data = new Uint8ClampedArray(w * h * 4)
 			for (let row = 0; row < h; row++) {
 				const from = ((y + row) * DOC + x) * 4

@@ -8,7 +8,7 @@
 		"clipboard": {
 			"label": "Bảng tạm",
 			"paste": "Dán",
-			"paste-from": "Dán từ…",
+			"paste-from": "Dán từ...",
 			"cut": "Cắt",
 			"copy": "Sao chép"
 		},
@@ -25,7 +25,7 @@
 			"transparent-selection": "Vùng chọn trong suốt",
 			"crop": "Cắt xén",
 			"resize": "Đổi cỡ",
-			"rotate": "Xoay ▾",
+			"rotate": "Xoay",
 			"rotate-right": "Xoay phải 90°",
 			"rotate-left": "Xoay trái 90°",
 			"rotate-180": "Xoay 180°",
@@ -135,6 +135,7 @@
 			"new": "Ctrl+N",
 			"open": "Ctrl+O",
 			"save": "Ctrl+S",
+			"save-as": "Ctrl+Shift+S",
 			"properties": "Ctrl+E"
 		},
 		"edit": {
@@ -204,6 +205,7 @@
 			"new": "Mới",
 			"open": "Mở",
 			"save": "Lưu",
+			"save-note": "Trình duyệt này sẽ tải tệp về thư mục Downloads",
 			"save-as": "Lưu thành",
 			"print": "In",
 			"from-camera": "Từ máy ảnh",
@@ -213,9 +215,14 @@
 			"about": "Giới thiệu Paint",
 			"exit": "Thoát"
 		},
+		"save-as": {
+			"option": "{0} ({1})",
+			"other": "Định dạng khác..."
+		},
 		"recent": {
 			"title": "Ảnh gần đây",
-			"meta": "{0} · {1} ngày trước"
+			"meta": "{0} - {1}",
+			"empty": "Chưa có gì - ảnh bạn mở sẽ hiện trong danh sách này"
 		},
 		"language": {
 			"label": "Ngôn ngữ",
@@ -278,11 +285,11 @@
 			"by": "Theo:",
 			"percentage": "Phần trăm",
 			"pixels": "Điểm ảnh",
-			"horizontal": "↔ Ngang:",
-			"vertical": "↕ Dọc:",
+			"horizontal": "Ngang:",
+			"vertical": "Dọc:",
 			"maintain-ratio": "Giữ tỉ lệ khung hình",
 			"skew": "Nghiêng (độ)",
-			"hint": "Giới hạn ±89° - tránh ma trận suy biến."
+			"hint": "Giới hạn 89° mỗi chiều - tránh ma trận suy biến."
 		},
 		"save-as": {
 			"title": "Lưu thành",
@@ -302,13 +309,30 @@
 			"untitled": "Chưa đặt tên"
 		}
 	},
+	"toast": {
+		"file": {
+			"gif-flattened": "Ảnh GIF động chỉ mở được khung hình đầu tiên",
+			"too-large": "Ảnh đó có cạnh lớn hơn 8000 điểm ảnh",
+			"open-failed": "Không mở được tệp đó như một ảnh",
+			"save-failed": "Không ghi được tệp",
+			"downloaded": "Đã lưu vào thư mục Tải xuống",
+			"permission-denied": "Quyền dùng tệp đó đã bị từ chối",
+			"close-blocked": "Chỉ có thể đóng thẻ từ chính trình duyệt"
+		},
+		"clipboard": {
+			"no-image": "Bảng tạm không có ảnh nào",
+			"copy-failed": "Không sao chép được ảnh",
+			"paste-shortcut": "Trình duyệt này chỉ dán được bằng phím tắt"
+		}
+	},
 	"history": {
 		"label": {
 			"pencil": "Bút chì",
 			"eraser": "Tẩy",
 			"fill": "Tô màu",
 			"picker": "Lấy màu",
-			"magnifier": "Kính lúp"
+			"magnifier": "Kính lúp",
+			"paste": "Dán"
 		}
 	}
 }

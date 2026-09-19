@@ -8,6 +8,7 @@ import {
 } from "components/Menu"
 import { SmallButton, SplitButton } from "components/RibbonButton"
 import { ButtonStack, RibbonGroup } from "components/RibbonGroup"
+import { TOOLS as IMPLEMENTED } from "engine/tools/registry"
 import { tooltipWithShortcut } from "locales/common"
 import { useAppDispatch, useAppSelector } from "store/hooks"
 import { toggleTransparent } from "store/slices/selectionSlice"
@@ -22,6 +23,7 @@ export function ImageGroup() {
 	const selection = useAppSelector((s) => s.selection)
 	const activeTool = useAppSelector((s) => s.tool.active)
 	const hasSelection = selection.kind !== "none"
+	const canSelect = Boolean(IMPLEMENTED["select-rect"])
 
 	return (
 		<RibbonGroup label={t("ribbon.image.label")}>
@@ -29,6 +31,7 @@ export function ImageGroup() {
 				label={t("ribbon.image.select")}
 				icon="select"
 				selected={activeTool === "select-rect" || activeTool === "select-free"}
+				disabled={!canSelect}
 				onClick={() => dispatch(setTool("select-rect"))}
 				open={openMenu === "select"}
 				onToggleMenu={() => dispatch(toggleMenu("select"))}
@@ -86,12 +89,15 @@ export function ImageGroup() {
 						"dialog.resize-skew.title",
 						"shortcut.image.resize",
 					)}
+					disabled
 					onClick={() => dispatch(openDialog("resize-skew"))}
 				/>
 				<MenuAnchor>
 					<SmallButton
 						label={t("ribbon.image.rotate")}
 						icon="rotate"
+						caret
+						disabled
 						onClick={() => dispatch(toggleMenu("rotate"))}
 					/>
 					{openMenu === "rotate" && (

@@ -1,10 +1,13 @@
 import { useTranslation } from "react-i18next"
+import { Icon } from "components/Icon"
 import type { StatusCellProps, ZoomControlProps } from "./types"
 
 export function StatusCell({ icon, children }: StatusCellProps) {
 	return (
 		<span className="status-bar__cell">
-			<span className="status-bar__cell-icon">{icon}</span>
+			<span className="status-bar__cell-icon">
+				<Icon name={icon} size={12} />
+			</span>
 			{children}
 		</span>
 	)
@@ -28,7 +31,7 @@ export function ZoomControl({
 				title={t("statusbar.zoom.out")}
 				onClick={onZoomOut}
 			>
-				−
+				<Icon name="minus" size={9} />
 			</button>
 			<input
 				className="status-bar__slider"
@@ -46,7 +49,7 @@ export function ZoomControl({
 				title={t("statusbar.zoom.in")}
 				onClick={onZoomIn}
 			>
-				+
+				<Icon name="plus" size={9} />
 			</button>
 			<span className="status-bar__zoom-label">{label}</span>
 		</div>

@@ -1,12 +1,14 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit"
-import type { DocumentState, ImageFormat } from "../types"
+import { DEFAULT_DOCUMENT } from "../constant"
+import type { DocumentState, ImageFormat, OpenedPayload } from "../types"
 
 const initialState: DocumentState = {
-	width: 1152,
-	height: 648,
+	width: DEFAULT_DOCUMENT.width,
+	height: DEFAULT_DOCUMENT.height,
 	fileName: "",
 	format: "png",
 	isDirty: false,
+	savedAt: null,
 	dpi: 96,
 }
 
@@ -22,14 +24,34 @@ const docSlice = createSlice({
 			state.height = action.payload.height
 			state.isDirty = true
 		},
-		setFileName(state, action: PayloadAction<string>) {
-			state.fileName = action.payload
-		},
-		setFormat(state, action: PayloadAction<ImageFormat>) {
-			state.format = action.payload
-		},
 		setDirty(state, action: PayloadAction<boolean>) {
 			state.isDirty = action.payload
+		},
+		/** a file replaced the document: name, size and format all come with it. */
+		documentOpened(state, action: PayloadAction<OpenedPayload>) {
+			const {
+				width,
+				height,
+				fileName,
+				format,
+				savedAt,
+			} = action.payload
+			state.width = width
+			state.height = height
+			state.fileName = fileName
+			state.format = format
+			state.savedAt = savedAt
+			state.isDirty = false
+		},
+		/** the bytes reached disk, or at least the browser's download folder. */
+		documentSaved(
+			state,
+			action: PayloadAction<{ fileName: string; format: ImageFormat }>,
+		) {
+			state.fileName = action.payload.fileName
+			state.format = action.payload.format
+			state.savedAt = Date.now()
+			state.isDirty = false
 		},
 		resetDocument() {
 			return initialState
@@ -37,6 +59,11 @@ const docSlice = createSlice({
 	},
 })
 
-export const { setDocSize, setFileName, setFormat, setDirty, resetDocument } =
-	docSlice.actions
+export const {
+	setDocSize,
+	setDirty,
+	documentOpened,
+	documentSaved,
+	resetDocument,
+} = docSlice.actions
 export default docSlice.reducer

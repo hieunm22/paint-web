@@ -81,7 +81,18 @@ export interface DocumentState {
 	fileName: string
 	format: ImageFormat
 	isDirty: boolean
+	/** when the file on disk was last written, shown in Properties. */
+	savedAt: number | null
 	dpi: number
+}
+
+/** everything a freshly opened file settles in the document slice at once. */
+export interface OpenedPayload {
+	width: number
+	height: number
+	fileName: string
+	format: ImageFormat
+	savedAt: number | null
 }
 
 export interface TextOptions {
@@ -153,12 +164,18 @@ export interface SelectionState {
 	transparent: boolean
 }
 
+/** the command the discard dialog is holding back until the user answers. */
+export type PendingFileAction = "new" | "load" | "exit"
+
 /** pure UI shell state; not part of the document data model. */
 export interface UiState {
 	tab: RibbonTabId
 	backstageOpen: boolean
 	openMenu: string | null
 	dialog: DialogId | null
+	pending: PendingFileAction | null
+	/** translation key of the transient notice, never the text itself. */
+	toast: string | null
 }
 
 export type DialogId =

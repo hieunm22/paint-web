@@ -1,5 +1,10 @@
 import type { Rect } from "store/types"
-import type { RGBA, Size, SurfaceContexts, SurfaceLayers } from "./types"
+import type {
+	RGBA,
+	Size,
+	SurfaceContexts,
+	SurfaceLayers,
+} from "./types"
 import { readPixel } from "./raster"
 
 const PAPER = "#ffffff"
@@ -122,7 +127,12 @@ export class Surface {
 	}
 
 	/** committed pixels of a box, clipped by the caller to the document. */
-	readRegion({ x, y, w, h }: Rect): ImageData | null {
+	readRegion({
+		x,
+		y,
+		w,
+		h,
+	}: Rect): ImageData | null {
 		return this.ctx?.base.getImageData(x, y, w, h) ?? null
 	}
 

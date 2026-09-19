@@ -1,14 +1,7 @@
 import type { ImageFormat } from "store/types"
-import type { FormatDef } from "./types"
 
-/** supported save formats. the names are proper nouns and stay untranslated. */
-export const SAVE_FORMATS: FormatDef[] = [
-	{ id: "png", name: "PNG", ext: ".png" },
-	{ id: "jpeg", name: "JPEG", ext: ".jpg" },
-	{ id: "bmp", name: "BMP (24-bit)", ext: ".bmp" },
-	{ id: "gif", name: "GIF", ext: ".gif" },
-	{ id: "webp", name: "WEBP", ext: ".webp" },
-]
+/** the quality slider runs on whole percent and only jpeg and webp read it. */
+export const DEFAULT_QUALITY = 92
 
 export const FORMAT_HINT_KEYS: Record<ImageFormat, string> = {
 	png: "dialog.save-as.hint-png",

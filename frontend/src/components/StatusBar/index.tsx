@@ -4,7 +4,12 @@ import { StatusCell, ZoomControl } from "./components"
 import { estimateFileSize, formatZoomPercent, zoomStepIndex } from "./common"
 import { useCursorPosition } from "./hooks"
 import { useAppDispatch, useAppSelector } from "store/hooks"
-import { setZoom, ZOOM_STEPS, zoomIn, zoomOut } from "store/slices/viewSlice"
+import {
+	setZoom,
+	ZOOM_STEPS,
+	zoomIn,
+	zoomOut,
+} from "store/slices/viewSlice"
 import "./StatusBar.scss"
 
 /** four info cells plus the zoom slider on the right. */

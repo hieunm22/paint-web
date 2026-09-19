@@ -9,7 +9,13 @@ import { floodFill } from "./raster"
 const worker = self as unknown as Worker
 
 worker.onmessage = ({ data }: MessageEvent<FillRequest>) => {
-	const { buffer, width, height, seed, color } = data
+	const {
+		buffer,
+		width,
+		height,
+		seed,
+		color,
+	} = data
 	const image = {
 		data: new Uint8ClampedArray(buffer),
 		width,

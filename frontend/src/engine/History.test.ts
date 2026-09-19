@@ -1,4 +1,10 @@
-import { beforeEach, describe, expect, it, vi } from "vitest"
+import {
+	beforeEach,
+	describe,
+	expect,
+	it,
+	vi,
+} from "vitest"
 import type { Rect } from "store/types"
 import { History } from "./History"
 import type { Surface } from "./Surface"
@@ -13,7 +19,12 @@ function fakeSurface(width: number, height: number) {
 	return {
 		pixels,
 		documentSize: { width, height },
-		readRegion({ x, y, w, h }: Rect): ImageData {
+		readRegion({
+			x,
+			y,
+			w,
+			h,
+		}: Rect): ImageData {
 			const data = new Uint8ClampedArray(w * h * 4)
 			for (let row = 0; row < h; row++) {
 				const from = ((y + row) * width + x) * 4

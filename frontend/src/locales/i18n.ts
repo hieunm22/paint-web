@@ -1,6 +1,10 @@
 import i18next from "i18next"
 import { initReactI18next } from "react-i18next"
-import { FALLBACK_LANGUAGE, LANGUAGE_STORAGE_KEY, LANGUAGES } from "./constant"
+import {
+	FALLBACK_LANGUAGE,
+	LANGUAGE_STORAGE_KEY,
+	LANGUAGES,
+} from "common/constant"
 import type { Language } from "./types"
 import en from "./en.json"
 import vi from "./vi.json"

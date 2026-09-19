@@ -12,6 +12,8 @@
 	--rb-btn-hover-bd: #d3c8b4;
 	--rb-btn-active-bg: linear-gradient(#e5c365, #f6e8b1);
 	--rb-btn-active-bd: #c2a75f;
+	--rb-ink: #4a4a4a;
+	--rb-ink-disabled: #a0a0a0;
 	--rb-selected-bg: #cde6f7;
 	--rb-selected-bd: #7da2ce;
 
@@ -36,6 +38,13 @@
 	--menu-bd: #a0a0a0;
 	--menu-hover-bg: #cde6f7;
 	--menu-hover-bd: #7da2ce;
+
+	/* Stacking. one scale for everything that floats over the app shell:
+	   a flyout opened from the backstage has to clear the backstage itself. */
+	--z-backstage: 60;
+	--z-menu: 70;
+	--z-toast: 80;
+	--z-dialog: 100;
 
 	/* Metrics */
 	--rb-height: 94px;

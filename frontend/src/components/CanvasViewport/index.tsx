@@ -12,13 +12,23 @@ import "./CanvasViewport.scss"
 
 export function CanvasViewport() {
 	const { width, height } = useAppSelector((s) => s.doc)
-	const { zoom, showRuler, showGrid, showThumbnail } = useAppSelector(
+	const {
+		zoom,
+		showRuler,
+		showGrid,
+		showThumbnail,
+	} = useAppSelector(
 		(s) => s.view,
 	)
 	const focus = useAppSelector((s) => s.view.focus)
 	const activeTool = useAppSelector((s) => s.tool.active)
 	const bounds = useAppSelector((s) => s.selection.bounds)
-	const { baseRef, previewRef, overlayRef, paneRef } = useSurface(width, height)
+	const {
+		baseRef,
+		previewRef,
+		overlayRef,
+		paneRef,
+	} = useSurface(width, height)
 	const pointerProps = usePointerTools(zoom, paneRef)
 	const viewportRef = useZoomFocus(focus)
 	useOverlayReset(activeTool)

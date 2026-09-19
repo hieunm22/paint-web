@@ -2,7 +2,13 @@ import { store } from "store"
 import { historyChanged } from "store/actions"
 import { setDirty } from "store/slices/docSlice"
 import type { Point } from "store/types"
-import type { Modifiers, Size, SurfaceLayers, Tool, ToolContext } from "./types"
+import type {
+	Modifiers,
+	Size,
+	SurfaceLayers,
+	Tool,
+	ToolContext,
+} from "./types"
 import { History } from "./History"
 import { Surface } from "./Surface"
 import { TOOLS } from "./tools/registry"
@@ -44,6 +50,50 @@ class PaintEngine {
 
 		this.docSize = size
 		this.history.clear()
+	}
+
+	/**
+	 * replaces the document with a decoded file. the tile grid and every step
+	 * on the stack belong to the picture that just went away.
+	 */
+	loadImage(bitmap: ImageBitmap): void {
+		const size = { width: bitmap.width, height: bitmap.height }
+		this.cancel()
+		this.surface.resizeDocument(size)
+		this.docSize = size
+		this.surface.clearDocument()
+		this.surface.baseContext?.drawImage(bitmap, 0, 0)
+		this.history.clear()
+	}
+
+	/** blank paper at the given size, which is what New leaves behind. */
+	newDocument(size: Size): void {
+		this.cancel()
+		this.surface.resizeDocument(size)
+		this.docSize = size
+		this.surface.clearDocument()
+		this.history.clear()
+	}
+
+	/** stamps a decoded image at the origin as one undo step; this is Paste. */
+	drawImage(bitmap: ImageBitmap, label: string): void {
+		const base = this.surface.baseContext
+		if (!base) return
+
+		const w = Math.min(bitmap.width, this.docSize.width)
+		const h = Math.min(bitmap.height, this.docSize.height)
+		this.history.beginStroke()
+		this.history.touch({ x: 0, y: 0, w, h })
+		base.drawImage(bitmap, 0, 0)
+		if (this.history.commitStroke(label)) this.markUnsaved()
+	}
+
+	/** the committed bitmap in full, which is what a save encodes. */
+	readDocument(): ImageData | null {
+		const { width, height } = this.surface.documentSize
+		if (!width || !height) return null
+
+		return this.surface.readRegion({ x: 0, y: 0, w: width, h: height })
 	}
 
 	begin(pt: Point, mods: Modifiers): void {
@@ -141,7 +191,6 @@ class PaintEngine {
 		return { ...mods, secondary: this.secondary }
 	}
 
-	/** the title bar shows a star until the document is saved. */
 	/**
 	 * a tool handed back work that finishes after the gesture. the step is
 	 * pushed when it settles: the tool marks its own pixels dirty first.

@@ -4,6 +4,7 @@ import { Icon } from "components/Icon"
 import { Menu } from "components/Menu"
 import { SplitButton } from "components/RibbonButton"
 import { RibbonGroup } from "components/RibbonGroup"
+import { TOOLS as IMPLEMENTED } from "engine/tools/registry"
 import { useAppDispatch, useAppSelector } from "store/hooks"
 import { setBrush } from "store/slices/toolSlice"
 import { toggleMenu } from "store/slices/uiSlice"
@@ -24,6 +25,7 @@ export function BrushesGroup() {
 					<Icon name={current.icon} size={30} rotate={current.rotate} />
 				}
 				selected={active === "brush"}
+				disabled={!IMPLEMENTED.brush}
 				onClick={() => dispatch(setBrush(brush))}
 				open={open}
 				onToggleMenu={() => dispatch(toggleMenu("brushes"))}

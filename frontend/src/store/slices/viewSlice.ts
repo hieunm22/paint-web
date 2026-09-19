@@ -42,6 +42,12 @@ const viewSlice = createSlice({
 	},
 })
 
-export const { setZoom, zoomAt, zoomIn, zoomOut, toggleView } =
+export const {
+	setZoom,
+	zoomAt,
+	zoomIn,
+	zoomOut,
+	toggleView,
+} =
 	viewSlice.actions
 export default viewSlice.reducer

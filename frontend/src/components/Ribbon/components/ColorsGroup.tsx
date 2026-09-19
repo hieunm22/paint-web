@@ -9,7 +9,13 @@ import { ColorSlot } from "./ColorSlot"
 export function ColorsGroup() {
 	const { t } = useTranslation()
 	const dispatch = useAppDispatch()
-	const { color1, color2, editing, palette, custom } = useAppSelector(
+	const {
+		color1,
+		color2,
+		editing,
+		palette,
+		custom,
+	} = useAppSelector(
 		(s) => s.colors,
 	)
 

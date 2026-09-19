@@ -39,6 +39,7 @@ export const WINDOW_BUTTONS: WindowButton[] = [
 		icon: "maximize",
 		size: 11,
 		titleKey: "titlebar.window.maximize",
+		disabled: true,
 	},
 	{ id: "close", icon: "close", size: 14, titleKey: "titlebar.window.close" },
 ]

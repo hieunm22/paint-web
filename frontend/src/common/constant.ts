@@ -1,4 +1,4 @@
-import type { Language, LanguageDef } from "./types"
+import type { Language, LanguageDef } from "../locales/types"
 
 /** localStorage key holding the chosen language. */
 export const LANGUAGE_STORAGE_KEY = "language"
