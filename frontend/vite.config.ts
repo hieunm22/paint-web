@@ -32,11 +32,12 @@ export default defineConfig({
 		port: 3004
 	},
 	resolve: { alias: rootAliases },
-	// engine tests run in plain node: they exercise pure pixel maths, and a
-	// jsdom that cannot back a canvas would only look like it covers more
+	// node is the default: the engine tests exercise pixel maths, and a jsdom
+	// that cannot back a canvas would only look like it covers more. a component
+	// test asks for jsdom in its own docblock.
 	test: {
 		environment: "node",
-		include: ["src/**/*.test.ts"],
+		include: ["src/**/*.test.ts", "src/**/*.test.tsx"],
 	},
 	css: {
 		preprocessorOptions: {

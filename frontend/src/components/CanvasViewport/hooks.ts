@@ -95,6 +95,36 @@ export function useSurface(width: number, height: number) {
 }
 
 /**
+ * tells the engine what the viewport shows. a large picture, or one zoomed far
+ * in, keeps only that part in the dom, and a scroll has to carry the window.
+ */
+export function useVirtualView(
+	viewportRef: RefObject<HTMLDivElement>,
+	zoom: number,
+): void {
+	useEffect(() => {
+		const el = viewportRef.current
+		if (!el) return
+
+		const report = () => {
+			const scroll = { x: el.scrollLeft, y: el.scrollTop }
+			const size = { width: el.clientWidth, height: el.clientHeight }
+			paint.surface.setView(visibleRect(scroll, size, zoom), zoom)
+		}
+
+		report()
+		el.addEventListener("scroll", report, { passive: true })
+		const observer = new ResizeObserver(report)
+		observer.observe(el)
+
+		return () => {
+			el.removeEventListener("scroll", report)
+			observer.disconnect()
+		}
+	}, [viewportRef, zoom])
+}
+
+/**
  * drives the engine straight from the pointer, dispatching nothing: a move
  * must not re-render the app. memoised to keep one handler identity.
  */
@@ -196,7 +226,13 @@ export function usePointerTools(
 					// pressure filter as well would count it twice
 					const at =
 						points[points.length - 1] ??
-						screenToImage(e.clientX, e.clientY, rect, zoom)
+						screenToImage(
+							e.clientX,
+							e.clientY,
+							rect,
+							zoom,
+							paint.surface.viewBox,
+						)
 					reportCursor(at)
 					paint.hover(at, paneOffset(e, paneRef))
 					if (!drawing || !points.length) return
@@ -536,7 +572,7 @@ function strokePoint(
 	)
 
 	return {
-		...screenToImage(e.clientX, e.clientY, rect, zoom),
+		...screenToImage(e.clientX, e.clientY, rect, zoom, paint.surface.viewBox),
 		pressure: held.pressure,
 		tilt: penTilt(e.pointerType, e.tiltX, e.tiltY),
 	}

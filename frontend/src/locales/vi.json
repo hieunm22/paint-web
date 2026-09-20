@@ -259,7 +259,8 @@
 		"recent": {
 			"title": "Ảnh gần đây",
 			"meta": "{0} - {1}",
-			"empty": "Chưa có gì - ảnh bạn mở sẽ hiện trong danh sách này"
+			"empty": "Chưa có gì - ảnh bạn mở sẽ hiện trong danh sách này",
+			"forget": "Xoá khỏi danh sách này"
 		},
 		"language": {
 			"label": "Ngôn ngữ",
@@ -277,7 +278,8 @@
 			"title": "Giới thiệu Paint Web",
 			"app-name": "Paint Web 0.1.0",
 			"body": "Bản dựng lại giao diện Ribbon của Microsoft Paint (Windows 10) trên nền web, chạy hoàn toàn client-side.",
-			"disclaimer": "Không liên kết với Microsoft. Giao diện lấy cảm hứng từ Microsoft Paint. Icon dùng Font Awesome Pro theo license riêng; không sử dụng asset gốc của Paint."
+			"disclaimer": "Không liên kết với Microsoft. Giao diện lấy cảm hứng từ Microsoft Paint. Icon dùng Font Awesome Pro theo license riêng; không sử dụng asset gốc của Paint.",
+			"intro-link": "Đọc trang giới thiệu công khai"
 		},
 		"confirm-discard": {
 			"title": "Paint Web",

@@ -8,27 +8,33 @@ import {
 	SAVE_AS_MENU,
 } from "./constant"
 import { Icon } from "components/Icon"
-import {
-	Menu,
-	MenuAnchor,
-	MenuItem,
-	MenuSeparator,
-} from "components/Menu"
 import { useFileCommands } from "hooks/useFileCommands"
 import { useAppDispatch, useAppSelector } from "store/hooks"
 import { useRecents } from "./hooks"
 import { currentLanguage, setLanguage } from "locales/i18n"
-import { closeBackstage, openDialog, toggleMenu } from "store/slices/uiSlice"
+import {
+	closeBackstage,
+	closeMenu,
+	openDialog,
+	toggleMenu,
+} from "store/slices/uiSlice"
 import type { ImageFormat } from "types/store.types"
 import type {
+	CollapseRowProps,
 	FileMenuEntry,
 	FileMenuRowProps,
-	FlyoutRowProps,
-	PrintMenuProps,
-	SaveAsMenuProps,
+	PrintChoicesProps,
+	RecentPictureProps,
+	SaveAsChoicesProps,
+	SubRowProps,
 } from "./types"
 
-function FileMenuRow({ row, title, onClick }: FileMenuRowProps) {
+function FileMenuRow({
+	row,
+	title,
+	expanded,
+	onClick,
+}: FileMenuRowProps) {
 	const { t } = useTranslation()
 
 	return (
@@ -37,6 +43,7 @@ function FileMenuRow({ row, title, onClick }: FileMenuRowProps) {
 			className="file-menu__item"
 			title={title}
 			disabled={row.pending}
+			aria-expanded={row.submenu ? Boolean(expanded) : undefined}
 			onClick={onClick}
 		>
 			<span className="file-menu__item-icon">
@@ -46,34 +53,66 @@ function FileMenuRow({ row, title, onClick }: FileMenuRowProps) {
 			{row.shortcutKey && (
 				<span className="file-menu__item-shortcut">{t(row.shortcutKey)}</span>
 			)}
-			{row.submenu && <Icon name="caretDown" size={9} />}
+			{row.submenu && (
+				<span
+					className={`file-menu__caret${
+						expanded ? " file-menu__caret--open" : ""
+					}`}
+				>
+					<Icon name="caretDown" size={9} />
+				</span>
+			)}
 		</button>
 	)
 }
 
-/** a row whose flyout opens beside it rather than doing something at once. */
-function FlyoutRow({
+/** a row whose choices open underneath it rather than beside it. */
+function CollapseRow({
 	row,
-	menu,
+	children,
 	open,
-	onOpen,
-}: FlyoutRowProps) {
+	onToggle,
+}: CollapseRowProps) {
 	return (
-		<MenuAnchor className="file-menu__anchor">
-			<FileMenuRow row={row} onClick={onOpen} />
-			{open && menu}
-		</MenuAnchor>
+		// the marker keeps a click inside from reaching the outside-click handler,
+		// which would fold the group up before the choice was taken
+		<div className="file-menu__group" data-menu-root>
+			<FileMenuRow row={row} expanded={open} onClick={onToggle} />
+			{open && <div className="file-menu__choices">{children}</div>}
+		</div>
 	)
 }
 
-function PrintMenu({ onPrint }: PrintMenuProps) {
+/** one choice of an opened row: the same row, one indent further in. */
+function SubRow({
+	icon,
+	label,
+	shortcut,
+	onClick,
+}: SubRowProps) {
+	return (
+		<button
+			type="button"
+			className="file-menu__item file-menu__item--sub"
+			onClick={onClick}
+		>
+			<span className="file-menu__item-icon">
+				<Icon name={icon} size={15} />
+			</span>
+			<span className="file-menu__item-label">{label}</span>
+			{shortcut && <span className="file-menu__item-shortcut">{shortcut}</span>}
+		</button>
+	)
+}
+
+function PrintChoices({ onPrint }: PrintChoicesProps) {
 	const { t } = useTranslation()
 	const dispatch = useAppDispatch()
 
 	return (
-		<Menu width={196}>
+		<>
 			{PRINT_MENU_ROWS.map(row => (
-				<MenuItem
+				<SubRow
 					key={row.labelKey}
 					icon={row.icon}
 					label={t(row.labelKey)}
@@ -83,17 +122,17 @@ function PrintMenu({ onPrint }: PrintMenuProps) {
 					}
 				/>
 			))}
-		</Menu>
+		</>
 	)
 }
 
-function SaveAsMenu({ onPick, onOther }: SaveAsMenuProps) {
+function SaveAsChoices({ onPick, onOther }: SaveAsChoicesProps) {
 	const { t } = useTranslation()
 
 	return (
-		<Menu width={196}>
+		<>
 			{QUICK_SAVE_FORMATS.map(format => (
-				<MenuItem
+				<SubRow
 					key={format}
 					icon="saveAs"
 					label={t("filemenu.save-as.option", {
@@ -103,13 +142,13 @@ function SaveAsMenu({ onPick, onOther }: SaveAsMenuProps) {
 					onClick={() => onPick(format)}
 				/>
 			))}
-			<MenuSeparator />
-			<MenuItem
+			<div className="file-menu__sep file-menu__sep--sub" />
+			<SubRow
 				icon="properties"
 				label={t("filemenu.save-as.other")}
 				onClick={onOther}
 			/>
-		</Menu>
+		</>
 	)
 }
 
@@ -157,35 +196,36 @@ export function FileMenuList() {
 				row === "sep" ? (
 					<div key={`sep-${i}`} className="file-menu__sep" />
 				) : row.action === "save-as" ? (
-					<FlyoutRow
+					<CollapseRow
 						key={row.labelKey}
 						row={row}
 						open={openMenu === SAVE_AS_MENU}
-						onOpen={() => run(row)}
-						menu={
-							<SaveAsMenu
-								onPick={(format: ImageFormat) => void files.saveAs(format)}
-								onOther={() => dispatch(openDialog("save-as"))}
-							/>
-						}
-					/>
+						onToggle={() => run(row)}
+					>
+						<SaveAsChoices
+							onPick={(format: ImageFormat) => {
+								dispatch(closeMenu())
+								void files.saveAs(format)
+							}}
+							onOther={() => dispatch(openDialog("save-as"))}
+						/>
+					</CollapseRow>
 				) : row.action === "print" ? (
-					<FlyoutRow
+					<CollapseRow
 						key={row.labelKey}
 						row={row}
 						open={openMenu === PRINT_MENU}
-						onOpen={() => run(row)}
-						menu={
-							<PrintMenu
-								onPrint={() => {
-									// the sheet is what the user is looking at next, not
-									// the backstage the command was reached through
-									dispatch(closeBackstage())
-									void files.print()
-								}}
-							/>
-						}
-					/>
+						onToggle={() => run(row)}
+					>
+						<PrintChoices
+							onPrint={() => {
+								// the sheet is what the user is looking at next, not the
+								// backstage the command was reached through
+								dispatch(closeBackstage())
+								void files.print()
+							}}
+						/>
+					</CollapseRow>
 				) : (
 					<FileMenuRow
 						key={row.labelKey}
@@ -226,10 +266,41 @@ export function LanguagePicker() {
 	)
 }
 
-export function RecentPictureList() {
+/** the row opens the picture; the cross beside it only drops the row. */
+function RecentPicture({ entry, onOpen, onForget }: RecentPictureProps) {
 	const { t, i18n } = useTranslation()
+	const format = entry.format.toUpperCase()
+	const opened = new Date(entry.openedAt)
+	const day = opened.toLocaleDateString(i18n.language)
+	const meta = t("filemenu.recent.meta", { 0: format, 1: day })
+	const forgetLabel = t("filemenu.recent.forget")
+
+	return (
+		<div className="file-menu__recent-item">
+			<button type="button" className="file-menu__recent-open" onClick={onOpen}>
+				<img className="file-menu__thumb" src={entry.thumbnail} alt="" />
+				<span>
+					<div className="file-menu__recent-name">{entry.name}</div>
+					<div className="file-menu__recent-meta">{meta}</div>
+				</span>
+			</button>
+			<button
+				type="button"
+				className="file-menu__recent-forget"
+				title={forgetLabel}
+				aria-label={forgetLabel}
+				onClick={onForget}
+			>
+				<Icon name="close" size={11} />
+			</button>
+		</div>
+	)
+}
+
+export function RecentPictureList() {
+	const { t } = useTranslation()
 	const files = useFileCommands()
-	const entries = useRecents()
+	const { entries, forget } = useRecents()
 
 	if (!entries.length) {
 		return (
@@ -242,23 +313,12 @@ export function RecentPictureList() {
 	return (
 		<div className="file-menu__recent-list">
 			{entries.map(entry => (
-				<button
+				<RecentPicture
 					key={entry.name}
-					type="button"
-					className="file-menu__recent-item"
-					onClick={() => void files.openRecent(entry)}
-				>
-					<img className="file-menu__thumb" src={entry.thumbnail} alt="" />
-					<span>
-						<div className="file-menu__recent-name">{entry.name}</div>
-						<div className="file-menu__recent-meta">
-							{t("filemenu.recent.meta", {
-								0: entry.format.toUpperCase(),
-								1: new Date(entry.openedAt).toLocaleDateString(i18n.language),
-							})}
-						</div>
-					</span>
-				</button>
+					entry={entry}
+					onOpen={() => void files.openRecent(entry)}
+					onForget={() => void forget(entry.name)}
+				/>
 			))}
 		</div>
 	)

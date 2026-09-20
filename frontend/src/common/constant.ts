@@ -61,8 +61,22 @@ export const LANGUAGES: LanguageDef[] = [
 export const CAN_SAVE_IN_PLACE =
 	typeof window !== "undefined" && "showSaveFilePicker" in window
 
+/**
+ * whether a worker can write png, jpeg and webp. without OffscreenCanvas the
+ * only encoder is the main thread's, which an 8k picture holds for seconds.
+ */
+export const CAN_ENCODE_OFF_THREAD =
+	typeof OffscreenCanvas !== "undefined" &&
+	typeof OffscreenCanvas.prototype.convertToBlob === "function"
+
 /** the canvas Paint opens with, which New goes back to. */
 export const DEFAULT_DOCUMENT: Size = { width: 1152, height: 648 }
+
+/**
+ * the public page carrying the disclaimer, served beside the app. the file
+ * name is named outright: only nginx maps the shorter /about onto it.
+ */
+export const INTRO_PAGE_URL = "/about.html"
 
 /** bare paper, which is what a new or a widened document shows. */
 export const PAPER_COLOR = "#ffffff"
@@ -195,6 +209,18 @@ export const CUSTOM_SLOTS = 10
 
 /** the eleven stops the zoom slider and Ctrl+plus step through. */
 export const ZOOM_STEPS = [0.125, 0.25, 0.5, 1, 2, 3, 4, 5, 6, 7, 8]
+
+/**
+ * past this side the picture is drawn through a window onto what the viewport
+ * shows: a bitmap this wide belongs nowhere near the dom.
+ */
+export const VIRTUAL_DOC_SIDE = 4000
+
+/** from this zoom the scaled-up picture no longer belongs there either. */
+export const VIRTUAL_ZOOM = 4
+
+/** screen pixels held beyond the viewport, which covers a scroll mid-frame. */
+export const VIRTUAL_PAD = 64
 
 /** the eight handles of a box: four corners, then the edge midpoints. */
 export const BOX_HANDLE_SPOTS: Point[] = [

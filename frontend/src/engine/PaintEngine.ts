@@ -282,6 +282,7 @@ class PaintEngine {
 		this.active = tool
 		this.secondary = mods.secondary
 		tool.begin(pt, mods, ctx)
+		this.surface.flush()
 	}
 
 	update(pts: StrokePoint[], mods: Modifiers): void {
@@ -289,6 +290,8 @@ class PaintEngine {
 		if (!this.active || !ctx || !pts.length) return
 
 		this.active.update?.(pts, this.withButton(mods), ctx)
+		// a windowed document shows the stroke on this frame rather than the next
+		this.surface.flush()
 	}
 
 	end(pt: StrokePoint, mods: Modifiers): void {
@@ -303,6 +306,7 @@ class PaintEngine {
 		if (tool.isPending?.(ctx)) {
 			this.held = tool
 			this.syncSelection()
+			this.surface.flush()
 			return
 		}
 
@@ -372,6 +376,7 @@ class PaintEngine {
 		// what the tool holds survives a lost pointer; only the gesture ends
 		if (this.held === tool) {
 			tool.repaint?.(ctx)
+			this.surface.flush()
 			return
 		}
 
@@ -587,6 +592,7 @@ class PaintEngine {
 
 		const ctx = this.context()
 		if (ctx) this.held.repaint?.(ctx)
+		this.surface.flush()
 	}
 
 	/** the store learns about the selection at rest; the ants do not wait. */

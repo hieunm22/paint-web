@@ -12,27 +12,37 @@ import {
 
 const RECT = { left: 100, top: 50 }
 
+/** the canvas holds the whole picture, which is the ordinary case. */
+const WHOLE = { x: 0, y: 0, w: 4000, h: 4000 }
+
 describe("screenToImage", () => {
 	it("maps one to one at 100%", () => {
-		expect(screenToImage(140, 80, RECT, 1)).toEqual({ x: 40, y: 30 })
+		expect(screenToImage(140, 80, RECT, 1, WHOLE)).toEqual({ x: 40, y: 30 })
 	})
 
 	it("halves the distance at 200%, where one pixel covers four", () => {
-		expect(screenToImage(140, 80, RECT, 2)).toEqual({ x: 20, y: 15 })
+		expect(screenToImage(140, 80, RECT, 2, WHOLE)).toEqual({ x: 20, y: 15 })
 	})
 
 	it("floors rather than rounds, so a pixel is not claimed early", () => {
-		expect(screenToImage(143, 83, RECT, 2)).toEqual({ x: 21, y: 16 })
+		expect(screenToImage(143, 83, RECT, 2, WHOLE)).toEqual({ x: 21, y: 16 })
 		// 31/8 is 3.875: floor keeps it on pixel 3, rounding would claim 4
-		expect(screenToImage(141, 81, RECT, 8)).toEqual({ x: 5, y: 3 })
+		expect(screenToImage(141, 81, RECT, 8, WHOLE)).toEqual({ x: 5, y: 3 })
 	})
 
 	it("doubles the distance at 50%", () => {
-		expect(screenToImage(140, 80, RECT, 0.5)).toEqual({ x: 80, y: 60 })
+		expect(screenToImage(140, 80, RECT, 0.5, WHOLE)).toEqual({ x: 80, y: 60 })
 	})
 
 	it("goes negative above and left of the canvas, which drawing clips", () => {
-		expect(screenToImage(99, 49, RECT, 1)).toEqual({ x: -1, y: -1 })
+		expect(screenToImage(99, 49, RECT, 1, WHOLE)).toEqual({ x: -1, y: -1 })
+	})
+
+	it("adds the corner of the window when the canvas holds only part", () => {
+		const window = { x: 600, y: 400, w: 800, h: 600 }
+
+		expect(screenToImage(140, 80, RECT, 1, window)).toEqual({ x: 640, y: 430 })
+		expect(screenToImage(140, 80, RECT, 4, window)).toEqual({ x: 610, y: 407 })
 	})
 })
 

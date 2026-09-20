@@ -18,6 +18,7 @@ import {
 	useOverlayState,
 	usePointerTools,
 	useSurface,
+	useVirtualView,
 	useZoomFocus,
 } from "./hooks"
 import "./CanvasViewport.scss"
@@ -44,6 +45,7 @@ export function CanvasViewport() {
 	} = useSurface(width, height)
 	const pointerProps = usePointerTools(zoom, paneRef, previewRef)
 	const viewportRef = useZoomFocus(focus)
+	useVirtualView(viewportRef, zoom)
 	useOverlayReset(activeTool)
 
 	// rulers need zoom >= 1, gridlines need zoom >= 4.
@@ -71,7 +73,6 @@ export function CanvasViewport() {
 							<canvas
 								ref={baseRef}
 								className="canvas__surface"
-								style={layerSize}
 								role="img"
 								aria-label={t("canvas.surface.label", {
 									0: width,
@@ -81,7 +82,6 @@ export function CanvasViewport() {
 							<canvas
 								ref={previewRef}
 								className="canvas__surface canvas__surface--preview"
-								style={layerSize}
 								{...pointerProps}
 							/>
 

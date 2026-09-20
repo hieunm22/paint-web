@@ -31,17 +31,19 @@ export function buildRulerTicks(length: number, zoom: number): RulerTick[] {
 }
 
 /**
- * converts client pixels to image pixels.
+ * converts client pixels to image pixels. `box` is the part of the picture the
+ * drawing canvas holds, whose corner is the paper's only when it holds it all.
  */
 export function screenToImage(
 	clientX: number,
 	clientY: number,
 	rect: { left: number; top: number },
 	zoom: number,
+	box: Rect,
 ): Point {
 	return {
-		x: Math.floor((clientX - rect.left) / zoom),
-		y: Math.floor((clientY - rect.top) / zoom),
+		x: box.x + Math.floor((clientX - rect.left) / zoom),
+		y: box.y + Math.floor((clientY - rect.top) / zoom),
 	}
 }
 

@@ -70,17 +70,18 @@
 		background: #fff;
 	}
 
+	// both picture layers are windows the engine places: on a large document
+	// or a deep zoom they hold the visible part rather than the whole paper.
 	&__surface {
+		position: absolute;
+		left: 0;
+		top: 0;
 		display: block;
-		background: #fff;
+		background: none;
 		// keep pixels crisp and square when zoomed instead of bilinear smoothing.
 		image-rendering: pixelated;
 
 		&--preview {
-			position: absolute;
-			left: 0;
-			top: 0;
-			background: none;
 			// without this the browser pans and zooms instead of letting us draw
 			touch-action: none;
 		}

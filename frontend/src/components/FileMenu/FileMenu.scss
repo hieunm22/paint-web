@@ -45,6 +45,13 @@
 		&:disabled {
 			color: #b9d3e9;
 		}
+
+		// a choice of an opened row: one indent further in, and a touch smaller
+		&--sub {
+			min-height: 32px;
+			padding-left: 28px;
+			font-size: 12px;
+		}
 	}
 
 	&__item-icon {
@@ -63,14 +70,34 @@
 		opacity: 0.8;
 	}
 
-	&__anchor {
+	&__group {
 		width: 100%;
+	}
+
+	// the choices of an opened row, set back from the panel behind them
+	&__choices {
+		display: flex;
+		flex-direction: column;
+		background: rgba(0, 0, 0, 0.12);
+	}
+
+	&__caret {
+		display: flex;
+		transition: transform 120ms ease;
+
+		&--open {
+			transform: rotate(180deg);
+		}
 	}
 
 	&__sep {
 		height: 1px;
 		background: rgba(255, 255, 255, 0.25);
 		margin: 5px 12px;
+
+		&--sub {
+			margin: 4px 12px 4px 28px;
+		}
 	}
 
 	&__language {
@@ -126,17 +153,44 @@
 	}
 
 	&__recent-item {
+		--recent-forget: 0;
+		display: flex;
+		align-items: center;
+		border: 1px solid transparent;
+		width: 100%;
+
+		&:hover,
+		&:focus-within {
+			--recent-forget: 1;
+			background: #eaf3fb;
+			border-color: #cfe3f5;
+		}
+	}
+
+	&__recent-open {
 		display: flex;
 		align-items: center;
 		gap: 10px;
 		padding: 5px 8px;
-		border: 1px solid transparent;
 		text-align: left;
-		width: 100%;
+		flex: 1;
+		min-width: 0;
+	}
+
+	// opacity rather than visibility: a hidden button leaves the tab order and
+	// the keyboard could never reach it
+	&__recent-forget {
+		opacity: var(--recent-forget);
+		flex: 0 0 auto;
+		padding: 6px 8px;
+		color: #707070;
 
 		&:hover {
-			background: #eaf3fb;
-			border-color: #cfe3f5;
+			color: #c42b1c;
+		}
+
+		&:focus-visible {
+			opacity: 1;
 		}
 	}
 

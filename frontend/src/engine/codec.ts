@@ -1,5 +1,5 @@
-import { MIME_TYPES } from "common/constant"
-import { encodeBmp24 } from "engine/bmp"
+import { CAN_ENCODE_OFF_THREAD, MIME_TYPES } from "common/constant"
+import { encodeOffThread } from "engine/encodeWorker"
 import { encodeGifOffThread } from "engine/gifWorker"
 import type { ImageFormat } from "types/store.types"
 
@@ -68,13 +68,18 @@ export function encodeImage(
 	format: ImageFormat,
 	quality?: number,
 ): Promise<Blob> {
-	const source = FLATTENED.includes(format) ? flatten(copyOf(image)) : image
+	// every worker takes the buffer with it, which the copy makes safe
+	const flattens = FLATTENED.includes(format)
+	const source = flattens ? flatten(copyOf(image)) : copyOf(image)
+	const type = MIME_TYPES[format]
 
-	if (format === "bmp") return Promise.resolve(encodeBmp24(source))
-	// the worker takes the buffer with it, which a copy makes safe
-	if (format === "gif") return encodeGifOffThread(copyOf(source))
+	if (format === "gif") return encodeGifOffThread(source)
+	// the hand-written bmp writer needs no canvas and always goes off thread
+	const isBmp = format === "bmp"
+	const offThread = isBmp || CAN_ENCODE_OFF_THREAD
+	if (offThread) return encodeOffThread(source, type, isBmp, quality)
 
-	return canvasToBlob(canvasOf(source), MIME_TYPES[format], quality)
+	return canvasToBlob(canvasOf(source), type, quality)
 }
 
 /** the whole picture behind an url, which the print sheet points its img at. */

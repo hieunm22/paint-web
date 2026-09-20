@@ -259,7 +259,8 @@
 		"recent": {
 			"title": "Recent pictures",
 			"meta": "{0} - {1}",
-			"empty": "Nothing here yet - pictures you open appear in this list"
+			"empty": "Nothing here yet - pictures you open appear in this list",
+			"forget": "Remove from this list"
 		},
 		"language": {
 			"label": "Language",
@@ -277,7 +278,8 @@
 			"title": "About Paint Web",
 			"app-name": "Paint Web 0.1.0",
 			"body": "A web rebuild of the Microsoft Paint (Windows 10) Ribbon interface, running entirely client-side.",
-			"disclaimer": "Not affiliated with Microsoft. The interface is inspired by Microsoft Paint. Icons come from Font Awesome Pro under a separate licence; no original Paint asset is used."
+			"disclaimer": "Not affiliated with Microsoft. The interface is inspired by Microsoft Paint. Icons come from Font Awesome Pro under a separate licence; no original Paint asset is used.",
+			"intro-link": "Read the public introduction"
 		},
 		"confirm-discard": {
 			"title": "Paint Web",

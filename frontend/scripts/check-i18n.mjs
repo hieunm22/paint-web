@@ -7,7 +7,12 @@ import { dirname, join, relative, resolve } from "node:path"
 import { fileURLToPath } from "node:url"
 import ts from "typescript"
 
-const SRC = resolve(dirname(fileURLToPath(import.meta.url)), "..", "src")
+const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..")
+const SRC = join(ROOT, "src")
+
+/** the public page, which repeats the About dialog and cannot import it. */
+const INTRO_PAGE = join(ROOT, "public", "about.html")
+const DISCLAIMER_KEY = "dialog.about.disclaimer"
 
 /** props whose value reaches the user, wherever they appear. */
 const TEXT_PROPS = new Set([
@@ -58,13 +63,17 @@ const TRANSLATIONS = JSON.parse(
 )
 
 /** the text behind a key, or undefined when the csv never defined it. */
-function lookup(key) {
-	let node = TRANSLATIONS
+function read(table, key) {
+	let node = table
 	for (const part of key.split(".")) {
 		if (typeof node !== "object" || node === null) return undefined
 		node = node[part]
 	}
 	return typeof node === "string" ? node : undefined
+}
+
+function lookup(key) {
+	return read(TRANSLATIONS, key)
 }
 
 function sources(dir, found = []) {
@@ -152,7 +161,32 @@ function check(path) {
 	return problems
 }
 
-const problems = sources(SRC).flatMap(check)
+/**
+ * the intro page is plain html served beside the app: it cannot reach i18next,
+ * and a disclaimer that drifts from the one in About is the risk being managed.
+ */
+function checkIntroPage() {
+	const page = collapse(readFileSync(INTRO_PAGE, "utf8"))
+	const missing = []
+
+	for (const locale of ["en", "vi"]) {
+		const path = join(SRC, "locales", `${locale}.json`)
+		const table = JSON.parse(readFileSync(path, "utf8"))
+		const wanted = collapse(read(table, DISCLAIMER_KEY) ?? "")
+		if (!wanted || !page.includes(wanted)) {
+			missing.push(`public/about.html  missing the ${locale} ${DISCLAIMER_KEY}`)
+		}
+	}
+
+	return missing
+}
+
+/** html wraps where the json does not; only the words are being compared. */
+function collapse(text) {
+	return text.replace(/\s+/g, " ")
+}
+
+const problems = [...sources(SRC).flatMap(check), ...checkIntroPage()]
 
 if (problems.length > 0) {
 	console.error(`${problems.length} problem(s):\n`)

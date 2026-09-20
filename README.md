@@ -4,11 +4,12 @@ A web clone of Microsoft Paint (Windows 10, Ribbon UI), built with React and
 TypeScript. Everything runs client-side - no backend, and images never leave the
 browser.
 
-Status: the app is feature complete - drawing, files, shapes, selection, image
-operations, text, brushes, the view tools, printing, camera capture, pen pressure,
-the accessibility pass and the installable PWA all work. What is left is the public
-release: security headers, a domain, the disclaimer page, virtualized rendering for
-very large pictures, and the test layers beyond unit and visual.
+Status: feature complete and ready to publish. Drawing, files, shapes, selection,
+image operations, text, brushes, the view tools, printing, camera capture, pen
+pressure, the accessibility pass and the installable PWA all work; so do the public
+intro page, the security headers, the windowed renderer for very large pictures, the
+encode worker and all six test layers. One thing is left and it is not in this repo:
+pointing a domain at the server and terminating TLS at the edge proxy.
 
 Two documents, two jobs:
 
@@ -55,6 +56,9 @@ Font Awesome Pro is a dependency, so `yarn install` needs the registry token in
 | `yarn test:watch`        | vitest, watching                                |
 | `yarn test:visual`       | playwright screenshots of the ribbon, en and vi |
 | `yarn test:visual:update`| re-bless those baselines                        |
+| `yarn test:e2e`          | playwright, the editing flow and the windowing  |
+| `yarn test:perf`         | playwright, the frame budget under a long stroke|
+| `yarn test:browser`      | every playwright spec, the frame budget last    |
 | `yarn typecheck`         | `tsc --noEmit`, must print nothing              |
 | `yarn format`            | Prettier over `src`, then the member wrapper    |
 | `yarn check:format`      | the same check without writing                  |
@@ -92,6 +96,13 @@ stroke lands on `preview` and is baked into `base` when the gesture ends, which 
 what lets a low-opacity brush build up without darkening itself twice. The
 constraints on touching these three are in `docs/Conventions.md`.
 
+Past 4000 pixels on a side, or from 400% zoom, the surface switches to a **window**:
+`base` and `preview` move to detached canvases at full document size, and the two
+canvases in the DOM are sized to the visible part and blitted from them. A 8000-square
+picture at 800% would otherwise ask the compositor for a layer no browser will back.
+`engine/virtual.ts` holds the decision and the geometry; `Surface` is the only caller,
+and the rest of the app never learns which mode it is in.
+
 One `PaintEngine` instance (`paint`) owns the surface, the history and the selection.
 Components talk to it; it reads the store for colour, size and tool, and writes pixels
 without going back through React.
@@ -107,6 +118,7 @@ common/print.ts       # page layout in millimetres, and the hidden print frame
 common/camera.ts      # getUserMedia, frame grab, stopping the stream
 engine/codec.ts       # encode and decode against the surface's pixels
 engine/bmp.ts         # 24-bit BMP, written by hand, one row buffer at a time
+engine/encode.worker.ts  # bmp by hand, the rest through OffscreenCanvas, off thread
 engine/gif.worker.ts  # quantise plus encode, off the main thread
 hooks/useFileCommands.ts  # the one place New, Open, Save, Print and Paste are wired
 ```
@@ -114,6 +126,13 @@ hooks/useFileCommands.ts  # the one place New, Open, Save, Print and Paste are w
 The format table sits in `common/` rather than beside the encoders because `common/`
 may not import the engine, and `common/fileSystem.ts` needs the extensions to build a
 picker. `engine/codec.ts` imports down into `common/`; nothing goes the other way.
+
+**Every save is encoded off the main thread.** A 8000-square BMP is about 99 MB and a
+PNG that size takes seconds to write - either one freezes the interface where it runs.
+BMP needs no canvas, so it always goes to the worker; PNG, JPEG and WebP need
+`OffscreenCanvas.convertToBlob` and fall back to the main thread on a browser without
+it. The decision is made before the message is sent, because the pixel buffer is
+transferred rather than copied and there is nothing left to retry with.
 
 A command that has to ask before it destroys the document parks its payload with
 `deferOpen` and puts the *kind* of command in `ui.pending`. The discard dialog answers,
@@ -184,6 +203,25 @@ The 23 shapes in the Shapes gallery are hand-written SVG geometry in
 and must be exact, and FA carries no right triangle, rounded rectangle, curve, four- or
 six-point star, or the three callout shapes.
 
+### Published as a static site
+
+```
+frontend/
+├─ Dockerfile               # nginx:alpine over the dist/ built on the host
+└─ deploy/
+   ├─ nginx.conf            # cache rules, the /about alias, the spa fallback
+   └─ security-headers.conf # CSP and friends, included by every location
+```
+
+`public/about.html` is the public introduction, served at `/about` as well: plain HTML
+in both languages so it reads without the app, carrying the same disclaimer the About
+dialog shows and the promise that pictures never leave the machine. `yarn check:i18n`
+compares the two, so neither can drift.
+
+The container listens on port 80 and expects TLS at an edge proxy. That matters more
+than it looks: the File System Access, `getUserMedia` and Clipboard APIs only work on a
+secure origin, and over plain HTTP Save quietly turns into a download instead.
+
 ### The installable app
 
 ```
@@ -206,18 +244,34 @@ A file opened through `file_handlers` arrives as a handle rather than through a 
 
 ### Tests
 
+Six layers, two runners.
+
 ```
 frontend/
 ├─ src/**/<name>.test.ts     # vitest, node environment, beside what it tests
+│  ├─ engine/tools/render.test.ts   # real pixels through @napi-rs/canvas
+│  └─ components/Ribbon/Ribbon.test.tsx  # RTL, jsdom asked for in the docblock
 ├─ playwright.config.ts      # one chromium project, 1280x800, no device scaling
 └─ tests/
+   ├─ common.ts              # shared helpers; not a spec, never collected as one
    ├─ ribbon.spec.ts         # the ribbon and the backstage, in en and in vi
+   ├─ editor.spec.ts         # open, crop, shape, text, save, open again
+   ├─ virtual.spec.ts        # the windowed renderer, and where a stroke lands
+   ├─ performance.spec.ts    # 500 points on a 2000x2000 picture, no frame over 32ms
    └─ snapshots/             # baselines, COMMITTED, one per platform
 ```
 
 A baseline carries the platform in its name (`-chromium-darwin.png`), so a machine on
 another platform writes its own set rather than failing on someone else's pixels.
 Browsers are not vendored.
+
+The browser specs delete `showOpenFilePicker` and `showSaveFilePicker` before the page
+loads: the app then falls back to a file input Playwright can fill and a download it can
+catch, neither of which a native dialog allows.
+
+`performance.spec.ts` is its own Playwright project and runs on one worker after the
+rest. Frame gaps measured while three other browsers are drawing say nothing about this
+app, and a test that fails for that reason is worse than no test.
 
 ---
 

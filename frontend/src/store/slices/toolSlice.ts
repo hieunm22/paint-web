@@ -11,7 +11,7 @@ import type {
 } from "types/store.types"
 
 const initialState: ToolState = {
-	active: "pencil",
+	active: "select-rect",
 	prevTool: "pencil",
 	brush: "brush",
 	shape: "line",

@@ -2,9 +2,12 @@ import { defineConfig, devices } from "@playwright/test"
 
 const PORT = 3004
 
+/** the frame budget cannot be measured while other browsers hold the cpu. */
+const PERFORMANCE = "**/performance.spec.ts"
+
 /**
- * visual regression only: the unit tests run in vitest under node, and these
- * need a real browser to paint the ribbon at all.
+ * the layers that need a real browser: the ribbon screenshots, the editing
+ * flows, and the frame budget. the unit tests run in vitest under node.
  */
 export default defineConfig({
 	testDir: "./tests",
@@ -24,7 +27,21 @@ export default defineConfig({
 		// changed label slips under: the absolute count is what does the work
 		toHaveScreenshot: { maxDiffPixels: 40, maxDiffPixelRatio: 0.001 },
 	},
-	projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
+	projects: [
+		{
+			name: "chromium",
+			testIgnore: PERFORMANCE,
+			use: { ...devices["Desktop Chrome"] },
+		},
+		// its own project, run one at a time: a sibling browser drawing beside it
+		// drops frames this test would blame on the app
+		{
+			name: "performance",
+			testMatch: PERFORMANCE,
+			fullyParallel: false,
+			use: { ...devices["Desktop Chrome"] },
+		},
+	],
 	webServer: {
 		command: "yarn dev",
 		url: `http://localhost:${PORT}`,

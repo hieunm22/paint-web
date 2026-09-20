@@ -4,7 +4,13 @@
 const CACHE = "paint-web-v1"
 
 /** the shell a cold start needs before any asset is asked for. */
-const SHELL = ["/", "/index.html", "/manifest.webmanifest", "/icon.svg"]
+const SHELL = [
+	"/",
+	"/index.html",
+	"/about.html",
+	"/manifest.webmanifest",
+	"/icon.svg",
+]
 
 self.addEventListener("install", (event) => {
 	event.waitUntil(

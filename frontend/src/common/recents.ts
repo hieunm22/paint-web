@@ -55,6 +55,19 @@ export async function listRecents(): Promise<RecentEntry[]> {
 	}
 }
 
+/** drops one row from the list. the file on disk is not touched. */
+export async function forgetRecent(name: string): Promise<void> {
+	try {
+		const db = await openDatabase()
+		const tx = db.transaction(STORE, "readwrite")
+		tx.objectStore(STORE).delete(name)
+		await finished(tx)
+		db.close()
+	} catch {
+		/* the row stays, and it reappears in the list on the next open */
+	}
+}
+
 /** records one file and drops whatever fell off the end of the list. */
 export async function rememberRecent(entry: RecentEntry): Promise<void> {
 	try {

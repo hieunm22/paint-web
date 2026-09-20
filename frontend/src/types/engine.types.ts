@@ -30,6 +30,17 @@ export interface SurfaceContexts {
 	overlay: CanvasRenderingContext2D
 }
 
+/**
+ * where the picture is really held. a document small enough draws into the dom
+ * canvases themselves; a larger one draws into a detached pair.
+ */
+export interface SurfaceStore {
+	base: HTMLCanvasElement
+	preview: HTMLCanvasElement
+	baseCtx: CanvasRenderingContext2D
+	previewCtx: CanvasRenderingContext2D
+}
+
 /** one pixel, channels 0-255. */
 export interface RGBA {
 	r: number
@@ -189,6 +200,26 @@ export interface GifRequest {
 export interface GifResponse {
 	/** the finished gif file, ready to wrap in a Blob. */
 	buffer: ArrayBuffer
+}
+
+/** what crosses to the encode worker; the pixel buffer travels, it is not copied. */
+export interface EncodeRequest {
+	buffer: ArrayBuffer
+	width: number
+	height: number
+	/** the mime type the file is written with. */
+	type: string
+	/** true picks the hand-written writer, which needs no canvas at all. */
+	bmp: boolean
+	/** jpeg and webp alone read it. */
+	quality?: number
+}
+
+export interface EncodeResponse {
+	/** the finished file. a Blob crosses by reference rather than by copy. */
+	blob: Blob | null
+	/** why nothing came back, which a thrown promise cannot report. */
+	error: string | null
 }
 
 export interface Tool {

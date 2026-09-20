@@ -1,5 +1,5 @@
 import type { ReactNode } from "react"
-import type { EmptyVoid } from "types/common.types"
+import type { EmptyVoid, RecentEntry } from "types/common.types"
 import type { DialogId, ImageFormat } from "types/store.types"
 import type { IconName } from "components/Icon/types"
 
@@ -22,7 +22,7 @@ export interface FileMenuEntry {
 
 export type FileMenuRow = FileMenuEntry | "sep"
 
-/** one row of the Print flyout: it prints, or it opens a dialog. */
+/** one choice under Print: it prints, or it opens a dialog. */
 export interface PrintMenuRow {
 	labelKey: string
 	icon: IconName
@@ -33,22 +33,44 @@ export interface PrintMenuRow {
 export interface FileMenuRowProps {
 	row: FileMenuEntry
 	title?: string
+	/** set on a row that opens choices beneath it, which turns the caret over. */
+	expanded?: boolean
 	onClick: EmptyVoid
 }
 
-/** a backstage row whose flyout opens beside it, such as Save as or Print. */
-export interface FlyoutRowProps {
+/** a backstage row whose choices open under it, such as Save as or Print. */
+export interface CollapseRowProps {
 	row: FileMenuEntry
-	menu: ReactNode
+	children: ReactNode
 	open: boolean
-	onOpen: EmptyVoid
+	onToggle: EmptyVoid
 }
 
-export interface SaveAsMenuProps {
+/** one choice inside an opened row, drawn a step further in than the row. */
+export interface SubRowProps {
+	icon: IconName
+	label: string
+	shortcut?: string
+	onClick: EmptyVoid
+}
+
+/** the backstage recents list, and the way a row leaves it. */
+export interface RecentsState {
+	entries: RecentEntry[]
+	forget(name: string): Promise<void>
+}
+
+export interface RecentPictureProps {
+	entry: RecentEntry
+	onOpen: EmptyVoid
+	onForget: EmptyVoid
+}
+
+export interface SaveAsChoicesProps {
 	onPick(format: ImageFormat): void
 	onOther: EmptyVoid
 }
 
-export interface PrintMenuProps {
+export interface PrintChoicesProps {
 	onPrint: EmptyVoid
 }

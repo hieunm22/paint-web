@@ -180,6 +180,7 @@ filemenu.print.preview;Print preview;Xem trước khi in
 filemenu.recent.title;Recent pictures;Ảnh gần đây
 filemenu.recent.meta;{0} - {1};{0} - {1}
 filemenu.recent.empty;Nothing here yet - pictures you open appear in this list;Chưa có gì - ảnh bạn mở sẽ hiện trong danh sách này
+filemenu.recent.forget;Remove from this list;Xoá khỏi danh sách này
 filemenu.language.label;Language;Ngôn ngữ
 filemenu.language.en;English;English
 filemenu.language.vi;Tiếng Việt;Tiếng Việt
@@ -190,6 +191,7 @@ dialog.about.title;About Paint Web;Giới thiệu Paint Web
 dialog.about.app-name;Paint Web 0.1.0;Paint Web 0.1.0
 dialog.about.body;A web rebuild of the Microsoft Paint (Windows 10) Ribbon interface, running entirely client-side.;Bản dựng lại giao diện Ribbon của Microsoft Paint (Windows 10) trên nền web, chạy hoàn toàn client-side.
 dialog.about.disclaimer;"Not affiliated with Microsoft. The interface is inspired by Microsoft Paint. Icons come from Font Awesome Pro under a separate licence; no original Paint asset is used.";"Không liên kết với Microsoft. Giao diện lấy cảm hứng từ Microsoft Paint. Icon dùng Font Awesome Pro theo license riêng; không sử dụng asset gốc của Paint."
+dialog.about.intro-link;Read the public introduction;Đọc trang giới thiệu công khai
 dialog.confirm-discard.title;Paint Web;Paint Web
 dialog.confirm-discard.message;Do you want to save changes to {0}?;Bạn có muốn lưu thay đổi cho {0} không?
 dialog.confirm-discard.save;Save;Lưu
