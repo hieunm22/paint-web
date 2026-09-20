@@ -98,6 +98,17 @@ export interface BrushPaint {
 	fade: number
 }
 
+/**
+ * one sampled pointer position. a pen carries what it reports about the touch
+ * with it; every other device leaves both fields null and draws as Paint does.
+ */
+export interface StrokePoint extends Point {
+	/** 0 to 1, already smoothed, or null where no force was measured. */
+	pressure: number | null
+	/** how far the pen leans along each axis, in degrees. */
+	tilt: Point | null
+}
+
 /** pointer state a tool reads: which button started the gesture, plus keys. */
 export interface Modifiers {
 	/** right button, or Ctrl+click on macOS: the gesture uses colour 2. */
@@ -184,9 +195,9 @@ export interface Tool {
 	readonly id: ToolId
 	/** history label for the step this tool pushes, already translated. */
 	readonly label: string
-	begin(pt: Point, mods: Modifiers, ctx: ToolContext): void
-	update?(pts: Point[], mods: Modifiers, ctx: ToolContext): void
-	end?(pt: Point, mods: Modifiers, ctx: ToolContext): void
+	begin(pt: StrokePoint, mods: Modifiers, ctx: ToolContext): void
+	update?(pts: StrokePoint[], mods: Modifiers, ctx: ToolContext): void
+	end?(pt: StrokePoint, mods: Modifiers, ctx: ToolContext): void
 	/** the user switched tool mid-gesture. */
 	cancel?(ctx: ToolContext): void
 	/**

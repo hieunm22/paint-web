@@ -7,6 +7,12 @@ import type {
 	ToolDef,
 } from "./types"
 
+/** which way each arrow walks the toolbar; every other key is left alone. */
+export const ARROW_STEPS: Record<string, number | undefined> = {
+	ArrowRight: 1,
+	ArrowLeft: -1,
+}
+
 export const RIBBON_TABS: RibbonTabDef[] = [
 	{ id: "home", labelKey: "ribbon.tab.home" },
 	{ id: "view", labelKey: "ribbon.tab.view" },

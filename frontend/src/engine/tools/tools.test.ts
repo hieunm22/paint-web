@@ -14,7 +14,7 @@ import { PencilTool } from "engine/tools/PencilTool"
 import { PickerTool } from "engine/tools/PickerTool"
 import { ShapeTool } from "engine/tools/ShapeTool"
 import type { AppDispatch } from "store"
-import type { Modifiers, ToolContext } from "types/engine.types"
+import type { Modifiers, StrokePoint, ToolContext } from "types/engine.types"
 import type { Rect } from "types/store.types"
 
 const BLACK = "#000000"
@@ -68,6 +68,15 @@ const LEFT: Modifiers = {
 }
 const RIGHT: Modifiers = { ...LEFT, secondary: true }
 const SHIFT: Modifiers = { ...LEFT, shift: true }
+
+/** one sample of a stroke; a mouse measures no force and leans nowhere. */
+function sample(
+	x: number,
+	y: number,
+	pressure: number | null = null,
+): StrokePoint {
+	return { x, y, pressure, tilt: null }
+}
 
 /**
  * a tool only ever touches its context; the whole of one stands up from
@@ -241,8 +250,8 @@ describe("BrushTool", () => {
 	it("strokes with colour 1, and with colour 2 on the right button", () => {
 		const left = harness()
 		const right = harness()
-		new BrushTool().begin({ x: 1, y: 1 }, LEFT, left.ctx)
-		new BrushTool().begin({ x: 1, y: 1 }, RIGHT, right.ctx)
+		new BrushTool().begin(sample(1, 1), LEFT, left.ctx)
+		new BrushTool().begin(sample(1, 1), RIGHT, right.ctx)
 
 		expect(left.painted[0].style).toBe(BLACK)
 		expect(right.painted[0].style).toBe(WHITE)
@@ -250,7 +259,7 @@ describe("BrushTool", () => {
 
 	it("stamps a flat nib instead of stroking for a calligraphy brush", () => {
 		const h = harness(3, 1, { brush: "calligraphy1" })
-		new BrushTool().begin({ x: 1, y: 1 }, LEFT, h.ctx)
+		new BrushTool().begin(sample(1, 1), LEFT, h.ctx)
 
 		expect(h.painted).toEqual([])
 		expect(h.stamps.length).toBeGreaterThan(0)
@@ -258,7 +267,7 @@ describe("BrushTool", () => {
 
 	it("snapshots the whole disc an airbrush scatters into", () => {
 		const h = harness(1, 1, { brush: "airbrush" })
-		new BrushTool().begin({ x: 2, y: 2 }, LEFT, h.ctx)
+		new BrushTool().begin(sample(2, 2), LEFT, h.ctx)
 
 		expect(h.dirty[0]).toEqual({ x: 0, y: 0, w: 4, h: 4 })
 	})
@@ -268,7 +277,7 @@ describe("BrushTool", () => {
 		const h = harness(1, 1, { brush: "airbrush" })
 		const brush = new BrushTool()
 
-		brush.begin({ x: 2, y: 2 }, LEFT, h.ctx)
+		brush.begin(sample(2, 2), LEFT, h.ctx)
 		const sprayed = h.stamps.length
 		vi.advanceTimersByTime(SPRAY_INTERVAL_MS * 3)
 		const held = h.stamps.length

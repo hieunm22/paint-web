@@ -1,6 +1,12 @@
 import { useTranslation } from "react-i18next"
 import { CAN_SAVE_IN_PLACE, EXTENSIONS, LANGUAGES } from "common/constant"
-import { FILE_MENU_ROWS, QUICK_SAVE_FORMATS, SAVE_AS_MENU } from "./constant"
+import {
+	FILE_MENU_ROWS,
+	PRINT_MENU,
+	PRINT_MENU_ROWS,
+	QUICK_SAVE_FORMATS,
+	SAVE_AS_MENU,
+} from "./constant"
 import { Icon } from "components/Icon"
 import {
 	Menu,
@@ -12,9 +18,15 @@ import { useFileCommands } from "hooks/useFileCommands"
 import { useAppDispatch, useAppSelector } from "store/hooks"
 import { useRecents } from "./hooks"
 import { currentLanguage, setLanguage } from "locales/i18n"
-import { openDialog, toggleMenu } from "store/slices/uiSlice"
+import { closeBackstage, openDialog, toggleMenu } from "store/slices/uiSlice"
 import type { ImageFormat } from "types/store.types"
-import type { FileMenuEntry, FileMenuRowProps, SaveAsMenuProps } from "./types"
+import type {
+	FileMenuEntry,
+	FileMenuRowProps,
+	FlyoutRowProps,
+	PrintMenuProps,
+	SaveAsMenuProps,
+} from "./types"
 
 function FileMenuRow({ row, title, onClick }: FileMenuRowProps) {
 	const { t } = useTranslation()
@@ -36,6 +48,42 @@ function FileMenuRow({ row, title, onClick }: FileMenuRowProps) {
 			)}
 			{row.submenu && <Icon name="caretDown" size={9} />}
 		</button>
+	)
+}
+
+/** a row whose flyout opens beside it rather than doing something at once. */
+function FlyoutRow({
+	row,
+	menu,
+	open,
+	onOpen,
+}: FlyoutRowProps) {
+	return (
+		<MenuAnchor className="file-menu__anchor">
+			<FileMenuRow row={row} onClick={onOpen} />
+			{open && menu}
+		</MenuAnchor>
+	)
+}
+
+function PrintMenu({ onPrint }: PrintMenuProps) {
+	const { t } = useTranslation()
+	const dispatch = useAppDispatch()
+
+	return (
+		<Menu width={196}>
+			{PRINT_MENU_ROWS.map(row => (
+				<MenuItem
+					key={row.labelKey}
+					icon={row.icon}
+					label={t(row.labelKey)}
+					shortcut={row.shortcutKey && t(row.shortcutKey)}
+					onClick={() =>
+						row.dialog ? dispatch(openDialog(row.dialog)) : onPrint()
+					}
+				/>
+			))}
+		</Menu>
 	)
 }
 
@@ -69,7 +117,7 @@ export function FileMenuList() {
 	const { t } = useTranslation()
 	const dispatch = useAppDispatch()
 	const files = useFileCommands()
-	const saveAsOpen = useAppSelector(s => s.ui.openMenu) === SAVE_AS_MENU
+	const openMenu = useAppSelector(s => s.ui.openMenu)
 
 	const run = (row: FileMenuEntry) => {
 		if (row.dialog) {
@@ -85,6 +133,8 @@ export function FileMenuList() {
 				return void files.save()
 			case "save-as":
 				return void dispatch(toggleMenu(SAVE_AS_MENU))
+			case "print":
+				return void dispatch(toggleMenu(PRINT_MENU))
 			case "copy-image":
 				return void files.copyImage()
 			case "exit":
@@ -107,15 +157,35 @@ export function FileMenuList() {
 				row === "sep" ? (
 					<div key={`sep-${i}`} className="file-menu__sep" />
 				) : row.action === "save-as" ? (
-					<MenuAnchor key={row.labelKey} className="file-menu__anchor">
-						<FileMenuRow row={row} onClick={() => run(row)} />
-						{saveAsOpen && (
+					<FlyoutRow
+						key={row.labelKey}
+						row={row}
+						open={openMenu === SAVE_AS_MENU}
+						onOpen={() => run(row)}
+						menu={
 							<SaveAsMenu
 								onPick={(format: ImageFormat) => void files.saveAs(format)}
 								onOther={() => dispatch(openDialog("save-as"))}
 							/>
-						)}
-					</MenuAnchor>
+						}
+					/>
+				) : row.action === "print" ? (
+					<FlyoutRow
+						key={row.labelKey}
+						row={row}
+						open={openMenu === PRINT_MENU}
+						onOpen={() => run(row)}
+						menu={
+							<PrintMenu
+								onPrint={() => {
+									// the sheet is what the user is looking at next, not
+									// the backstage the command was reached through
+									dispatch(closeBackstage())
+									void files.print()
+								}}
+							/>
+						}
+					/>
 				) : (
 					<FileMenuRow
 						key={row.labelKey}

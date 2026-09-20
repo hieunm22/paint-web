@@ -1,11 +1,21 @@
 import {
 	useCallback,
+	useEffect,
 	useRef,
 	useState,
 	type PointerEvent as ReactPointerEvent,
+	type RefObject,
 } from "react"
-import { DEFAULT_QUALITY } from "./constant"
+import { DEFAULT_QUALITY, FOCUSABLE } from "./constant"
+import {
+	canUseCamera,
+	captureFrame,
+	openCamera,
+	stopCamera,
+	wasRefused,
+} from "common/camera"
 import { stemOf } from "common/format"
+import { printLayout } from "common/print"
 import { documentName } from "store/common"
 import {
 	clampDragOffset,
@@ -19,6 +29,7 @@ import {
 	toneAt,
 	wholeOf,
 } from "./common"
+import { imageObjectUrl } from "engine/codec"
 import {
 	hexToRgba,
 	rgbaToHex,
@@ -26,16 +37,19 @@ import {
 	winHslToRgba,
 } from "engine/color"
 import { paint } from "engine/PaintEngine"
-import { useAppDispatch } from "store/hooks"
+import { useAppDispatch, useAppSelector } from "store/hooks"
 import { closeDialog } from "store/slices/uiSlice"
 import type { RGBA, Size, WinHsl } from "types/engine.types"
 import type { ImageFormat } from "types/store.types"
 import type {
+	CameraCapture,
+	CameraSession,
 	DragSession,
 	EditColorsForm,
 	EditColorsValue,
 	FieldPick,
 	Point,
+	PrintPreview,
 	ResizeSkewForm,
 	ResizeUnit,
 	SaveAsForm,
@@ -110,6 +124,147 @@ export function useDialogDrag() {
 			onPointerCancel: onPointerUp,
 		},
 	}
+}
+
+/**
+ * keeps the keyboard inside the open dialog: Tab wraps at either end, Escape
+ * closes, and whatever was focused before gets the focus back afterwards.
+ */
+export function useDialogFocus(dialogRef: RefObject<HTMLElement>): void {
+	const dispatch = useAppDispatch()
+
+	useEffect(() => {
+		const dialog = dialogRef.current
+		if (!dialog) return
+
+		const opener = document.activeElement as HTMLElement | null
+		const reachable = () =>
+			[...dialog.querySelectorAll<HTMLElement>(FOCUSABLE)].filter(
+				el => !el.hasAttribute("disabled"),
+			)
+
+		reachable()[0]?.focus()
+
+		const onKeyDown = (e: KeyboardEvent) => {
+			if (e.key === "Escape") {
+				// the canvas listens for Escape as well, and must not also act
+				e.stopPropagation()
+				dispatch(closeDialog())
+				return
+			}
+			if (e.key !== "Tab") return
+
+			const items = reachable()
+			const edge = e.shiftKey ? items[0] : items[items.length - 1]
+			if (!items.length || document.activeElement !== edge) return
+
+			e.preventDefault()
+			;(e.shiftKey ? items[items.length - 1] : items[0]).focus()
+		}
+
+		dialog.addEventListener("keydown", onKeyDown)
+		return () => {
+			dialog.removeEventListener("keydown", onKeyDown)
+			opener?.focus()
+		}
+	}, [dialogRef, dispatch])
+}
+
+/**
+ * the sheet behind Print preview. the picture is encoded once, while the
+ * layout is worked out again on every change Page setup makes.
+ */
+export function usePrintPreview(): PrintPreview {
+	const setup = useAppSelector(s => s.print)
+	const width = useAppSelector(s => s.doc.width)
+	const height = useAppSelector(s => s.doc.height)
+	const [src, setSrc] = useState("")
+
+	useEffect(() => {
+		const image = paint.readDocument()
+		if (!image) return
+
+		let url = ""
+		let live = true
+		void imageObjectUrl(image).then(next => {
+			url = next
+			if (live) setSrc(next)
+			else URL.revokeObjectURL(next)
+		})
+
+		return () => {
+			live = false
+			if (url) URL.revokeObjectURL(url)
+		}
+	}, [])
+
+	const doc = { width, height }
+	return { src, doc, layout: printLayout(doc, setup) }
+}
+
+/**
+ * runs the camera for as long as the dialog is open. the stream is stopped on
+ * the way out, or the light beside the lens stays on over the whole session.
+ */
+export function useCamera(onCapture: CameraCapture): CameraSession {
+	const videoRef = useRef<HTMLVideoElement>(null)
+	const streamRef = useRef<MediaStream | null>(null)
+	const [errorKey, setErrorKey] = useState<string | null>(null)
+	const [ready, setReady] = useState(false)
+
+	useEffect(() => {
+		if (!canUseCamera()) {
+			setErrorKey(
+				window.isSecureContext
+					? "dialog.from-camera.unavailable"
+					: "dialog.from-camera.insecure",
+			)
+			return
+		}
+
+		let live = true
+		openCamera()
+			.then(stream => {
+				if (!live) {
+					stopCamera(stream)
+					return
+				}
+
+				streamRef.current = stream
+				const video = videoRef.current
+				if (video) {
+					video.srcObject = stream
+					void video.play()
+				}
+				setReady(true)
+			})
+			.catch((error: unknown) => {
+				if (!live) return
+
+				setErrorKey(
+					wasRefused(error)
+						? "dialog.from-camera.denied"
+						: "dialog.from-camera.unavailable",
+				)
+			})
+
+		return () => {
+			live = false
+			stopCamera(streamRef.current)
+			streamRef.current = null
+		}
+	}, [])
+
+	const capture = () => {
+		const video = videoRef.current
+		if (!video) return
+
+		captureFrame(video)
+			.then(onCapture)
+			.catch(() => setErrorKey("dialog.from-camera.unavailable"))
+	}
+
+	return { videoRef, errorKey, ready, capture }
 }
 
 /** holds the Save As fields; the picker only sees them once OK is pressed. */

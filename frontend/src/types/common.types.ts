@@ -1,5 +1,9 @@
 import type { ImageFormat } from "types/store.types"
 
+export type EmptyVoid = () => void
+export type EmptyPromise = () => Promise<void>
+export type NumberVoid = (n: number) => void
+
 /** mime type to the extensions that spell it, as both pickers want it. */
 export interface FilePickerType {
 	description?: string
@@ -45,6 +49,19 @@ export interface HandlePermission {
 	requestPermission(mode: PermissionMode): Promise<PermissionState>
 }
 
+/** the files an installed app was opened with, which lib.dom does not declare. */
+export interface LaunchParams {
+	files: FileSystemFileHandle[]
+}
+
+export interface LaunchQueue {
+	setConsumer(consumer: (params: LaunchParams) => void): void
+}
+
+export interface LaunchWindow {
+	launchQueue?: LaunchQueue
+}
+
 /** Chrome hands a real handle over with a dropped item; nothing else does. */
 export interface DroppedItem {
 	getAsFileSystemHandle?(): Promise<FileSystemHandle | null>
@@ -54,6 +71,24 @@ export interface DroppedItem {
 export interface PickedFile {
 	file: File
 	handle: FileSystemFileHandle | null
+}
+
+/**
+ * where the picture lands on one sheet, every measure in millimetres. the
+ * offsets are counted from the corner of the printable box, not of the paper.
+ */
+export interface PrintLayout {
+	pageWidth: number
+	pageHeight: number
+	/** corner of the printable box, which is where the margins put it. */
+	boxX: number
+	boxY: number
+	boxWidth: number
+	boxHeight: number
+	width: number
+	height: number
+	x: number
+	y: number
 }
 
 /** one row of the backstage recents list, as it sits in IndexedDB. */

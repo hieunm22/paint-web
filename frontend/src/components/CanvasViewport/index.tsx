@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next"
 import { TOOL_CURSORS } from "./constant"
 import {
 	ResizeHandles,
@@ -22,6 +23,7 @@ import {
 import "./CanvasViewport.scss"
 
 export function CanvasViewport() {
+	const { t } = useTranslation()
 	const { width, height } = useAppSelector(s => s.doc)
 	const {
 		zoom,
@@ -40,7 +42,7 @@ export function CanvasViewport() {
 		overlayRef,
 		paneRef,
 	} = useSurface(width, height)
-	const pointerProps = usePointerTools(zoom, paneRef)
+	const pointerProps = usePointerTools(zoom, paneRef, previewRef)
 	const viewportRef = useZoomFocus(focus)
 	useOverlayReset(activeTool)
 
@@ -70,6 +72,11 @@ export function CanvasViewport() {
 								ref={baseRef}
 								className="canvas__surface"
 								style={layerSize}
+								role="img"
+								aria-label={t("canvas.surface.label", {
+									0: width,
+									1: height,
+								})}
 							/>
 							<canvas
 								ref={previewRef}

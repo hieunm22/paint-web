@@ -1,6 +1,7 @@
 import { useRef } from "react"
 import { createPortal } from "react-dom"
 import { Icon } from "components/Icon"
+import { menuItemRole } from "./common"
 import { useMenuDismiss, useMenuPlacement } from "./hooks"
 import type { MenuItemProps, MenuProps, MenuSectionLabelProps } from "./types"
 import "./Menu.scss"
@@ -40,6 +41,7 @@ export function MenuItem({
 	shortcut,
 	disabled,
 	checked,
+	radio,
 	submenu,
 	onClick,
 }: MenuItemProps) {
@@ -47,9 +49,10 @@ export function MenuItem({
 		<button
 			type="button"
 			className="menu__item"
-			role="menuitem"
+			role={menuItemRole(checked, radio)}
 			disabled={disabled}
 			aria-checked={checked}
+			aria-haspopup={submenu ? "menu" : undefined}
 			onClick={onClick}
 		>
 			<span className="menu__item-icon">

@@ -1,4 +1,4 @@
-import type { PickedFile, RecentEntry } from "types/common.types"
+import type { EmptyVoid, PickedFile, RecentEntry } from "types/common.types"
 import type { ImageFormat } from "types/store.types"
 
 export interface SaveOptions {
@@ -10,7 +10,7 @@ export interface SaveOptions {
 
 /** every File command in one object, shared by the backstage, QAT and dialogs. */
 export interface FileCommands {
-	newDocument(): void
+	newDocument: EmptyVoid
 	openDocument(): Promise<void>
 	openPicked(picked: PickedFile): Promise<void>
 	openRecent(entry: RecentEntry): Promise<void>
@@ -18,6 +18,10 @@ export interface FileCommands {
 	save(): Promise<boolean>
 	saveAs(format: ImageFormat, options?: SaveOptions): Promise<boolean>
 	copyImage(): Promise<void>
+	/** hands the picture to the browser's print dialog on its own sheet. */
+	print(): Promise<void>
+	/** a frame straight off the camera, taken like a file that was opened. */
+	openCapture(blob: Blob): Promise<void>
 	/** the selected pixels, or the whole picture when nothing is picked. */
 	copySelection(): Promise<void>
 	cutSelection(): Promise<void>
@@ -25,8 +29,8 @@ export interface FileCommands {
 	pasteBlob(blob: Blob): Promise<void>
 	/** Paste from: a picture off disk, stamped like a clipboard paste. */
 	pasteFrom(): Promise<void>
-	exit(): void
+	exit: EmptyVoid
 	/** runs whatever the discard dialog was holding back. */
-	resume(): void
-	cancelPending(): void
+	resume: EmptyVoid
+	cancelPending: EmptyVoid
 }

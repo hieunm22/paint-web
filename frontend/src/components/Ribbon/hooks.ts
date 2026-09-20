@@ -2,9 +2,12 @@ import {
 	useCallback,
 	useEffect,
 	useMemo,
+	useRef,
 	useState,
+	type KeyboardEvent,
 } from "react"
 import {
+	ARROW_STEPS,
 	FONT_FAMILIES,
 	SHAPE_GALLERY_COLS,
 	SHAPE_GALLERY_VISIBLE_ROWS,
@@ -18,7 +21,62 @@ import { maxGalleryRow } from "./common"
 import { useAppDispatch, useAppSelector } from "store/hooks"
 import { setTextOptions } from "store/slices/toolSlice"
 import type { TextOptions } from "types/store.types"
-import type { FontFamilyList, FontStyleId, TextRibbonState } from "./types"
+import type {
+	FontFamilyList,
+	FontStyleId,
+	RovingFocus,
+	TextRibbonState,
+} from "./types"
+
+/**
+ * the ribbon is one toolbar: the arrows walk it and a single button sits in
+ * the tab order, so Tab steps past the whole strip instead of through sixty.
+ */
+export function useRovingFocus(): RovingFocus {
+	const ref = useRef<HTMLDivElement>(null)
+	const current = useRef(0)
+
+	const buttons = useCallback(() => {
+		const found = ref.current?.querySelectorAll<HTMLButtonElement>(
+			"button:not(:disabled)",
+		)
+		return [...(found ?? [])]
+	}, [])
+
+	// the strip is rebuilt on every tool change, and the one reachable button
+	// has to be marked again each time
+	useEffect(() => {
+		const items = buttons()
+		const at = Math.min(current.current, items.length - 1)
+		items.forEach((item, i) => {
+			item.tabIndex = i === at ? 0 : -1
+		})
+	})
+
+	return {
+		ref,
+
+		onKeyDown: (e: KeyboardEvent<HTMLDivElement>) => {
+			const step = ARROW_STEPS[e.key]
+			const items = buttons()
+			if (!step || !items.length) return
+
+			e.preventDefault()
+			const from = items.indexOf(document.activeElement as HTMLButtonElement)
+			const next = (from + step + items.length) % items.length
+			current.current = next
+			items[next]?.focus()
+		},
+
+		// focusin has already moved the focus, which is what names the button
+		onFocus: () => {
+			const found = buttons().indexOf(
+				document.activeElement as HTMLButtonElement,
+			)
+			if (found >= 0) current.current = found
+		},
+	}
+}
 
 /** scrolls the shape gallery one row at a time. */
 export function useShapeGalleryScroll(totalShapes: number) {

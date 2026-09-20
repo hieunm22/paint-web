@@ -14,8 +14,8 @@ export function encodeBmp24(image: ImageData): Blob {
 	const { width, height, data } = image
 	const stride = rowStride(width)
 	const pixels = stride * height
-	const buffer = new ArrayBuffer(HEADER + pixels)
-	const view = new DataView(buffer)
+	const header = new ArrayBuffer(HEADER)
+	const view = new DataView(header)
 
 	// BITMAPFILEHEADER
 	view.setUint16(0, 0x4d42, true)
@@ -30,17 +30,21 @@ export function encodeBmp24(image: ImageData): Blob {
 	view.setUint16(28, 24, true)
 	view.setUint32(34, pixels, true)
 
-	const out = new Uint8Array(buffer, HEADER)
+	// one buffer per row rather than one for the file: at 8000 pixels square
+	// the whole thing is nearly 200 mb, and that much in one piece is refused
+	const parts: BlobPart[] = [header]
 	for (let y = 0; y < height; y++) {
+		const row = new Uint8Array(stride)
 		const src = (height - 1 - y) * width * 4
-		let dst = y * stride
+		let dst = 0
 		for (let x = 0; x < width; x++) {
 			const i = src + x * 4
-			out[dst++] = data[i + 2]
-			out[dst++] = data[i + 1]
-			out[dst++] = data[i]
+			row[dst++] = data[i + 2]
+			row[dst++] = data[i + 1]
+			row[dst++] = data[i]
 		}
+		parts.push(row)
 	}
 
-	return new Blob([buffer], { type: "image/bmp" })
+	return new Blob(parts, { type: "image/bmp" })
 }

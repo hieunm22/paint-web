@@ -8,3 +8,7 @@ dist
 
 # emitted by tsc -b
 *.tsbuildinfo
+
+# playwright run output; the baselines under tests/snapshots are committed
+test-results
+playwright-report

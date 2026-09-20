@@ -10,7 +10,7 @@ import {
 	type PointerEvent,
 	type RefObject,
 } from "react"
-import { TEXT_PADDING } from "common/constant"
+import { HAS_RAW_POINTER, TEXT_PADDING } from "common/constant"
 import {
 	CANVAS_MARGIN,
 	THUMBNAIL_BOX,
@@ -30,7 +30,13 @@ import {
 import { reportCursor } from "engine/cursor"
 import { getOverlayState, subscribeOverlay } from "engine/overlay"
 import { paint } from "engine/PaintEngine"
-import type { Modifiers, OverlayState, Size } from "types/engine.types"
+import { penPressure, penTilt, smoothPressure } from "engine/pressure"
+import type {
+	Modifiers,
+	OverlayState,
+	Size,
+	StrokePoint,
+} from "types/engine.types"
 import type {
 	Point,
 	Rect,
@@ -39,6 +45,7 @@ import type {
 } from "types/store.types"
 import type {
 	HandlePosition,
+	NativePointer,
 	PointerBatch,
 	ResizeSession,
 	TextDragSession,
@@ -94,14 +101,19 @@ export function useSurface(width: number, height: number) {
 export function usePointerTools(
 	zoom: number,
 	paneRef: RefObject<HTMLDivElement>,
+	previewRef: RefObject<HTMLCanvasElement>,
 ) {
 	const batch = useRef<PointerBatch>({
 		points: [],
 		mods: { secondary: false, shift: false, alt: false, ctrl: false },
 		frame: null,
+		pointerId: null,
+		penActive: false,
+		pressure: null,
+		rect: null,
 	})
 
-	return useMemo(() => {
+	const tools = useMemo(() => {
 		const draw = () => {
 			const held = batch.current
 			held.frame = null
@@ -115,47 +127,123 @@ export function usePointerTools(
 			if (held.frame !== null) cancelAnimationFrame(held.frame)
 			held.frame = null
 			held.points = []
+			held.pointerId = null
+			held.pressure = null
+			held.rect = null
 		}
+
+		/** the positions of one event, queued for the frame that draws them. */
+		const sample = (e: NativePointer, rect: DOMRect) => {
+			const held = batch.current
+			const points = coalescedPoints(e, rect, zoom, held)
+			held.points.push(...points)
+			held.mods = modifiersOf(e)
+			if (held.frame === null) held.frame = requestAnimationFrame(draw)
+		}
+
+		/** a palm on the tablet is a touch beside a pen, and draws nothing. */
+		const rejected = (e: NativePointer | CanvasPointerEvent) =>
+			batch.current.penActive && e.pointerType === "touch"
+
+		/** an event from a finger that joined a gesture another pointer owns. */
+		const foreign = (e: CanvasPointerEvent) =>
+			batch.current.pointerId !== null &&
+			batch.current.pointerId !== e.pointerId
 
 		return {
-			onPointerDown: (e: CanvasPointerEvent) => {
-				if (e.button !== 0 && e.button !== 2) return
-
-				discard()
-				e.currentTarget.setPointerCapture(e.pointerId)
-				paint.begin(pointOf(e, zoom), modifiersOf(e))
-			},
-			onPointerMove: (e: CanvasPointerEvent) => {
-				const points = coalescedPoints(e, zoom)
-				const at = points[points.length - 1] ?? null
-				reportCursor(at)
-				paint.hover(at, paneOffset(e, paneRef))
-				if (!paint.isDrawing) return
-
+			/** chromium reports between frames, ahead of the next pointermove. */
+			raw: (e: NativePointer) => {
 				const held = batch.current
-				held.points.push(...points)
-				held.mods = modifiersOf(e)
-				if (held.frame === null) held.frame = requestAnimationFrame(draw)
+				const rect = held.rect
+				if (
+					!rect ||
+					!paint.isDrawing ||
+					rejected(e) ||
+					held.pointerId !== e.pointerId
+				) {
+					return
+				}
+
+				sample(e, rect)
 			},
-			onPointerUp: (e: CanvasPointerEvent) => {
-				// what is still buffered belongs to this stroke, not to the frame
-				// that would land after it ends
-				discardFrame(batch.current)
-				draw()
-				paint.end(pointOf(e, zoom), modifiersOf(e))
+
+			props: {
+				onPointerDown: (e: CanvasPointerEvent) => {
+					if ((e.button !== 0 && e.button !== 2) || rejected(e)) return
+
+					discard()
+					const held = batch.current
+					held.pointerId = e.pointerId
+					held.penActive = e.pointerType === "pen"
+					// measured once: a raw listener firing at 1000 hz must not
+					// ask the layout where the canvas is on every sample
+					held.rect = e.currentTarget.getBoundingClientRect()
+					e.currentTarget.setPointerCapture(e.pointerId)
+					paint.begin(pointOf(e, zoom, held), modifiersOf(e))
+				},
+				onPointerMove: (e: CanvasPointerEvent) => {
+					if (rejected(e)) return
+
+					const held = batch.current
+					const rect = e.currentTarget.getBoundingClientRect()
+					const drawing = paint.isDrawing && !foreign(e)
+					// a raw listener has already queued these positions
+					const points =
+						drawing && HAS_RAW_POINTER
+							? []
+							: coalescedPoints(e.nativeEvent, rect, zoom, held)
+					// a plain position for the hover: folding this sample into the
+					// pressure filter as well would count it twice
+					const at =
+						points[points.length - 1] ??
+						screenToImage(e.clientX, e.clientY, rect, zoom)
+					reportCursor(at)
+					paint.hover(at, paneOffset(e, paneRef))
+					if (!drawing || !points.length) return
+
+					held.points.push(...points)
+					held.mods = modifiersOf(e)
+					if (held.frame === null) held.frame = requestAnimationFrame(draw)
+				},
+				onPointerUp: (e: CanvasPointerEvent) => {
+					if (rejected(e) || foreign(e)) return
+
+					// what is still buffered belongs to this stroke, not to the frame
+					// that would land after it ends
+					discardFrame(batch.current)
+					draw()
+					const held = batch.current
+					paint.end(pointOf(e, zoom, held), modifiersOf(e))
+					held.pointerId = null
+					held.penActive = false
+					held.pressure = null
+					held.rect = null
+				},
+				onPointerCancel: () => {
+					discard()
+					batch.current.penActive = false
+					paint.cancel()
+				},
+				onPointerLeave: () => {
+					paint.hover(null, null)
+					if (!paint.isDrawing) reportCursor(null)
+				},
+				// right-drag paints colour 2, which the context menu would interrupt
+				onContextMenu: (e: CanvasPointerEvent) => e.preventDefault(),
 			},
-			onPointerCancel: () => {
-				discard()
-				paint.cancel()
-			},
-			onPointerLeave: () => {
-				paint.hover(null, null)
-				if (!paint.isDrawing) reportCursor(null)
-			},
-			// right-drag paints colour 2, which the context menu would interrupt
-			onContextMenu: (e: CanvasPointerEvent) => e.preventDefault(),
 		}
-	}, [zoom, paneRef])
+	}, [zoom, paneRef, previewRef])
+
+	useEffect(() => {
+		const canvas = previewRef.current
+		if (!canvas || !HAS_RAW_POINTER) return
+
+		const onRaw = (e: Event) => tools.raw(e as NativePointer)
+		canvas.addEventListener("pointerrawupdate", onRaw)
+		return () => canvas.removeEventListener("pointerrawupdate", onRaw)
+	}, [tools, previewRef])
+
+	return tools.props
 }
 
 function discardFrame(held: PointerBatch): void {
@@ -432,25 +520,54 @@ function paneOffset(
 	return pane ? { x: e.clientX - pane.left, y: e.clientY - pane.top } : null
 }
 
-function pointOf(e: CanvasPointerEvent, zoom: number): Point {
+/**
+ * one position with what the pen reported about the touch. the smoothed force
+ * is carried on the batch: a filter needs the sample before this one.
+ */
+function strokePoint(
+	e: NativePointer,
+	rect: DOMRect,
+	zoom: number,
+	held: PointerBatch,
+): StrokePoint {
+	held.pressure = smoothPressure(
+		held.pressure,
+		penPressure(e.pointerType, e.pressure),
+	)
+
+	return {
+		...screenToImage(e.clientX, e.clientY, rect, zoom),
+		pressure: held.pressure,
+		tilt: penTilt(e.pointerType, e.tiltX, e.tiltY),
+	}
+}
+
+function pointOf(
+	e: CanvasPointerEvent,
+	zoom: number,
+	held: PointerBatch,
+): StrokePoint {
 	const rect = e.currentTarget.getBoundingClientRect()
-	return screenToImage(e.clientX, e.clientY, rect, zoom)
+	return strokePoint(e.nativeEvent, rect, zoom, held)
 }
 
 /**
  * a pen fires far faster than the display refreshes; the browser holds the
  * intermediate positions back and hands them over with the event.
  */
-function coalescedPoints(e: CanvasPointerEvent, zoom: number): Point[] {
-	const rect = e.currentTarget.getBoundingClientRect()
-	const native = e.nativeEvent
-	const batch = native.getCoalescedEvents?.() ?? []
-	const events = batch.length ? batch : [native]
+function coalescedPoints(
+	e: NativePointer,
+	rect: DOMRect,
+	zoom: number,
+	held: PointerBatch,
+): StrokePoint[] {
+	const batch = e.getCoalescedEvents?.() ?? []
+	const events = batch.length ? batch : [e]
 
-	return events.map(ev => screenToImage(ev.clientX, ev.clientY, rect, zoom))
+	return events.map(ev => strokePoint(ev, rect, zoom, held))
 }
 
-function modifiersOf(e: CanvasPointerEvent): Modifiers {
+function modifiersOf(e: NativePointer | CanvasPointerEvent): Modifiers {
 	return {
 		secondary: isSecondaryButton(e.button, e.ctrlKey),
 		shift: e.shiftKey,

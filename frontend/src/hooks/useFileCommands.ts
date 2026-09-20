@@ -14,11 +14,14 @@ import {
 	writeFile,
 } from "common/fileSystem"
 import { formatOfMime, stemOf, withExtension } from "common/format"
+import { printImage } from "common/print"
 import { rememberRecent } from "common/recents"
-import { readPageSize } from "store/common"
+import { documentName, readPageSize } from "store/common"
+import { fitsCanvas } from "engine/canvasLimit"
 import {
 	decodeImage,
 	encodeImage,
+	imageObjectUrl,
 	isAnimatedGif,
 	thumbnailDataUrl,
 } from "engine/codec"
@@ -99,6 +102,13 @@ export function useFileCommands(): FileCommands {
 				if (width > MAX_DIMENSION || height > MAX_DIMENSION) {
 					bitmap.close()
 					toast("toast.file.too-large")
+					return
+				}
+				// under the app's own limit and still past what this browser
+				// can back: an 8k picture is 33 megapixels and iOS stops at 17
+				if (!fitsCanvas({ width, height })) {
+					bitmap.close()
+					toast("toast.file.over-canvas-limit")
 					return
 				}
 
@@ -252,7 +262,35 @@ export function useFileCommands(): FileCommands {
 
 			copyImage: () => writeClipboard(snapshot()),
 
-			copySelection: () => writeClipboard(paint.readSelection() ?? snapshot()),
+			print: async () => {
+				const { width, height, fileName } = store.getState().doc
+				const setup = store.getState().print
+				const title = documentName(fileName)
+				let src = ""
+
+				try {
+					const image = snapshot()
+					src = await imageObjectUrl(image)
+					await printImage(src, { width, height }, setup, title)
+				} catch {
+					toast("toast.print.failed")
+				} finally {
+					if (src) URL.revokeObjectURL(src)
+				}
+			},
+
+			openCapture: (blob: Blob) => {
+				const stem = translate("document.name.camera")
+				const name = withExtension(stem, "png")
+				const file = new File([blob], name, { type: MIME_TYPES.png })
+
+				return openPicked({ file, handle: null })
+			},
+
+			copySelection: () => {
+				const image = paint.readSelection() ?? snapshot()
+				return writeClipboard(image)
+			},
 
 			cutSelection: async () => {
 				const image = paint.readSelection()

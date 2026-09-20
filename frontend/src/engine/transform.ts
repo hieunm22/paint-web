@@ -70,6 +70,22 @@ export function flipImage(
 }
 
 /**
+ * the paper a scale and shear ends on. the caller asks before it starts: a
+ * picture the browser cannot back is refused rather than half drawn.
+ */
+export function transformedSize(source: Size, spec: TransformSpec): Size {
+	const width = Math.max(1, source.width * spec.scaleX)
+	const height = Math.max(1, source.height * spec.scaleY)
+
+	return {
+		width: Math.ceil(width + Math.abs(Math.tan(spec.skewH * DEGREES)) * height),
+		height: Math.ceil(
+			height + Math.abs(Math.tan(spec.skewV * DEGREES)) * width,
+		),
+	}
+}
+
+/**
  * scale and shear in one pass. x grows by the horizontal angle's tangent
  * times y, and y by the vertical angle's tangent times x.
  */
@@ -85,10 +101,8 @@ export function transformImage(
 	const tx = Math.tan(spec.skewH * DEGREES)
 	const ty = Math.tan(spec.skewV * DEGREES)
 
-	const canvas = canvasOf(
-		Math.ceil(width + Math.abs(tx) * height),
-		Math.ceil(height + Math.abs(ty) * width),
-	)
+	const grown = transformedSize(source, spec)
+	const canvas = canvasOf(grown.width, grown.height)
 	const ctx = canvas.getContext("2d")
 	if (!ctx) return canvas
 

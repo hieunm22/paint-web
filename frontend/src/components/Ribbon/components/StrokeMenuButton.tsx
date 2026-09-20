@@ -36,6 +36,7 @@ export function StrokeMenuButton({
 						<MenuItem
 							key={style.id}
 							label={t(strokeStyleKey(style.id, style.labelKey, isFill))}
+							radio
 							checked={value === style.id}
 							onClick={() => onPick(style.id)}
 						/>

@@ -16,7 +16,9 @@ import type { Language, LanguageDef } from "types/locales.types"
 import type {
 	BrushKind,
 	ImageFormat,
+	PaperSize,
 	Point,
+	PrintSetup,
 	QatItemId,
 	ShapeKind,
 	StrokeStyle,
@@ -31,7 +33,20 @@ export const QAT_STORAGE_KEY = "qat"
 /** localStorage key holding the page size the last manual resize settled on. */
 export const PAGE_SIZE_STORAGE_KEY = "page-size"
 
-/** the Quick Access Toolbar in its fixed order; all three start visible. */
+/**
+ * every Quick Access Toolbar button in its fixed order. a re-added one lands
+ * back in place because this list, not the order of the clicks, decides.
+ */
+export const QAT_ORDER: QatItemId[] = [
+	"new",
+	"open",
+	"save",
+	"undo",
+	"redo",
+	"print-preview",
+]
+
+/** the three a first visit shows, which is what Paint puts there. */
 export const QAT_DEFAULT: QatItemId[] = ["save", "undo", "redo"]
 
 export const FALLBACK_LANGUAGE: Language = "en"
@@ -86,6 +101,71 @@ export const FORMAT_ALIASES: Partial<Record<ImageFormat, string[]>> = {
 
 /** past this the memory cost stops being worth it, and Paint has no use for it. */
 export const MAX_DIMENSION = 8000
+
+/**
+ * squares the canvas probe tries at startup, smallest first. a browser refuses
+ * by area rather than by side, and iOS Safari gives up first, near 4096 square.
+ */
+export const CANVAS_PROBE_SIDES = [2048, 4096, 8192, 11585, 16384]
+
+/** what the probe falls back to where no canvas can be built, as in node. */
+export const CANVAS_AREA_FALLBACK = 4096 * 4096
+
+/** printable paper in millimetres, upright; landscape turns it on its side. */
+export const PAPER_SIZES: Record<PaperSize, Size> = {
+	a4: { width: 210, height: 297 },
+	letter: { width: 216, height: 279 },
+}
+
+/** the keyword each paper goes by in a print stylesheet. */
+export const PAPER_CSS_NAMES: Record<PaperSize, string> = {
+	a4: "A4",
+	letter: "Letter",
+}
+
+/** css fixes a picture at 96 dots per inch, which is its natural size on paper. */
+export const CSS_DPI = 96
+
+export const MM_PER_INCH = 25.4
+
+export const DEFAULT_PRINT_SETUP: PrintSetup = {
+	paper: "a4",
+	orientation: "portrait",
+	margins: { top: 10, right: 10, bottom: 10, left: 10 },
+	centerH: true,
+	centerV: true,
+	fit: true,
+	scale: 100,
+}
+
+/** a margin wider than this would leave no printable box on the page. */
+export const MAX_MARGIN = 60
+
+export const MAX_PRINT_SCALE = 400
+
+/** how long the hidden print frame stays before it is taken down again. */
+export const PRINT_RELEASE_MS = 1000
+
+/** what the camera is asked for; it hands back the nearest size it has. */
+export const CAMERA_IDEAL: Size = { width: 3840, height: 2160 }
+
+/** raw pen pressure is noisy, and this is the weight one sample carries. */
+export const PRESSURE_SMOOTHING = 0.3
+
+/** a device that cannot measure force reports exactly this while touching. */
+export const UNMEASURED_PRESSURE = 0.5
+
+/** what a pen's lightest and heaviest touch do to opacity, width and rate. */
+export const PRESSURE_ALPHA: [number, number] = [0.25, 1]
+export const PRESSURE_WIDTH: [number, number] = [0.35, 1.25]
+export const PRESSURE_RATE: [number, number] = [0.2, 1.15]
+
+/** below this lean a pen counts as upright and the nib keeps its own angle. */
+export const MIN_TILT = 5
+
+/** chromium alone reports between frames; everything else waits for a move. */
+export const HAS_RAW_POINTER =
+	typeof window !== "undefined" && "onpointerrawupdate" in window
 
 /** Paint's standard palette: 20 immutable colors. */
 export const PAINT_PALETTE = [

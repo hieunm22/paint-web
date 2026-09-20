@@ -26,3 +26,13 @@ export function placeMenu(
 
 	return { top, left }
 }
+
+/**
+ * a plain item, one of a set that drops the others, or a switch that stands
+ * on its own. the mark drawn beside it is the same; what it means is not.
+ */
+export function menuItemRole(checked?: boolean, radio?: boolean): string {
+	if (checked === undefined) return "menuitem"
+
+	return radio ? "menuitemradio" : "menuitemcheckbox"
+}

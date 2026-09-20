@@ -1,4 +1,5 @@
 import type { ImageFormat } from "types/store.types"
+import type { MarginField, OrientationOption, PaperOption } from "./types"
 
 /** the quality slider runs on whole percent and only jpeg and webp read it. */
 export const DEFAULT_QUALITY = 92
@@ -10,6 +11,32 @@ export const FORMAT_HINT_KEYS: Record<ImageFormat, string> = {
 	gif: "dialog.save-as.hint-gif",
 	webp: "dialog.save-as.hint-webp",
 }
+
+/** what a dialog may hand the keyboard to, which is what Tab cycles through. */
+export const FOCUSABLE =
+	"button, input, select, textarea, [href], [tabindex]:not([tabindex='-1'])"
+
+/** the papers Page setup offers, in the order it lists them. */
+export const PAPER_OPTIONS: PaperOption[] = [
+	{ id: "a4", labelKey: "dialog.page-setup.a4" },
+	{ id: "letter", labelKey: "dialog.page-setup.letter" },
+]
+
+export const ORIENTATION_OPTIONS: OrientationOption[] = [
+	{ id: "portrait", labelKey: "dialog.page-setup.portrait" },
+	{ id: "landscape", labelKey: "dialog.page-setup.landscape" },
+]
+
+/** the four margin fields, left and right first as the dialog reads. */
+export const MARGIN_FIELDS: MarginField[] = [
+	{ edge: "left", labelKey: "dialog.page-setup.left" },
+	{ edge: "right", labelKey: "dialog.page-setup.right" },
+	{ edge: "top", labelKey: "dialog.page-setup.top" },
+	{ edge: "bottom", labelKey: "dialog.page-setup.bottom" },
+]
+
+/** how wide the preview draws one sheet, in css pixels. */
+export const SHEET_WIDTH = 288
 
 /** hue wraps at 240 rather than reaching it, the way Windows counts it. */
 export const HUE_MAX = 240

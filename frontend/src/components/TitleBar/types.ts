@@ -5,7 +5,8 @@ export interface QatItemDef {
 	id: QatItemId
 	icon: IconName
 	labelKey: string
-	shortcutKey: string
+	/** absent for a command Paint gives no key of its own. */
+	shortcutKey?: string
 }
 
 export interface QatItem extends QatItemDef {

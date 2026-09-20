@@ -43,11 +43,13 @@ export function ImageGroup() {
 						</MenuSectionLabel>
 						<MenuItem
 							label={t("ribbon.image.select-rect")}
+							radio
 							checked={activeTool === "select-rect"}
 							onClick={() => dispatch(setTool("select-rect"))}
 						/>
 						<MenuItem
 							label={t("ribbon.image.select-free")}
+							radio
 							checked={activeTool === "select-free"}
 							onClick={() => dispatch(setTool("select-free"))}
 						/>

@@ -4,7 +4,11 @@
 			"file": "File",
 			"home": "Home",
 			"view": "View",
-			"text": "Text"
+			"text": "Text",
+			"strip": "Ribbon tabs"
+		},
+		"toolbar": {
+			"label": "Drawing tools"
 		},
 		"clipboard": {
 			"label": "Clipboard",
@@ -151,6 +155,7 @@
 			"open": "Ctrl+O",
 			"save": "Ctrl+S",
 			"save-as": "Ctrl+Shift+S",
+			"print": "Ctrl+P",
 			"properties": "Ctrl+E"
 		},
 		"edit": {
@@ -180,13 +185,16 @@
 	},
 	"titlebar": {
 		"qat": {
+			"new": "New",
+			"open": "Open",
 			"save": "Save",
 			"undo": "Undo",
 			"redo": "Redo",
+			"print-preview": "Print preview",
 			"customise": "Customise Quick Access Toolbar"
 		},
 		"window": {
-			"title": "{0} - Paint",
+			"title": "{0} - Paint Web",
 			"minimize": "Not available on the web - use your browser's minimise button",
 			"maximize": "Maximise (full screen)",
 			"close": "Close"
@@ -208,6 +216,9 @@
 		}
 	},
 	"canvas": {
+		"surface": {
+			"label": "Picture, {0} x {1} pixels"
+		},
 		"thumbnail": {
 			"title": "Thumbnail"
 		},
@@ -233,12 +244,17 @@
 			"from-camera-note": "Uses getUserMedia - about 4K at most",
 			"copy-image": "Copy image",
 			"properties": "Properties",
-			"about": "About Paint",
+			"about": "About Paint Web",
 			"exit": "Exit"
 		},
 		"save-as": {
 			"option": "{0} ({1})",
 			"other": "Other formats..."
+		},
+		"print": {
+			"print": "Print",
+			"page-setup": "Page setup",
+			"preview": "Print preview"
 		},
 		"recent": {
 			"title": "Recent pictures",
@@ -258,13 +274,13 @@
 			"close": "Close"
 		},
 		"about": {
-			"title": "About Paint",
+			"title": "About Paint Web",
 			"app-name": "Paint Web 0.1.0",
 			"body": "A web rebuild of the Microsoft Paint (Windows 10) Ribbon interface, running entirely client-side.",
 			"disclaimer": "Not affiliated with Microsoft. The interface is inspired by Microsoft Paint. Icons come from Font Awesome Pro under a separate licence; no original Paint asset is used."
 		},
 		"confirm-discard": {
-			"title": "Paint",
+			"title": "Paint Web",
 			"message": "Do you want to save changes to {0}?",
 			"save": "Save",
 			"dont-save": "Don't Save"
@@ -280,6 +296,16 @@
 			"red": "Red:",
 			"green": "Green:",
 			"blue": "Blue:"
+		},
+		"from-camera": {
+			"title": "From Camera",
+			"capture": "Capture",
+			"starting": "Starting the camera...",
+			"denied": "Permission to use the camera was refused",
+			"unavailable": "This browser offers no camera",
+			"insecure": "The camera needs an https connection",
+			"hint": "The captured picture replaces the one you have open",
+			"preview": "Camera preview"
 		},
 		"image-properties": {
 			"title": "Image Properties",
@@ -299,6 +325,36 @@
 			"color": "Color",
 			"width": "Width:",
 			"height": "Height:"
+		},
+		"page-setup": {
+			"title": "Page Setup",
+			"paper": "Paper",
+			"size": "Size:",
+			"a4": "A4",
+			"letter": "Letter",
+			"orientation": "Orientation",
+			"portrait": "Portrait",
+			"landscape": "Landscape",
+			"margins": "Margins (millimetres)",
+			"left": "Left:",
+			"right": "Right:",
+			"top": "Top:",
+			"bottom": "Bottom:",
+			"centering": "Centering",
+			"horizontal": "Horizontal",
+			"vertical": "Vertical",
+			"scaling": "Scaling",
+			"fit": "Fit to page",
+			"adjust": "Adjust to:",
+			"percent": "%",
+			"hint": "The browser still shows its own print dialog - this only sets the page."
+		},
+		"print-preview": {
+			"title": "Print Preview",
+			"print": "Print",
+			"page-setup": "Page setup",
+			"measure": "{0} x {1} mm of {2} x {3} mm",
+			"page": "Page"
 		},
 		"resize-skew": {
 			"title": "Resize and Skew",
@@ -327,7 +383,20 @@
 	},
 	"document": {
 		"name": {
-			"untitled": "Untitled"
+			"untitled": "Untitled",
+			"camera": "Camera"
+		}
+	},
+	"live": {
+		"region": {
+			"label": "Announcements"
+		},
+		"image": {
+			"size": "The picture is now {0} x {1} pixels"
+		},
+		"selection": {
+			"size": "Selection {0} x {1} pixels",
+			"none": "Selection cleared"
 		}
 	},
 	"toast": {
@@ -338,7 +407,14 @@
 			"save-failed": "The file could not be written",
 			"downloaded": "Saved to your Downloads folder",
 			"permission-denied": "Permission to use that file was refused",
-			"close-blocked": "A tab can only be closed from the browser itself"
+			"close-blocked": "A tab can only be closed from the browser itself",
+			"over-canvas-limit": "This browser cannot hold a picture that large"
+		},
+		"print": {
+			"failed": "The picture could not be printed"
+		},
+		"camera": {
+			"failed": "The camera handed back no picture"
 		},
 		"clipboard": {
 			"no-image": "The clipboard holds no picture",

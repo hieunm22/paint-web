@@ -21,7 +21,8 @@ export function useKeyboardShortcuts() {
 
 	useEffect(() => {
 		const onKeyDown = (e: KeyboardEvent) => {
-			if (e.altKey) return
+			// the ribbon's own arrow keys walk the toolbar and stop here
+			if (e.altKey || e.defaultPrevented) return
 			if (isTypingTarget(e.target) && !reachesCanvas(e)) return
 
 			if (isPrimaryModifier(e)) {
@@ -47,6 +48,10 @@ export function useKeyboardShortcuts() {
 						e.preventDefault()
 						if (e.shiftKey) dispatch(openDialog("save-as"))
 						else void files.save()
+						return
+					case "p":
+						e.preventDefault()
+						void files.print()
 						return
 					case "=":
 					case "+":

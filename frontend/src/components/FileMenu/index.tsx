@@ -18,7 +18,7 @@ export function FileMenu() {
 					className="file-menu__back"
 					onClick={() => dispatch(closeBackstage())}
 				>
-					<Icon name="caretDown" size={12} />
+					<Icon name="back" size={12} />
 					{t("filemenu.nav.back")}
 				</button>
 				<FileMenuList />

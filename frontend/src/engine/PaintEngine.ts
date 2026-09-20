@@ -1,4 +1,6 @@
 import { MAX_DIMENSION } from "common/constant"
+import { announce } from "engine/announce"
+import { fitsCanvas } from "engine/canvasLimit"
 import { History } from "engine/History"
 import { reportSelectionBox } from "engine/overlay"
 import { SelectionManager } from "engine/SelectionManager"
@@ -9,6 +11,7 @@ import {
 	flipImage,
 	padImage,
 	rotateImage,
+	transformedSize,
 	transformImage,
 } from "engine/transform"
 import { translate } from "locales/translate"
@@ -17,11 +20,13 @@ import { historyChanged } from "store/actions"
 import { setDirty, setDocSize } from "store/slices/docSlice"
 import { clearSelection, setSelection } from "store/slices/selectionSlice"
 import { setTool } from "store/slices/toolSlice"
+import { showToast } from "store/slices/uiSlice"
 import type {
 	FlipAxis,
 	ImageRecipe,
 	Modifiers,
 	Size,
+	StrokePoint,
 	SurfaceLayers,
 	Tool,
 	ToolContext,
@@ -198,6 +203,7 @@ class PaintEngine {
 	resizeCanvas(size: Size): void {
 		const current = this.surface.documentSize
 		if (size.width === current.width && size.height === current.height) return
+		if (!this.canBack(size)) return
 
 		this.commitHeld()
 		const source = this.surface.snapshot()
@@ -211,6 +217,14 @@ class PaintEngine {
 
 	/** Resize and Skew, on the selection when one is up. */
 	transform(spec: TransformSpec): void {
+		// stretching the whole picture is what can outgrow the browser's canvas
+		if (
+			!this.selection.isActive &&
+			!this.canBack(transformedSize(this.surface.documentSize, spec))
+		) {
+			return
+		}
+
 		this.recompose(
 			source => transformImage(source, spec),
 			translate("history.label.resize"),
@@ -249,7 +263,7 @@ class PaintEngine {
 		return this.surface.readRegion({ x: 0, y: 0, w: width, h: height })
 	}
 
-	begin(pt: Point, mods: Modifiers): void {
+	begin(pt: StrokePoint, mods: Modifiers): void {
 		// a deferred fill still owns the undo snapshot; a second gesture would
 		// clear it out from under the worker
 		if (this.busy) return
@@ -270,14 +284,14 @@ class PaintEngine {
 		tool.begin(pt, mods, ctx)
 	}
 
-	update(pts: Point[], mods: Modifiers): void {
+	update(pts: StrokePoint[], mods: Modifiers): void {
 		const ctx = this.context()
 		if (!this.active || !ctx || !pts.length) return
 
 		this.active.update?.(pts, this.withButton(mods), ctx)
 	}
 
-	end(pt: Point, mods: Modifiers): void {
+	end(pt: StrokePoint, mods: Modifiers): void {
 		const tool = this.active
 		const ctx = this.context()
 		if (!tool || !ctx) return
@@ -521,6 +535,10 @@ class PaintEngine {
 		this.docSize = this.surface.documentSize
 		if (before) this.history.pushFull(label, before)
 		store.dispatch(setDocSize(this.docSize))
+		announce("live.image.size", {
+			0: this.docSize.width,
+			1: this.docSize.height,
+		})
 	}
 
 	/** an undone size change resized the surface; the store catches up to it. */
@@ -577,12 +595,16 @@ class PaintEngine {
 		const current = store.getState().selection
 
 		if (kind === "none" || !bounds) {
-			if (current.kind !== "none") store.dispatch(clearSelection())
+			if (current.kind === "none") return
+
+			store.dispatch(clearSelection())
+			announce("live.selection.none")
 			return
 		}
 		if (current.kind === kind && sameRect(current.bounds, bounds)) return
 
 		store.dispatch(setSelection({ kind, bounds }))
+		announce("live.selection.size", { 0: bounds.w, 1: bounds.h })
 	}
 
 	/**
@@ -605,6 +627,14 @@ class PaintEngine {
 				this.busy = false
 				if (this.history.commitStroke(label)) this.markUnsaved()
 			})
+	}
+
+	/** a picture the browser cannot hold is refused before anything is lost. */
+	private canBack(size: Size): boolean {
+		if (fitsCanvas(size)) return true
+
+		store.dispatch(showToast("toast.file.over-canvas-limit"))
+		return false
 	}
 
 	private markUnsaved(): void {

@@ -1,5 +1,5 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit"
-import { QAT_DEFAULT } from "common/constant"
+import { QAT_ORDER } from "common/constant"
 import { readQat } from "store/common"
 import type {
 	DialogId,
@@ -57,11 +57,11 @@ const uiSlice = createSlice({
 		closeMenu(state) {
 			state.openMenu = null
 		},
-		/** the default carries the order, so a re-added button lands back in place. */
+		/** the fixed order decides where a re-added button lands, not the click. */
 		toggleQat(state, action: PayloadAction<QatItemId>) {
 			const id = action.payload
 			const shown = state.qat.includes(id)
-			state.qat = QAT_DEFAULT.filter(one =>
+			state.qat = QAT_ORDER.filter(one =>
 				one === id ? !shown : state.qat.includes(one),
 			)
 		},

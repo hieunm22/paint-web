@@ -1,3 +1,5 @@
+import type { KeyboardEvent, RefObject } from "react"
+import type { EmptyVoid } from "types/common.types"
 import type {
 	BrushKind,
 	BrushSize,
@@ -12,6 +14,13 @@ import type { IconName } from "components/Icon/types"
 export interface RibbonTabDef {
 	id: RibbonTabId
 	labelKey: string
+}
+
+/** what the toolbar container needs to keep one button in the tab order. */
+export interface RovingFocus {
+	ref: RefObject<HTMLDivElement>
+	onKeyDown(e: KeyboardEvent<HTMLDivElement>): void
+	onFocus: EmptyVoid
 }
 
 export interface ToolDef {

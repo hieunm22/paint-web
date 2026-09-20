@@ -2,6 +2,7 @@ import { CanvasViewport } from "components/CanvasViewport"
 import { DialogHost } from "components/DialogHost"
 import { FileMenu } from "components/FileMenu"
 import { FullScreenView } from "components/FullScreenView"
+import { LiveRegion } from "components/LiveRegion"
 import { Ribbon } from "components/Ribbon"
 import { StatusBar } from "components/StatusBar"
 import { TitleBar } from "components/TitleBar"
@@ -12,6 +13,7 @@ import { useDismissMenus } from "hooks/useDismissMenus"
 import { useDocumentTitle } from "hooks/useDocumentTitle"
 import { useFileDrop } from "hooks/useFileDrop"
 import { useKeyboardShortcuts } from "hooks/useKeyboardShortcuts"
+import { useLaunchFiles } from "hooks/useLaunchFiles"
 import { useAppSelector } from "store/hooks"
 import "./App.scss"
 
@@ -21,6 +23,7 @@ export default function App() {
 	useDocumentTitle()
 	useKeyboardShortcuts()
 	useFileDrop()
+	useLaunchFiles()
 	useClipboard()
 	useBeforeUnload()
 	const backstageOpen = useAppSelector(s => s.ui.backstageOpen)
@@ -43,6 +46,7 @@ export default function App() {
 			{fullScreen && <FullScreenView />}
 			<DialogHost />
 			<Toast />
+			<LiveRegion />
 		</div>
 	)
 }

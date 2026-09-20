@@ -292,4 +292,40 @@
 		height: 44px;
 		border: 1px solid #7a7a7a;
 	}
+
+	&__sheet {
+		position: relative;
+		margin: 0 auto;
+		border: 1px solid #7a7a7a;
+		background: #fff;
+		box-shadow: 2px 2px 6px rgb(0 0 0 / 18%);
+		overflow: hidden;
+	}
+
+	&__sheet-image {
+		position: absolute;
+		image-rendering: pixelated;
+	}
+
+	&__camera {
+		position: relative;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		height: 280px;
+		border: 1px solid #7a7a7a;
+		background: #202020;
+	}
+
+	&__camera-view {
+		max-width: 100%;
+		max-height: 100%;
+	}
+
+	&__camera-note {
+		position: absolute;
+		padding: 0 16px;
+		color: #f0f0f0;
+		text-align: center;
+	}
 }

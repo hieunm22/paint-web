@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next"
 import { Icon } from "components/Icon"
 import { useAppDispatch } from "store/hooks"
-import { useDialogDrag } from "../hooks"
+import { useDialogDrag, useDialogFocus } from "../hooks"
 import { closeDialog } from "store/slices/uiSlice"
 import type { DialogProps } from "../types"
 
@@ -14,6 +14,7 @@ export function Dialog({
 	const { t } = useTranslation()
 	const dispatch = useAppDispatch()
 	const { dialogRef, offset, handleProps } = useDialogDrag()
+	useDialogFocus(dialogRef)
 
 	return (
 		<div className="dialog__overlay" role="presentation">

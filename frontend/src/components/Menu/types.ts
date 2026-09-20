@@ -34,6 +34,8 @@ export interface MenuItemProps {
 	disabled?: boolean
 	/** undefined for a plain item; true or false renders a checkbox or radio mark. */
 	checked?: boolean
+	/** the item is one of a set where picking it drops the others. */
+	radio?: boolean
 	submenu?: boolean
 	onClick?: () => void
 }

@@ -6,16 +6,17 @@ import {
 } from "common/constant"
 import { brushSpread, brushWidth, paintSegment } from "engine/brushes"
 import { clampRect, segmentBounds } from "engine/geometry"
+import { pressureSpec } from "engine/pressure"
 import { translate } from "locales/translate"
 import type {
 	BrushSpec,
 	Modifiers,
+	StrokePoint,
 	Tool,
 	ToolContext,
 } from "types/engine.types"
-import type { Point } from "types/store.types"
 
-const ORIGIN: Point = { x: 0, y: 0 }
+const ORIGIN: StrokePoint = { x: 0, y: 0, pressure: null, tilt: null }
 
 /**
  * the nine brushes, one tool driven by a table of parameters. paint builds up
@@ -27,12 +28,12 @@ export class BrushTool implements Tool {
 	get label(): string {
 		return translate("history.label.brush")
 	}
-	private last: Point = ORIGIN
+	private last: StrokePoint = ORIGIN
 	/** stroke length so far, which is what dries an oil brush out. */
 	private travelled = 0
 	private spraying: ReturnType<typeof setInterval> | null = null
 
-	begin(pt: Point, mods: Modifiers, ctx: ToolContext): void {
+	begin(pt: StrokePoint, mods: Modifiers, ctx: ToolContext): void {
 		this.last = pt
 		this.travelled = 0
 		this.paint(pt, pt, mods, ctx)
@@ -45,7 +46,7 @@ export class BrushTool implements Tool {
 		}, SPRAY_INTERVAL_MS)
 	}
 
-	update(pts: Point[], mods: Modifiers, ctx: ToolContext): void {
+	update(pts: StrokePoint[], mods: Modifiers, ctx: ToolContext): void {
 		for (const pt of pts) {
 			this.paint(this.last, pt, mods, ctx)
 			this.last = pt
@@ -60,8 +61,14 @@ export class BrushTool implements Tool {
 		this.stopSpraying()
 	}
 
-	private paint(a: Point, b: Point, mods: Modifiers, ctx: ToolContext): void {
-		const spec = BRUSH_SPECS[ctx.brush]
+	private paint(
+		a: StrokePoint,
+		b: StrokePoint,
+		mods: Modifiers,
+		ctx: ToolContext,
+	): void {
+		// the segment is painted as the pen was holding it when it arrived
+		const spec = pressureSpec(BRUSH_SPECS[ctx.brush], b)
 		const width = brushWidth(spec, ctx.size)
 		const gap = Math.hypot(b.x - a.x, b.y - a.y)
 		this.travelled += gap

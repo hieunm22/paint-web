@@ -169,6 +169,43 @@ export interface SelectionState {
 	transparent: boolean
 }
 
+export type PaperSize = "a4" | "letter"
+
+export type PageOrientation = "portrait" | "landscape"
+
+/** the four page margins, in millimetres. */
+export interface PrintMargins {
+	top: number
+	right: number
+	bottom: number
+	left: number
+}
+
+/** what Page setup collects, and what the print stylesheet is written from. */
+export interface PrintSetup {
+	paper: PaperSize
+	orientation: PageOrientation
+	margins: PrintMargins
+	centerH: boolean
+	centerV: boolean
+	/** shrinks a picture too big for the page; `scale` applies when it is off. */
+	fit: boolean
+	/** percent of the picture's natural size at 96 dots per inch. */
+	scale: number
+}
+
+/** one margin field of Page setup, in whole millimetres. */
+export interface MarginEdit {
+	edge: keyof PrintMargins
+	value: number
+}
+
+/** one of the two centring switches of Page setup. */
+export interface CenteringEdit {
+	axis: "centerH" | "centerV"
+	on: boolean
+}
+
 /** the command the discard dialog is holding back until the user answers. */
 export type PendingFileAction = "new" | "load" | "exit"
 
@@ -189,7 +226,8 @@ export interface UiState {
 	qat: QatItemId[]
 }
 
-export type QatItemId = "save" | "undo" | "redo"
+export type QatItemId =
+	"new" | "open" | "save" | "undo" | "redo" | "print-preview"
 
 export type DialogId =
 	| "resize-skew"
@@ -198,3 +236,6 @@ export type DialogId =
 	| "save-as"
 	| "confirm-discard"
 	| "about"
+	| "page-setup"
+	| "print-preview"
+	| "from-camera"

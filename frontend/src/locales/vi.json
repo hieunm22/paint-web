@@ -4,7 +4,11 @@
 			"file": "Tệp",
 			"home": "Trang chủ",
 			"view": "Xem",
-			"text": "Văn bản"
+			"text": "Văn bản",
+			"strip": "Các thẻ ribbon"
+		},
+		"toolbar": {
+			"label": "Công cụ vẽ"
 		},
 		"clipboard": {
 			"label": "Bảng tạm",
@@ -151,6 +155,7 @@
 			"open": "Ctrl+O",
 			"save": "Ctrl+S",
 			"save-as": "Ctrl+Shift+S",
+			"print": "Ctrl+P",
 			"properties": "Ctrl+E"
 		},
 		"edit": {
@@ -180,13 +185,16 @@
 	},
 	"titlebar": {
 		"qat": {
+			"new": "Mới",
+			"open": "Mở",
 			"save": "Lưu",
 			"undo": "Hoàn tác",
 			"redo": "Làm lại",
+			"print-preview": "Xem trước khi in",
 			"customise": "Tuỳ chỉnh thanh truy cập nhanh"
 		},
 		"window": {
-			"title": "{0} - Paint",
+			"title": "{0} - Paint Web",
 			"minimize": "Không khả dụng trên web - dùng nút thu nhỏ của trình duyệt",
 			"maximize": "Phóng to (toàn màn hình)",
 			"close": "Đóng"
@@ -208,6 +216,9 @@
 		}
 	},
 	"canvas": {
+		"surface": {
+			"label": "Ảnh, {0} x {1} điểm ảnh"
+		},
 		"thumbnail": {
 			"title": "Ảnh thu nhỏ"
 		},
@@ -233,12 +244,17 @@
 			"from-camera-note": "Dùng getUserMedia - tối đa khoảng 4K",
 			"copy-image": "Chép ảnh",
 			"properties": "Thuộc tính",
-			"about": "Giới thiệu Paint",
+			"about": "Giới thiệu Paint Web",
 			"exit": "Thoát"
 		},
 		"save-as": {
 			"option": "{0} ({1})",
 			"other": "Định dạng khác..."
+		},
+		"print": {
+			"print": "In",
+			"page-setup": "Thiết lập trang",
+			"preview": "Xem trước khi in"
 		},
 		"recent": {
 			"title": "Ảnh gần đây",
@@ -258,13 +274,13 @@
 			"close": "Đóng"
 		},
 		"about": {
-			"title": "Giới thiệu Paint",
+			"title": "Giới thiệu Paint Web",
 			"app-name": "Paint Web 0.1.0",
 			"body": "Bản dựng lại giao diện Ribbon của Microsoft Paint (Windows 10) trên nền web, chạy hoàn toàn client-side.",
 			"disclaimer": "Không liên kết với Microsoft. Giao diện lấy cảm hứng từ Microsoft Paint. Icon dùng Font Awesome Pro theo license riêng; không sử dụng asset gốc của Paint."
 		},
 		"confirm-discard": {
-			"title": "Paint",
+			"title": "Paint Web",
 			"message": "Bạn có muốn lưu thay đổi cho {0} không?",
 			"save": "Lưu",
 			"dont-save": "Không lưu"
@@ -280,6 +296,16 @@
 			"red": "Đỏ:",
 			"green": "Lục:",
 			"blue": "Lam:"
+		},
+		"from-camera": {
+			"title": "Từ máy ảnh",
+			"capture": "Chụp",
+			"starting": "Đang khởi động máy ảnh...",
+			"denied": "Quyền dùng máy ảnh đã bị từ chối",
+			"unavailable": "Trình duyệt này không có máy ảnh",
+			"insecure": "Máy ảnh cần kết nối https",
+			"hint": "Ảnh chụp sẽ thay ảnh đang mở",
+			"preview": "Xem trước máy ảnh"
 		},
 		"image-properties": {
 			"title": "Thuộc tính ảnh",
@@ -299,6 +325,36 @@
 			"color": "Màu",
 			"width": "Rộng:",
 			"height": "Cao:"
+		},
+		"page-setup": {
+			"title": "Thiết lập trang",
+			"paper": "Giấy",
+			"size": "Khổ:",
+			"a4": "A4",
+			"letter": "Letter",
+			"orientation": "Hướng giấy",
+			"portrait": "Dọc",
+			"landscape": "Ngang",
+			"margins": "Lề (milimét)",
+			"left": "Trái:",
+			"right": "Phải:",
+			"top": "Trên:",
+			"bottom": "Dưới:",
+			"centering": "Canh giữa",
+			"horizontal": "Ngang",
+			"vertical": "Dọc",
+			"scaling": "Tỉ lệ",
+			"fit": "Vừa trang",
+			"adjust": "Chỉnh về:",
+			"percent": "%",
+			"hint": "Trình duyệt vẫn hiện hộp thoại in của nó - phần này chỉ đặt trang."
+		},
+		"print-preview": {
+			"title": "Xem trước khi in",
+			"print": "In",
+			"page-setup": "Thiết lập trang",
+			"measure": "{0} x {1} mm trên {2} x {3} mm",
+			"page": "Trang"
 		},
 		"resize-skew": {
 			"title": "Đổi cỡ và nghiêng",
@@ -327,7 +383,20 @@
 	},
 	"document": {
 		"name": {
-			"untitled": "Chưa đặt tên"
+			"untitled": "Chưa đặt tên",
+			"camera": "Máy ảnh"
+		}
+	},
+	"live": {
+		"region": {
+			"label": "Thông báo"
+		},
+		"image": {
+			"size": "Ảnh hiện là {0} x {1} điểm ảnh"
+		},
+		"selection": {
+			"size": "Vùng chọn {0} x {1} điểm ảnh",
+			"none": "Đã bỏ vùng chọn"
 		}
 	},
 	"toast": {
@@ -338,7 +407,14 @@
 			"save-failed": "Không ghi được tệp",
 			"downloaded": "Đã lưu vào thư mục Tải xuống",
 			"permission-denied": "Quyền dùng tệp đó đã bị từ chối",
-			"close-blocked": "Chỉ có thể đóng thẻ từ chính trình duyệt"
+			"close-blocked": "Chỉ có thể đóng thẻ từ chính trình duyệt",
+			"over-canvas-limit": "Trình duyệt này không chứa nổi ảnh lớn đến vậy"
+		},
+		"print": {
+			"failed": "Không in được ảnh"
+		},
+		"camera": {
+			"failed": "Máy ảnh không trả về ảnh nào"
 		},
 		"clipboard": {
 			"no-image": "Bảng tạm không có ảnh nào",

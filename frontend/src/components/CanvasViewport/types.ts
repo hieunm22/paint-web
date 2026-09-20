@@ -1,5 +1,5 @@
 import type { RefObject } from "react"
-import type { Modifiers, Size } from "types/engine.types"
+import type { Modifiers, Size, StrokePoint } from "types/engine.types"
 import type { Point, Rect } from "types/store.types"
 
 /** the three edges Paint lets a document be dragged by. */
@@ -36,14 +36,25 @@ export interface RulerTick {
 	label?: number
 }
 
+/** the browser's own pointer event, which react shadows with its synthetic one. */
+export type NativePointer = PointerEvent
+
 /**
  * pointer positions waiting for the next frame. a pen reports up to 1000 times
  * a second, and drawing each batch as it lands repeats work within a frame.
  */
 export interface PointerBatch {
-	points: Point[]
+	points: StrokePoint[]
 	mods: Modifiers
 	frame: number | null
+	/** the pointer that began the gesture; a second one is not part of it. */
+	pointerId: number | null
+	/** a pen in the gesture wins, and the palm resting beside it is ignored. */
+	penActive: boolean
+	/** the smoothed force carried from one sample to the next. */
+	pressure: number | null
+	/** the canvas box, measured once a gesture rather than once a sample. */
+	rect: DOMRect | null
 }
 
 export interface ThumbnailProps {

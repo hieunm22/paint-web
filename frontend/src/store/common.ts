@@ -3,6 +3,7 @@ import {
 	MAX_DIMENSION,
 	PAGE_SIZE_STORAGE_KEY,
 	QAT_DEFAULT,
+	QAT_ORDER,
 	QAT_STORAGE_KEY,
 } from "common/constant"
 import { translate } from "locales/translate"
@@ -10,7 +11,7 @@ import type { Size } from "types/engine.types"
 import type { QatItemId } from "types/store.types"
 
 /**
- * the saved Quick Access Toolbar. reading it through the default keeps the
+ * the saved Quick Access Toolbar. reading it through the fixed order keeps the
  * fixed order whatever the stored array says, and a blocked store falls back.
  */
 export function readQat(): QatItemId[] {
@@ -20,7 +21,7 @@ export function readQat(): QatItemId[] {
 		)
 		if (!Array.isArray(saved)) return QAT_DEFAULT
 
-		return QAT_DEFAULT.filter(id => saved.includes(id))
+		return QAT_ORDER.filter(id => saved.includes(id))
 	} catch {
 		return QAT_DEFAULT
 	}

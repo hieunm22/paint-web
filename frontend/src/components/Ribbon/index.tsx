@@ -11,6 +11,7 @@ import { TextTabGroups } from "./components/TextGroups"
 import { ToolsGroup } from "./components/ToolsGroup"
 import { ViewTabGroups } from "./components/ViewGroups"
 import { useAppDispatch, useAppSelector } from "store/hooks"
+import { useRovingFocus } from "./hooks"
 import { openBackstage, setTab } from "store/slices/uiSlice"
 import "./Ribbon.scss"
 
@@ -19,13 +20,21 @@ export function Ribbon() {
 	const dispatch = useAppDispatch()
 	const tab = useAppSelector(s => s.ui.tab)
 	const textTab = useAppSelector(s => s.ui.textTab)
+	const backstageOpen = useAppSelector(s => s.ui.backstageOpen)
+	const roving = useRovingFocus()
 
 	return (
 		<>
-			<div className="ribbon__tab-strip" role="tablist">
+			<div
+				className="ribbon__tab-strip"
+				role="tablist"
+				aria-label={t("ribbon.tab.strip")}
+			>
 				<button
 					type="button"
 					className="ribbon__tab ribbon__tab--file"
+					aria-haspopup="menu"
+					aria-expanded={backstageOpen}
 					onClick={() => dispatch(openBackstage())}
 				>
 					{t("ribbon.tab.file")}
@@ -56,7 +65,14 @@ export function Ribbon() {
 				)}
 			</div>
 
-			<div className="ribbon__content" role="tabpanel">
+			<div
+				className="ribbon__content"
+				ref={roving.ref}
+				role="toolbar"
+				aria-label={t("ribbon.toolbar.label")}
+				onKeyDown={roving.onKeyDown}
+				onFocus={roving.onFocus}
+			>
 				{tab === "home" && (
 					<>
 						<ClipboardGroup />

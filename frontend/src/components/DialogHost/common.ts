@@ -1,5 +1,7 @@
+import type { CSSProperties } from "react"
 import { MAX_DIMENSION, MAX_SKEW } from "common/constant"
 import { HUE_MAX, LEVEL_MAX } from "./constant"
+import type { PrintLayout } from "types/common.types"
 import type { RGBA, WinHsl } from "types/engine.types"
 import type {
 	DragBase,
@@ -121,4 +123,22 @@ export function levelAt(down: number): number {
 export function parseLevel(text: string, current: number): number {
 	const value = Number.parseInt(text, 10)
 	return Number.isFinite(value) ? value : current
+}
+
+/** one sheet at preview scale: millimetres in, css pixels out. */
+export function sheetStyle(layout: PrintLayout, scale: number): CSSProperties {
+	return {
+		width: layout.pageWidth * scale,
+		height: layout.pageHeight * scale,
+	}
+}
+
+/** where the picture sits on that sheet, counted from the paper's own corner. */
+export function stampStyle(layout: PrintLayout, scale: number): CSSProperties {
+	return {
+		left: (layout.boxX + layout.x) * scale,
+		top: (layout.boxY + layout.y) * scale,
+		width: layout.width * scale,
+		height: layout.height * scale,
+	}
 }

@@ -1,0 +1,40 @@
+{
+	"name": "Paint Web",
+	"short_name": "Paint",
+	"description": "A web rebuild of the Microsoft Paint ribbon interface, running entirely on your own machine.",
+	"id": "/",
+	"start_url": "/",
+	"scope": "/",
+	"display": "standalone",
+	"background_color": "#f0f0f0",
+	"theme_color": "#f0f0f0",
+	"icons": [
+		{
+			"src": "/icon.svg",
+			"sizes": "any",
+			"type": "image/svg+xml",
+			"purpose": "any"
+		},
+		{
+			"src": "/icon-maskable.svg",
+			"sizes": "any",
+			"type": "image/svg+xml",
+			"purpose": "maskable"
+		}
+	],
+	"launch_handler": {
+		"client_mode": "navigate-existing"
+	},
+	"file_handlers": [
+		{
+			"action": "/",
+			"accept": {
+				"image/png": [".png"],
+				"image/jpeg": [".jpg", ".jpeg"],
+				"image/bmp": [".bmp", ".dib"],
+				"image/gif": [".gif"],
+				"image/webp": [".webp"]
+			}
+		}
+	]
+}

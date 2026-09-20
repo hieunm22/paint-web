@@ -77,6 +77,12 @@ export function encodeImage(
 	return canvasToBlob(canvasOf(source), MIME_TYPES[format], quality)
 }
 
+/** the whole picture behind an url, which the print sheet points its img at. */
+export async function imageObjectUrl(image: ImageData): Promise<string> {
+	const png = await encodeImage(image, "png")
+	return URL.createObjectURL(png)
+}
+
 /** decodes off the main thread. an animated gif yields its first frame only. */
 export function decodeImage(source: Blob): Promise<ImageBitmap> {
 	return createImageBitmap(source)

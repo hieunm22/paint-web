@@ -3,6 +3,8 @@ ribbon.tab.file;File;Tệp
 ribbon.tab.home;Home;Trang chủ
 ribbon.tab.view;View;Xem
 ribbon.tab.text;Text;Văn bản
+ribbon.tab.strip;Ribbon tabs;Các thẻ ribbon
+ribbon.toolbar.label;Drawing tools;Công cụ vẽ
 ribbon.clipboard.label;Clipboard;Bảng tạm
 ribbon.clipboard.paste;Paste;Dán
 ribbon.clipboard.paste-from;Paste from...;Dán từ...
@@ -117,6 +119,7 @@ shortcut.file.new;Ctrl+N;Ctrl+N
 shortcut.file.open;Ctrl+O;Ctrl+O
 shortcut.file.save;Ctrl+S;Ctrl+S
 shortcut.file.save-as;Ctrl+Shift+S;Ctrl+Shift+S
+shortcut.file.print;Ctrl+P;Ctrl+P
 shortcut.file.properties;Ctrl+E;Ctrl+E
 shortcut.edit.undo;Ctrl+Z;Ctrl+Z
 shortcut.edit.redo;Ctrl+Y;Ctrl+Y
@@ -132,11 +135,14 @@ shortcut.view.zoom-out;Ctrl+PgDn;Ctrl+PgDn
 shortcut.view.rulers;Ctrl+R;Ctrl+R
 shortcut.view.full-screen;F11;F11
 common.tooltip.with-shortcut;{0} ({1});{0} ({1})
+titlebar.qat.new;New;Mới
+titlebar.qat.open;Open;Mở
 titlebar.qat.save;Save;Lưu
 titlebar.qat.undo;Undo;Hoàn tác
 titlebar.qat.redo;Redo;Làm lại
+titlebar.qat.print-preview;Print preview;Xem trước khi in
 titlebar.qat.customise;Customise Quick Access Toolbar;Tuỳ chỉnh thanh truy cập nhanh
-titlebar.window.title;{0} - Paint;{0} - Paint
+titlebar.window.title;{0} - Paint Web;{0} - Paint Web
 titlebar.window.minimize;Not available on the web - use your browser's minimise button;Không khả dụng trên web - dùng nút thu nhỏ của trình duyệt
 titlebar.window.maximize;Maximise (full screen);Phóng to (toàn màn hình)
 titlebar.window.close;Close;Đóng
@@ -149,6 +155,7 @@ statusbar.zoom.label;Zoom;Thu phóng
 statusbar.zoom.in;Zoom in;Phóng to
 statusbar.zoom.out;Zoom out;Thu nhỏ
 statusbar.zoom.percent;{0}%;{0}%
+canvas.surface.label;Picture, {0} x {1} pixels;Ảnh, {0} x {1} điểm ảnh
 canvas.thumbnail.title;Thumbnail;Ảnh thu nhỏ
 canvas.text.label;Text box;Hộp văn bản
 canvas.full-screen.exit;Click the picture to leave full screen;Bấm vào ảnh để thoát toàn màn hình
@@ -163,10 +170,13 @@ filemenu.item.from-camera;From camera;Từ máy ảnh
 filemenu.item.from-camera-note;Uses getUserMedia - about 4K at most;Dùng getUserMedia - tối đa khoảng 4K
 filemenu.item.copy-image;Copy image;Chép ảnh
 filemenu.item.properties;Properties;Thuộc tính
-filemenu.item.about;About Paint;Giới thiệu Paint
+filemenu.item.about;About Paint Web;Giới thiệu Paint Web
 filemenu.item.exit;Exit;Thoát
 filemenu.save-as.option;{0} ({1});{0} ({1})
 filemenu.save-as.other;Other formats...;Định dạng khác...
+filemenu.print.print;Print;In
+filemenu.print.page-setup;Page setup;Thiết lập trang
+filemenu.print.preview;Print preview;Xem trước khi in
 filemenu.recent.title;Recent pictures;Ảnh gần đây
 filemenu.recent.meta;{0} - {1};{0} - {1}
 filemenu.recent.empty;Nothing here yet - pictures you open appear in this list;Chưa có gì - ảnh bạn mở sẽ hiện trong danh sách này
@@ -176,11 +186,11 @@ filemenu.language.vi;Tiếng Việt;Tiếng Việt
 dialog.common.ok;OK;OK
 dialog.common.cancel;Cancel;Huỷ
 dialog.common.close;Close;Đóng
-dialog.about.title;About Paint;Giới thiệu Paint
+dialog.about.title;About Paint Web;Giới thiệu Paint Web
 dialog.about.app-name;Paint Web 0.1.0;Paint Web 0.1.0
 dialog.about.body;A web rebuild of the Microsoft Paint (Windows 10) Ribbon interface, running entirely client-side.;Bản dựng lại giao diện Ribbon của Microsoft Paint (Windows 10) trên nền web, chạy hoàn toàn client-side.
 dialog.about.disclaimer;"Not affiliated with Microsoft. The interface is inspired by Microsoft Paint. Icons come from Font Awesome Pro under a separate licence; no original Paint asset is used.";"Không liên kết với Microsoft. Giao diện lấy cảm hứng từ Microsoft Paint. Icon dùng Font Awesome Pro theo license riêng; không sử dụng asset gốc của Paint."
-dialog.confirm-discard.title;Paint;Paint
+dialog.confirm-discard.title;Paint Web;Paint Web
 dialog.confirm-discard.message;Do you want to save changes to {0}?;Bạn có muốn lưu thay đổi cho {0} không?
 dialog.confirm-discard.save;Save;Lưu
 dialog.confirm-discard.dont-save;Don't Save;Không lưu
@@ -194,6 +204,14 @@ dialog.edit-colors.lum;Lum:;Độ sáng:
 dialog.edit-colors.red;Red:;Đỏ:
 dialog.edit-colors.green;Green:;Lục:
 dialog.edit-colors.blue;Blue:;Lam:
+dialog.from-camera.title;From Camera;Từ máy ảnh
+dialog.from-camera.capture;Capture;Chụp
+dialog.from-camera.starting;Starting the camera...;Đang khởi động máy ảnh...
+dialog.from-camera.denied;Permission to use the camera was refused;Quyền dùng máy ảnh đã bị từ chối
+dialog.from-camera.unavailable;This browser offers no camera;Trình duyệt này không có máy ảnh
+dialog.from-camera.insecure;The camera needs an https connection;Máy ảnh cần kết nối https
+dialog.from-camera.hint;The captured picture replaces the one you have open;Ảnh chụp sẽ thay ảnh đang mở
+dialog.from-camera.preview;Camera preview;Xem trước máy ảnh
 dialog.image-properties.title;Image Properties;Thuộc tính ảnh
 dialog.image-properties.file-attributes;File Attributes;Thuộc tính tệp
 dialog.image-properties.last-saved;Last saved:;Lưu lần cuối:
@@ -211,6 +229,32 @@ dialog.image-properties.black-and-white;Black and white;Đen trắng
 dialog.image-properties.color;Color;Màu
 dialog.image-properties.width;Width:;Rộng:
 dialog.image-properties.height;Height:;Cao:
+dialog.page-setup.title;Page Setup;Thiết lập trang
+dialog.page-setup.paper;Paper;Giấy
+dialog.page-setup.size;Size:;Khổ:
+dialog.page-setup.a4;A4;A4
+dialog.page-setup.letter;Letter;Letter
+dialog.page-setup.orientation;Orientation;Hướng giấy
+dialog.page-setup.portrait;Portrait;Dọc
+dialog.page-setup.landscape;Landscape;Ngang
+dialog.page-setup.margins;Margins (millimetres);Lề (milimét)
+dialog.page-setup.left;Left:;Trái:
+dialog.page-setup.right;Right:;Phải:
+dialog.page-setup.top;Top:;Trên:
+dialog.page-setup.bottom;Bottom:;Dưới:
+dialog.page-setup.centering;Centering;Canh giữa
+dialog.page-setup.horizontal;Horizontal;Ngang
+dialog.page-setup.vertical;Vertical;Dọc
+dialog.page-setup.scaling;Scaling;Tỉ lệ
+dialog.page-setup.fit;Fit to page;Vừa trang
+dialog.page-setup.adjust;Adjust to:;Chỉnh về:
+dialog.page-setup.percent;%;%
+dialog.page-setup.hint;The browser still shows its own print dialog - this only sets the page.;Trình duyệt vẫn hiện hộp thoại in của nó - phần này chỉ đặt trang.
+dialog.print-preview.title;Print Preview;Xem trước khi in
+dialog.print-preview.print;Print;In
+dialog.print-preview.page-setup;Page setup;Thiết lập trang
+dialog.print-preview.measure;{0} x {1} mm of {2} x {3} mm;{0} x {1} mm trên {2} x {3} mm
+dialog.print-preview.page;Page;Trang
 dialog.resize-skew.title;Resize and Skew;Đổi cỡ và nghiêng
 dialog.resize-skew.resize;Resize;Đổi cỡ
 dialog.resize-skew.by;By:;Theo:
@@ -232,6 +276,11 @@ dialog.save-as.hint-bmp;BMP is written by a hand-rolled encoder, 24-bit uncompre
 dialog.save-as.hint-gif;GIF is quantised to 256 colors with 1-bit alpha.;GIF lượng tử hoá về 256 màu, alpha 1-bit.
 dialog.save-as.hint-webp;"WEBP keeps alpha; Safari 16 and later.";"WEBP giữ alpha; Safari 16 trở lên."
 document.name.untitled;Untitled;Chưa đặt tên
+document.name.camera;Camera;Máy ảnh
+live.region.label;Announcements;Thông báo
+live.image.size;The picture is now {0} x {1} pixels;Ảnh hiện là {0} x {1} điểm ảnh
+live.selection.size;Selection {0} x {1} pixels;Vùng chọn {0} x {1} điểm ảnh
+live.selection.none;Selection cleared;Đã bỏ vùng chọn
 toast.file.gif-flattened;An animated GIF opens as its first frame only;Ảnh GIF động chỉ mở được khung hình đầu tiên
 toast.file.too-large;That picture is larger than 8000 pixels on a side;Ảnh đó có cạnh lớn hơn 8000 điểm ảnh
 toast.file.open-failed;That file could not be opened as a picture;Không mở được tệp đó như một ảnh
@@ -239,6 +288,9 @@ toast.file.save-failed;The file could not be written;Không ghi được tệp
 toast.file.downloaded;Saved to your Downloads folder;Đã lưu vào thư mục Tải xuống
 toast.file.permission-denied;Permission to use that file was refused;Quyền dùng tệp đó đã bị từ chối
 toast.file.close-blocked;A tab can only be closed from the browser itself;Chỉ có thể đóng thẻ từ chính trình duyệt
+toast.file.over-canvas-limit;This browser cannot hold a picture that large;Trình duyệt này không chứa nổi ảnh lớn đến vậy
+toast.print.failed;The picture could not be printed;Không in được ảnh
+toast.camera.failed;The camera handed back no picture;Máy ảnh không trả về ảnh nào
 toast.clipboard.no-image;The clipboard holds no picture;Bảng tạm không có ảnh nào
 toast.clipboard.copy-failed;The picture could not be copied;Không sao chép được ảnh
 toast.clipboard.paste-shortcut;This browser only pastes with the keyboard shortcut;Trình duyệt này chỉ dán được bằng phím tắt

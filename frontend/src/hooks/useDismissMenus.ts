@@ -10,12 +10,19 @@ export function useDismissMenus() {
 	useEffect(() => {
 		if (!openMenu) return
 
+		// the button that opened the menu is the one Escape hands focus back to
+		const opener = document.activeElement as HTMLElement | null
+
 		const onPointerDown = (e: PointerEvent) => {
 			const target = e.target as HTMLElement
 			if (!target.closest("[data-menu-root]")) dispatch(closeMenu())
 		}
 		const onKeyDown = (e: KeyboardEvent) => {
-			if (e.key === "Escape") dispatch(closeMenu())
+			if (e.key !== "Escape") return
+
+			e.stopPropagation()
+			dispatch(closeMenu())
+			opener?.focus()
 		}
 
 		// runs before the opener's onClick to prevent the menu from closing then reopening.

@@ -1,6 +1,12 @@
-import type { ReactNode } from "react"
-import type { RGBA, WinHsl } from "types/engine.types"
-import type { ImageFormat } from "types/store.types"
+import type { ReactNode, RefObject } from "react"
+import type { EmptyVoid, PrintLayout } from "types/common.types"
+import type { RGBA, Size, WinHsl } from "types/engine.types"
+import type {
+	ImageFormat,
+	PageOrientation,
+	PaperSize,
+	PrintMargins,
+} from "types/store.types"
 
 export interface Point {
 	x: number
@@ -44,6 +50,44 @@ export interface SaveAsForm {
 	setFormat(format: ImageFormat): void
 	setQuality(quality: number): void
 }
+
+/** one paper Page setup offers. */
+export interface PaperOption {
+	id: PaperSize
+	labelKey: string
+}
+
+export interface OrientationOption {
+	id: PageOrientation
+	labelKey: string
+}
+
+/** one of the four margin fields. */
+export interface MarginField {
+	edge: keyof PrintMargins
+	labelKey: string
+}
+
+/** the sheet the preview draws, with the picture already encoded for it. */
+export interface PrintPreview {
+	/** object url of the whole picture, empty until it has been encoded. */
+	src: string
+	layout: PrintLayout
+	doc: Size
+}
+
+/** the live camera behind the From camera dialog. */
+export interface CameraSession {
+	videoRef: RefObject<HTMLVideoElement>
+	/** translation key of what went wrong, or null while all is well. */
+	errorKey: string | null
+	/** true once a frame is running, which is what arms the Capture button. */
+	ready: boolean
+	capture: EmptyVoid
+}
+
+/** what the dialog does with the frame it just took. */
+export type CameraCapture = (blob: Blob) => void
 
 export interface NumFieldProps {
 	label: string

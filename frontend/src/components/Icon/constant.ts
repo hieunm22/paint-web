@@ -87,10 +87,13 @@ export const ICONS = {
 	thumbnail: "fa-solid fa-image",
 
 	// Backstage (File tab)
+	back: "fa-solid fa-arrow-left",
 	new: "fa-solid fa-file",
 	open: "fa-solid fa-folder-open",
 	saveAs: "fa-solid fa-file-export",
 	print: "fa-solid fa-print",
+	pageSetup: "fa-solid fa-file-lines",
+	printPreview: "fa-solid fa-print-magnifying-glass",
 	camera: "fa-solid fa-camera",
 	properties: "fa-solid fa-circle-info",
 	about: "fa-solid fa-circle-question",
