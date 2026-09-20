@@ -1,4 +1,5 @@
 import type { ReactNode } from "react"
+import type { RGBA, WinHsl } from "types/engine.types"
 import type { ImageFormat } from "types/store.types"
 
 export interface Point {
@@ -47,7 +48,32 @@ export interface SaveAsForm {
 export interface NumFieldProps {
 	label: string
 	value: number
+	max: number
+	onChange(value: number): void
 }
+
+/**
+ * one colour told both ways. the channels stay exact while the coarser hsl
+ * drives the field and the bar, which is the split the Windows dialog makes.
+ */
+export interface EditColorsValue {
+	hsl: WinHsl
+	rgb: RGBA
+}
+
+export interface EditColorsForm extends EditColorsValue {
+	hex: string
+	setHsl(next: Partial<WinHsl>): void
+	setRgb(next: Partial<RGBA>): void
+	/** a click in the hue field, as fractions across it and down it. */
+	pickTone(across: number, down: number): void
+	/** a click down the luminance bar. */
+	pickLevel(down: number): void
+	pick(hex: string): void
+}
+
+/** a click or drag anywhere in a colour field, as fractions of its box. */
+export type FieldPick = (across: number, down: number) => void
 
 /** Resize takes either a percentage of the current size or a pixel count. */
 export type ResizeUnit = "percent" | "pixels"

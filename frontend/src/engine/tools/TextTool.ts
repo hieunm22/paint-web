@@ -33,9 +33,8 @@ const RULE = 1
 const STRIKE_AT = 0.62
 
 /**
- * the text box, which is a real textarea the canvas viewport lays over the
- * picture: typing into the dom brings the caret, selection and every input
- * method with it. this tool owns where the box is and bakes what it holds.
+ * the text box is a real textarea the viewport lays over the picture. this
+ * tool owns where the box sits and bakes what it holds onto the bitmap.
  */
 export class TextTool implements Tool {
 	readonly id: ToolId = "text"

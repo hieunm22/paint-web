@@ -2,9 +2,8 @@ import { floodFill } from "engine/raster"
 import type { FillRequest, FillResponse } from "types/engine.types"
 
 /**
- * flood fill for pictures too large to do between two frames. the client is
- * fillWorker.ts; the pixel buffer is transferred both ways, never copied.
- * self is typed as a Worker: the DOM and webworker libs cannot both be loaded.
+ * flood fill for pictures too large to do between two frames, the buffer
+ * transferred both ways. self is cast: the dom lib is the one loaded.
  */
 const worker = self as unknown as Worker
 

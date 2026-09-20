@@ -78,18 +78,18 @@ export const NO_FILL_KEY = "ribbon.stroke.none-fill"
 /** Paint offers only these four sizes. */
 export const SIZES: SizeDef[] = [1, 3, 5, 8]
 
-/** shape gallery: 3 rows of 8, scrolling one row at a time. */
-export const SHAPE_GALLERY_COLS = 8
+/** shape gallery: 3 rows of 7 on show, scrolling one row at a time. */
+export const SHAPE_GALLERY_COLS = 7
 export const SHAPE_GALLERY_VISIBLE_ROWS = 3
 export const SHAPE_GALLERY_ROW_HEIGHT = 23
 
-/** the panel behind the expand button holds the same eight columns. */
-export const SHAPE_PANEL_WIDTH = 8 * 27 + 10
+/** the strip and the panel behind the expand button share their columns. */
+export const SHAPE_GRID_COLUMNS = `repeat(${SHAPE_GALLERY_COLS}, 26px)`
+export const SHAPE_PANEL_WIDTH = SHAPE_GALLERY_COLS * 27 + 10
 
 /**
- * a fixed list rather than the installed fonts: enumerating those is blocked
- * as a fingerprinting surface, and every name here ships with some platform
- * and falls back cleanly where it does not.
+ * the fallback list, for a browser that will not name the installed fonts.
+ * every name here ships with some platform and falls back cleanly elsewhere.
  */
 export const FONT_FAMILIES = [
 	"Arial",

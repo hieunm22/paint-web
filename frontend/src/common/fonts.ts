@@ -1,3 +1,5 @@
+import type { LocalFontWindow } from "types/common.types"
+
 /** wide and narrow letters together, where a substitution shows up clearly. */
 const SAMPLE = "mmmwwwiiilllABCgq0123"
 
@@ -27,10 +29,8 @@ function widthOf(ctx: CanvasRenderingContext2D, stack: string): number {
 }
 
 /**
- * which of the listed families the machine really carries. the browser will
- * not enumerate them and substitutes a missing one in silence, which leaves
- * the width of a sample string as the only way to tell. an empty result means
- * the probe itself failed, and the whole list goes back rather than none of it.
+ * which of the listed families the machine really carries: a missing one is
+ * substituted in silence, and only a sample's width gives that away.
  */
 export function availableFonts(families: string[]): string[] {
 	const ctx = context()
@@ -44,4 +44,39 @@ export function availableFonts(families: string[]): string[] {
 	)
 
 	return found.length ? found : families
+}
+
+/** true where the browser is able to name the installed fonts at all. */
+export function canListLocalFonts(): boolean {
+	return typeof window !== "undefined" && "queryLocalFonts" in window
+}
+
+/** has the machine already been asked once, in this session or an earlier one? */
+export async function localFontsAllowed(): Promise<boolean> {
+	if (!canListLocalFonts() || !navigator.permissions) return false
+
+	try {
+		const status = await navigator.permissions.query({
+			name: "local-fonts" as PermissionName,
+		})
+		return status.state === "granted"
+	} catch {
+		return false
+	}
+}
+
+/**
+ * every family installed on the machine, in name order. the first call puts a
+ * permission prompt up; a refusal comes back empty and the fixed list stands.
+ */
+export async function localFontFamilies(): Promise<string[]> {
+	if (!canListLocalFonts()) return []
+
+	try {
+		const fonts = await (window as unknown as LocalFontWindow).queryLocalFonts()
+		const families = [...new Set(fonts.map(font => font.family))]
+		return families.sort((a, b) => a.localeCompare(b))
+	} catch {
+		return []
+	}
 }

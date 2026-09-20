@@ -17,7 +17,6 @@ import {
 	useOverlayState,
 	usePointerTools,
 	useSurface,
-	useVisibleOrigin,
 	useZoomFocus,
 } from "./hooks"
 import "./CanvasViewport.scss"
@@ -43,7 +42,6 @@ export function CanvasViewport() {
 	} = useSurface(width, height)
 	const pointerProps = usePointerTools(zoom, paneRef)
 	const viewportRef = useZoomFocus(focus)
-	const onScroll = useVisibleOrigin(zoom)
 	useOverlayReset(activeTool)
 
 	// rulers need zoom >= 1, gridlines need zoom >= 4.
@@ -62,7 +60,7 @@ export function CanvasViewport() {
 			)}
 
 			<div className="canvas__pane" ref={paneRef}>
-				<div className="canvas__viewport" ref={viewportRef} onScroll={onScroll}>
+				<div className="canvas__viewport" ref={viewportRef}>
 					<div className="canvas__stage">
 						<div
 							className="canvas__frame"
@@ -137,14 +135,14 @@ export function CanvasViewport() {
 
 							{overlay.text && <TextBox box={overlay.text} zoom={zoom} />}
 
-							<ResizeHandles />
+							<ResizeHandles doc={{ width, height }} zoom={zoom} />
 						</div>
 					</div>
 				</div>
 
 				<canvas ref={overlayRef} className="canvas__overlay" />
 
-				{showThumbnail && <Thumbnail />}
+				{showThumbnail && <Thumbnail zoom={zoom} scrollRef={viewportRef} />}
 			</div>
 		</div>
 	)

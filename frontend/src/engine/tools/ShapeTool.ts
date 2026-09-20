@@ -1,4 +1,5 @@
 import { BOX_CURSORS, MOVE_CURSOR, SHAPE_DEFS } from "common/constant"
+import { fillStyledPath, strokeStyledPath, styleSpec } from "engine/brushes"
 import {
 	boundsOfPoints,
 	boxHandles,
@@ -314,19 +315,31 @@ export class ShapeTool implements Tool {
 		const stroke = draft.swapped ? ctx.color2 : ctx.color1
 		const fill = draft.swapped ? ctx.color1 : ctx.color2
 
-		preview.save()
-		preview.lineJoin = "round"
-		preview.lineCap = "round"
 		if (ctx.fill !== "none" && fillable(draft.kind)) {
-			preview.fillStyle = fill
-			preview.fill(path)
+			fillStyledPath(
+				{
+					target: preview,
+					spec: styleSpec(ctx.fill),
+					color: fill,
+					width: ctx.size,
+					fade: 1,
+				},
+				path,
+			)
 		}
+		// a line and a curve have no interior, and no outline setting either
 		if (ctx.outline !== "none" || !fillable(draft.kind)) {
-			preview.strokeStyle = stroke
-			preview.lineWidth = ctx.size
-			preview.stroke(path)
+			strokeStyledPath(
+				{
+					target: preview,
+					spec: styleSpec(ctx.outline),
+					color: stroke,
+					width: ctx.size,
+					fade: 1,
+				},
+				path,
+			)
 		}
-		preview.restore()
 
 		reportDraft(
 			guides

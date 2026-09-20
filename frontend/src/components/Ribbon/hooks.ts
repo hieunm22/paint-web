@@ -1,15 +1,24 @@
-import { useMemo, useState } from "react"
+import {
+	useCallback,
+	useEffect,
+	useMemo,
+	useState,
+} from "react"
 import {
 	FONT_FAMILIES,
 	SHAPE_GALLERY_COLS,
 	SHAPE_GALLERY_VISIBLE_ROWS,
 } from "./constant"
-import { availableFonts } from "common/fonts"
+import {
+	availableFonts,
+	localFontFamilies,
+	localFontsAllowed,
+} from "common/fonts"
 import { maxGalleryRow } from "./common"
 import { useAppDispatch, useAppSelector } from "store/hooks"
 import { setTextOptions } from "store/slices/toolSlice"
 import type { TextOptions } from "types/store.types"
-import type { FontStyleId, TextRibbonState } from "./types"
+import type { FontFamilyList, FontStyleId, TextRibbonState } from "./types"
 
 /** scrolls the shape gallery one row at a time. */
 export function useShapeGalleryScroll(totalShapes: number) {
@@ -30,15 +39,39 @@ export function useShapeGalleryScroll(totalShapes: number) {
 	}
 }
 
+/** what the machine answered, kept for the life of the page. */
+let installed: string[] = []
+let asked = false
+
 /**
- * the families the machine actually carries. the one already in use stays on
- * the list wherever it is missing, or the box would show no selection at all.
+ * get all fonts installed on the system.
  */
-export function useFontFamilies(current: string): string[] {
-	return useMemo(() => {
-		const found = availableFonts(FONT_FAMILIES)
+export function useFontFamilies(current: string): FontFamilyList {
+	const [local, setLocal] = useState(installed)
+
+	const load = useCallback(() => {
+		if (asked) return
+
+		asked = true
+		void localFontFamilies().then(found => {
+			installed = found
+			setLocal(found)
+		})
+	}, [])
+
+	// a grant from an earlier session needs no prompt and no gesture
+	useEffect(() => {
+		void localFontsAllowed().then(allowed => {
+			if (allowed) load()
+		})
+	}, [load])
+
+	const families = useMemo(() => {
+		const found = local.length ? local : availableFonts(FONT_FAMILIES)
 		return found.includes(current) ? found : [current, ...found]
-	}, [current])
+	}, [current, local])
+
+	return { families, load }
 }
 
 /**

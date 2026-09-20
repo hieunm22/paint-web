@@ -14,9 +14,8 @@ const LIMIT = 50
 const EMPTY: Size = { width: 0, height: 0 }
 
 /**
- * undo built on tiles rather than whole-canvas snapshots: 50 steps of a full
- * 1920x1080 ImageData would be 415 MB, which the memory budget rules out.
- * only an operation that changes the document size falls back to a full one.
+ * undo on tiles rather than whole-canvas snapshots: 50 steps of 1920x1080
+ * would cost 415 MB. only a change of size falls back to a full one.
  */
 export class History {
 	private undoStack: HistoryEntry[] = []

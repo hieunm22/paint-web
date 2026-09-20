@@ -1,14 +1,17 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit"
-import { DEFAULT_DOCUMENT } from "common/constant"
+import { readPageSize } from "store/common"
+import type { Size } from "types/engine.types"
 import type {
 	DocumentState,
 	ImageFormat,
 	OpenedPayload,
 } from "types/store.types"
 
+const startSize = readPageSize()
+
 const initialState: DocumentState = {
-	width: DEFAULT_DOCUMENT.width,
-	height: DEFAULT_DOCUMENT.height,
+	width: startSize.width,
+	height: startSize.height,
 	fileName: "",
 	format: "png",
 	isDirty: false,
@@ -57,8 +60,13 @@ const docSlice = createSlice({
 			state.savedAt = Date.now()
 			state.isDirty = false
 		},
-		resetDocument() {
-			return initialState
+		/** New keeps no part of the old document but the paper it opens at. */
+		resetDocument(_state, action: PayloadAction<Size>) {
+			return {
+				...initialState,
+				width: action.payload.width,
+				height: action.payload.height,
+			}
 		},
 	},
 })

@@ -216,12 +216,15 @@
 		display: flex;
 	}
 
+	// hue runs across the field and saturation down it, the way Windows draws it
 	&__hue-field {
+		position: relative;
 		width: 176px;
 		height: 176px;
 		border: 1px solid #7a7a7a;
+		touch-action: none;
 		background:
-			linear-gradient(to top, #000, transparent),
+			linear-gradient(to bottom, rgba(128, 128, 128, 0), #808080),
 			linear-gradient(
 				to right,
 				#f00 0%,
@@ -234,12 +237,35 @@
 			);
 	}
 
+	&__hue-marker {
+		position: absolute;
+		width: 9px;
+		height: 9px;
+		margin: -5px 0 0 -5px;
+		border: 1px solid #000;
+		border-radius: 50%;
+		box-shadow: inset 0 0 0 1px #fff;
+		pointer-events: none;
+	}
+
 	&__lum-bar {
+		position: relative;
 		width: 18px;
 		height: 176px;
 		border: 1px solid #7a7a7a;
-		background: linear-gradient(to top, #000, #808080, #fff);
 		margin-left: 8px;
+		touch-action: none;
+	}
+
+	&__lum-marker {
+		position: absolute;
+		left: -1px;
+		right: -1px;
+		height: 3px;
+		margin-top: -1px;
+		border: 1px solid #fff;
+		background: #000;
+		pointer-events: none;
 	}
 
 	&__color-fields {

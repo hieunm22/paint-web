@@ -9,19 +9,32 @@ import { stemOf } from "common/format"
 import { documentName } from "store/common"
 import {
 	clampDragOffset,
+	clampHsl,
+	clampRgba,
 	clampScale,
 	clampSkew,
+	levelAt,
 	linkedValue,
 	scaleOf,
+	toneAt,
 	wholeOf,
 } from "./common"
+import {
+	hexToRgba,
+	rgbaToHex,
+	rgbaToWinHsl,
+	winHslToRgba,
+} from "engine/color"
 import { paint } from "engine/PaintEngine"
 import { useAppDispatch } from "store/hooks"
 import { closeDialog } from "store/slices/uiSlice"
-import type { Size } from "types/engine.types"
+import type { RGBA, Size, WinHsl } from "types/engine.types"
 import type { ImageFormat } from "types/store.types"
 import type {
 	DragSession,
+	EditColorsForm,
+	EditColorsValue,
+	FieldPick,
 	Point,
 	ResizeSkewForm,
 	ResizeUnit,
@@ -109,6 +122,76 @@ export function useSaveAsForm(
 	const [quality, setQuality] = useState(DEFAULT_QUALITY)
 
 	return { name, format, quality, setName, setFormat, setQuality }
+}
+
+/**
+ * holds Edit Colors, in hue, saturation and luminance: going through the
+ * channels instead would lose the hue every time a colour reaches black.
+ */
+export function useEditColorsForm(start: string): EditColorsForm {
+	const [value, setValue] = useState<EditColorsValue>(() =>
+		fromChannels(hexToRgba(start)),
+	)
+
+	return {
+		...value,
+		hex: rgbaToHex(value.rgb),
+
+		setHsl: next => setValue(prev => fromHsl({ ...prev.hsl, ...next })),
+
+		setRgb: next =>
+			setValue(prev => fromChannels(clampRgba({ ...prev.rgb, ...next }))),
+
+		pickTone: (across, down) =>
+			setValue(prev => fromHsl(toneAt(across, down, prev.hsl.l))),
+
+		pickLevel: down =>
+			setValue(prev => fromHsl({ ...prev.hsl, l: levelAt(down) })),
+
+		pick: hex => setValue(fromChannels(hexToRgba(hex))),
+	}
+}
+
+/** the channels lead: hsl holds 240 steps and would round them away. */
+function fromChannels(rgb: RGBA): EditColorsValue {
+	return { hsl: rgbaToWinHsl(rgb), rgb }
+}
+
+/** the other way round, for the field and the bar, which speak in tones. */
+function fromHsl(tone: WinHsl): EditColorsValue {
+	const hsl = clampHsl(tone)
+	return { hsl, rgb: winHslToRgba(hsl) }
+}
+
+/**
+ * drags a colour field, reporting where the pointer sits inside its box. a
+ * drag that leaves the box keeps reporting its edge rather than wrapping.
+ */
+export function useFieldPick(onPick: FieldPick) {
+	const report = useCallback(
+		(e: ReactPointerEvent<HTMLDivElement>) => {
+			const box = e.currentTarget.getBoundingClientRect()
+			onPick(
+				within((e.clientX - box.left) / box.width),
+				within((e.clientY - box.top) / box.height),
+			)
+		},
+		[onPick],
+	)
+
+	return {
+		onPointerDown: (e: ReactPointerEvent<HTMLDivElement>) => {
+			e.currentTarget.setPointerCapture(e.pointerId)
+			report(e)
+		},
+		onPointerMove: (e: ReactPointerEvent<HTMLDivElement>) => {
+			if (e.buttons) report(e)
+		},
+	}
+}
+
+function within(fraction: number): number {
+	return Math.max(0, Math.min(1, fraction))
 }
 
 /**

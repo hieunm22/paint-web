@@ -1,0 +1,17 @@
+.full-screen {
+	position: fixed;
+	inset: 0;
+	z-index: var(--z-full-screen);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 0;
+	border: 0;
+	background: #000;
+	cursor: pointer;
+
+	&__picture {
+		display: block;
+		image-rendering: pixelated;
+	}
+}

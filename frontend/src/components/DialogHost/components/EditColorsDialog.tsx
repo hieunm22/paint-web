@@ -1,19 +1,30 @@
-import { useState } from "react"
 import { useTranslation } from "react-i18next"
-import { BASIC_COLORS } from "../constant"
-import { useAppDispatch } from "store/hooks"
+import { NO_AUTOFILL } from "common/constant"
+import { BASIC_COLORS, HUE_MAX, LEVEL_MAX } from "../constant"
+import { parseLevel } from "../common"
+import { rgbaToHex, winHslToRgba } from "engine/color"
+import { useAppDispatch, useAppSelector } from "store/hooks"
+import { useEditColorsForm, useFieldPick } from "../hooks"
 import { addCustomColor, applyColor } from "store/slices/colorsSlice"
 import { closeDialog } from "store/slices/uiSlice"
 import type { NumFieldProps } from "../types"
 import { Dialog } from "./Dialog"
 
 /**
- * recreates the classic Windows "Edit Colors" dialog.
+ * recreates the classic Windows "Edit Colors" dialog, counting hue to 239 and
+ * saturation and luminance to 240 so the numbers match the ones Paint shows.
  */
 export function EditColorsDialog() {
 	const { t } = useTranslation()
 	const dispatch = useAppDispatch()
-	const [hex, setHex] = useState("#000000")
+	const editing = useAppSelector(s => s.colors.editing)
+	const current = useAppSelector(s => s.colors[editing])
+	const form = useEditColorsForm(current)
+	const { hsl, rgb, hex } = form
+
+	const fieldProps = useFieldPick(form.pickTone)
+	const barProps = useFieldPick((_across, down) => form.pickLevel(down))
+	const pure = rgbaToHex(winHslToRgba({ h: hsl.h, s: hsl.s, l: LEVEL_MAX / 2 }))
 
 	return (
 		<Dialog
@@ -62,7 +73,7 @@ export function EditColorsDialog() {
 								style={{ background: color }}
 								title={color}
 								aria-label={color}
-								onClick={() => setHex(color)}
+								onClick={() => form.pick(color)}
 							/>
 						))}
 					</div>
@@ -70,8 +81,27 @@ export function EditColorsDialog() {
 
 				<div>
 					<div className="dialog__hsl">
-						<div className="dialog__hue-field" />
-						<div className="dialog__lum-bar" />
+						<div className="dialog__hue-field" {...fieldProps}>
+							<span
+								className="dialog__hue-marker"
+								style={{
+									left: `${(hsl.h / HUE_MAX) * 100}%`,
+									top: `${(1 - hsl.s / LEVEL_MAX) * 100}%`,
+								}}
+							/>
+						</div>
+						<div
+							className="dialog__lum-bar"
+							style={{
+								background: `linear-gradient(to top, #000, ${pure}, #fff)`,
+							}}
+							{...barProps}
+						>
+							<span
+								className="dialog__lum-marker"
+								style={{ top: `${(1 - hsl.l / LEVEL_MAX) * 100}%` }}
+							/>
+						</div>
 					</div>
 
 					<div className="dialog__color-fields">
@@ -82,14 +112,44 @@ export function EditColorsDialog() {
 							<div className="dialog__preview" style={{ background: hex }} />
 						</div>
 						<div>
-							<NumField label={t("dialog.edit-colors.hue")} value={160} />
-							<NumField label={t("dialog.edit-colors.sat")} value={0} />
-							<NumField label={t("dialog.edit-colors.lum")} value={0} />
+							<NumField
+								label={t("dialog.edit-colors.hue")}
+								value={hsl.h}
+								max={HUE_MAX - 1}
+								onChange={h => form.setHsl({ h })}
+							/>
+							<NumField
+								label={t("dialog.edit-colors.sat")}
+								value={hsl.s}
+								max={LEVEL_MAX}
+								onChange={s => form.setHsl({ s })}
+							/>
+							<NumField
+								label={t("dialog.edit-colors.lum")}
+								value={hsl.l}
+								max={LEVEL_MAX}
+								onChange={l => form.setHsl({ l })}
+							/>
 						</div>
 						<div>
-							<NumField label={t("dialog.edit-colors.red")} value={0} />
-							<NumField label={t("dialog.edit-colors.green")} value={0} />
-							<NumField label={t("dialog.edit-colors.blue")} value={0} />
+							<NumField
+								label={t("dialog.edit-colors.red")}
+								value={rgb.r}
+								max={255}
+								onChange={r => form.setRgb({ r })}
+							/>
+							<NumField
+								label={t("dialog.edit-colors.green")}
+								value={rgb.g}
+								max={255}
+								onChange={g => form.setRgb({ g })}
+							/>
+							<NumField
+								label={t("dialog.edit-colors.blue")}
+								value={rgb.b}
+								max={255}
+								onChange={b => form.setRgb({ b })}
+							/>
 						</div>
 					</div>
 				</div>
@@ -98,11 +158,24 @@ export function EditColorsDialog() {
 	)
 }
 
-function NumField({ label, value }: NumFieldProps) {
+function NumField({
+	label,
+	value,
+	max,
+	onChange,
+}: NumFieldProps) {
 	return (
 		<div className="dialog__num-field">
 			<span className="dialog__num-field-label">{label}</span>
-			<input className="dialog__num dialog__num--narrow" defaultValue={value} />
+			<input
+				className="dialog__num dialog__num--narrow"
+				type="number"
+				min={0}
+				max={max}
+				{...NO_AUTOFILL}
+				value={value}
+				onChange={e => onChange(parseLevel(e.target.value, value))}
+			/>
 		</div>
 	)
 }

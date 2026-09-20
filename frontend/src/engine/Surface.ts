@@ -1,3 +1,4 @@
+import { PAPER_COLOR } from "common/constant"
 import { readPixel } from "engine/raster"
 import type {
 	RGBA,
@@ -7,7 +8,6 @@ import type {
 } from "types/engine.types"
 import type { Rect } from "types/store.types"
 
-const PAPER = "#ffffff"
 const EMPTY: Size = { width: 0, height: 0 }
 
 /**
@@ -109,7 +109,7 @@ export class Surface {
 		this.docSize = { width, height }
 
 		// assigning width wipes the bitmap; paper and old pixels go back on after
-		ctx.base.fillStyle = PAPER
+		ctx.base.fillStyle = PAPER_COLOR
 		ctx.base.fillRect(0, 0, width, height)
 		if (kept) ctx.base.drawImage(kept, 0, 0)
 	}
@@ -132,6 +132,18 @@ export class Surface {
 	/** detached copy of the committed bitmap, which a transform reads from. */
 	snapshot(): HTMLCanvasElement | null {
 		return this.layers ? copyOf(this.layers.base) : null
+	}
+
+	/**
+	 * draws the whole picture into a box of another canvas, the stroke in
+	 * progress included: a thumbnail has to follow the hand that is drawing.
+	 */
+	drawInto(target: CanvasRenderingContext2D, box: Rect): void {
+		const { layers } = this
+		if (!layers || !this.docSize.width || !this.docSize.height) return
+
+		target.drawImage(layers.base, box.x, box.y, box.w, box.h)
+		target.drawImage(layers.preview, box.x, box.y, box.w, box.h)
 	}
 
 	/**
@@ -186,9 +198,8 @@ export class Surface {
 	}
 
 	/**
-	 * css cursor over the drawing surface, which sits above the one the tool
-	 * sets. an empty string hands it back, whether that is a drawn glyph or a
-	 * crosshair.
+	 * css cursor over the drawing surface, above the one the tool sets. an
+	 * empty string hands it back, be that a drawn glyph or a crosshair.
 	 */
 	setCursor(value: string): void {
 		if (value === this.cursor) return
@@ -229,7 +240,7 @@ export class Surface {
 		layers.preview.width = width
 		layers.preview.height = height
 		this.docSize = { width, height }
-		ctx.base.fillStyle = PAPER
+		ctx.base.fillStyle = PAPER_COLOR
 		ctx.base.fillRect(0, 0, width, height)
 	}
 
@@ -238,7 +249,7 @@ export class Surface {
 		const { width, height } = this.docSize
 		if (!this.ctx) return
 
-		this.ctx.base.fillStyle = PAPER
+		this.ctx.base.fillStyle = PAPER_COLOR
 		this.ctx.base.fillRect(0, 0, width, height)
 		this.clearPreview()
 	}

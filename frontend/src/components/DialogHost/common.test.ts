@@ -2,10 +2,31 @@ import { describe, expect, it } from "vitest"
 import {
 	clampScale,
 	clampSkew,
+	levelAt,
 	linkedValue,
 	scaleOf,
+	toneAt,
 	wholeOf,
 } from "./common"
+
+describe("toneAt", () => {
+	it("reads hue across the field and saturation up it", () => {
+		expect(toneAt(0.5, 0, 90)).toEqual({ h: 120, s: 240, l: 90 })
+		expect(toneAt(0, 1, 90)).toEqual({ h: 0, s: 0, l: 90 })
+	})
+
+	it("lifts a black or white colour off the end, where no hue shows", () => {
+		expect(toneAt(0.5, 0, 0).l).toBe(120)
+		expect(toneAt(0.5, 0, 240).l).toBe(120)
+	})
+})
+
+describe("levelAt", () => {
+	it("runs from white at the top of the bar to black at the bottom", () => {
+		expect(levelAt(0)).toBe(240)
+		expect(levelAt(1)).toBe(0)
+	})
+})
 
 describe("wholeOf", () => {
 	it("reads as a full hundred percent, or as the side in pixels", () => {

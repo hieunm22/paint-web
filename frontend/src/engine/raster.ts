@@ -58,9 +58,8 @@ export function bresenham(
 }
 
 /**
- * scanline flood fill with zero tolerance, matching Paint. iterative on
- * purpose: recursion overflows the stack on a large uniform area.
- * returns the box that changed, or null when nothing did.
+ * scanline flood fill with zero tolerance, as Paint has. iterative on purpose:
+ * recursion overflows the stack on a large uniform area.
  */
 export function floodFill(
 	img: ImageData,
@@ -117,9 +116,8 @@ export function floodFill(
 }
 
 /**
- * stamps a square, repainting only the pixels that already hold `from`.
- * this is the right-button eraser, which swaps one colour for another.
- * `origin` is where the region sits in image coordinates.
+ * stamps a square, repainting only the pixels that already hold `from`: the
+ * right-button eraser. `origin` places the region in image coordinates.
  */
 export function stampReplace(
 	img: ImageData,

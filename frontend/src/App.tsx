@@ -1,6 +1,7 @@
 import { CanvasViewport } from "components/CanvasViewport"
 import { DialogHost } from "components/DialogHost"
 import { FileMenu } from "components/FileMenu"
+import { FullScreenView } from "components/FullScreenView"
 import { Ribbon } from "components/Ribbon"
 import { StatusBar } from "components/StatusBar"
 import { TitleBar } from "components/TitleBar"
@@ -24,6 +25,7 @@ export default function App() {
 	useBeforeUnload()
 	const backstageOpen = useAppSelector(s => s.ui.backstageOpen)
 	const showStatusBar = useAppSelector(s => s.view.showStatusBar)
+	const fullScreen = useAppSelector(s => s.view.fullScreen)
 
 	return (
 		<div className="app">
@@ -38,6 +40,7 @@ export default function App() {
 
 			{showStatusBar && <StatusBar />}
 			{backstageOpen && <FileMenu />}
+			{fullScreen && <FullScreenView />}
 			<DialogHost />
 			<Toast />
 		</div>

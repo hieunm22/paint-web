@@ -89,10 +89,12 @@
 	}
 }
 
+// wider than a plain large button: the longest of these labels carries a caret
+// beside it, and at a large button's 56px "Brushes" touches both edges
 .ribbon-split {
 	display: flex;
 	flex-direction: column;
-	width: 56px;
+	width: 64px;
 	min-height: 68px;
 	position: relative;
 
@@ -112,7 +114,7 @@
 			@include m.rb-active;
 		}
 
-		// the split halves are not .ribbon-btn, so they carry the rule too
+		// the split halves are not .ribbon-btn and need the rule of their own
 		&:disabled {
 			--rb-ink: var(--rb-ink-disabled);
 			cursor: default;

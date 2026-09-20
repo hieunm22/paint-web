@@ -2,9 +2,9 @@ import { useTranslation } from "react-i18next"
 import { FONT_SIZES, FONT_STYLES } from "../constant"
 import { IconButton, SmallButton } from "components/RibbonButton"
 import { ButtonStack, RibbonGroup } from "components/RibbonGroup"
+import { useFontFamilies, useTextRibbon } from "../hooks"
 import { ClipboardGroup } from "./ClipboardGroup"
 import { ColorsGroup } from "./ColorsGroup"
-import { useFontFamilies, useTextRibbon } from "../hooks"
 
 /** Text tab: it exists only while a text box is open on the canvas. */
 export function TextTabGroups() {
@@ -27,7 +27,7 @@ function FontGroup() {
 		setSize,
 		toggleStyle,
 	} = useTextRibbon()
-	const families = useFontFamilies(options.fontFamily)
+	const { families, load } = useFontFamilies(options.fontFamily)
 
 	return (
 		<RibbonGroup label={t("ribbon.font.label")}>
@@ -36,6 +36,7 @@ function FontGroup() {
 					className="font-grid__box font-grid__box--family"
 					aria-label={t("ribbon.font.family")}
 					value={options.fontFamily}
+					onPointerDown={load}
 					onChange={e => setFamily(e.target.value)}
 				>
 					{families.map(family => (

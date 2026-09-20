@@ -95,43 +95,19 @@
 			linear-gradient(to bottom, rgba(0, 0, 0, 0.18) 1px, transparent 1px);
 	}
 
-	// eight 5x5 handles, black border on white, flush to the canvas edge.
+	// 5x5 handles on the two edges that move, black border on white.
 	&__handle {
 		position: absolute;
 		width: 5px;
 		height: 5px;
 		background: var(--cv-handle-bg);
 		border: 1px solid var(--cv-handle-bd);
+		touch-action: none;
 
-		&--nw {
-			left: -3px;
-			top: -3px;
-			cursor: nwse-resize;
-		}
-		&--n {
-			left: calc(50% - 3px);
-			top: -3px;
-			cursor: ns-resize;
-		}
-		&--ne {
-			right: -3px;
-			top: -3px;
-			cursor: nesw-resize;
-		}
-		&--w {
-			left: -3px;
-			top: calc(50% - 3px);
-			cursor: ew-resize;
-		}
 		&--e {
 			right: -3px;
 			top: calc(50% - 3px);
 			cursor: ew-resize;
-		}
-		&--sw {
-			left: -3px;
-			bottom: -3px;
-			cursor: nesw-resize;
 		}
 		&--s {
 			left: calc(50% - 3px);
@@ -143,6 +119,16 @@
 			bottom: -3px;
 			cursor: nwse-resize;
 		}
+	}
+
+	// the paper a drag has reached, drawn while the handle is held
+	&__resize-preview {
+		position: absolute;
+		left: 0;
+		top: 0;
+		display: none;
+		pointer-events: none;
+		border: 1px dotted var(--cv-handle-bd);
 	}
 
 	// marching ants: one gradient per edge, black over white to read on any ink.
@@ -241,8 +227,8 @@
 	&__thumbnail {
 		position: absolute;
 		right: 12px;
-		top: 12px;
-		width: 160px;
+		bottom: 12px;
+		width: 180px;
 		background: var(--rb-bg);
 		border: 1px solid #8f8f8f;
 		box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.25);
@@ -256,10 +242,12 @@
 	}
 
 	&__thumbnail-body {
-		height: 96px;
+		display: block;
 		margin: 5px;
 		background: #fff;
 		border: 1px solid #b5b5b5;
+		cursor: crosshair;
+		touch-action: none;
 	}
 }
 

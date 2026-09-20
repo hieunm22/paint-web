@@ -1,3 +1,4 @@
+import { BrushTool } from "engine/tools/BrushTool"
 import { EraserTool } from "engine/tools/EraserTool"
 import { FillTool } from "engine/tools/FillTool"
 import { MagnifierTool } from "engine/tools/MagnifierTool"
@@ -10,12 +11,12 @@ import type { Tool } from "types/engine.types"
 import type { ToolId } from "types/store.types"
 
 /**
- * live tool instances rather than constant values, which is why they are not
- * in `common/constant.ts`: that file is imported by the tools themselves, and
- * building them there closes a module cycle onto a class still being defined.
+ * live instances, not constants: building them in `common/constant.ts`, which
+ * the tools import, would close a cycle onto a class still being defined.
  */
 export const TOOLS: Partial<Record<ToolId, Tool>> = {
 	pencil: new PencilTool(),
+	brush: new BrushTool(),
 	eraser: new EraserTool(),
 	fill: new FillTool(),
 	picker: new PickerTool(),

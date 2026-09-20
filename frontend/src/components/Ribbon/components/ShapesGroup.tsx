@@ -1,9 +1,9 @@
 import { useTranslation } from "react-i18next"
 import { SHAPE_ORDER } from "components/ShapeIcon/constant"
 import {
-	SHAPE_GALLERY_COLS,
 	SHAPE_GALLERY_ROW_HEIGHT,
 	SHAPE_GALLERY_VISIBLE_ROWS,
+	SHAPE_GRID_COLUMNS,
 	SHAPE_PANEL_WIDTH,
 } from "../constant"
 import { Icon } from "components/Icon"
@@ -47,7 +47,7 @@ export function ShapesGroup() {
 					<div
 						className="shape-gallery__grid"
 						style={{
-							gridTemplateColumns: `repeat(${SHAPE_GALLERY_COLS}, 26px)`,
+							gridTemplateColumns: SHAPE_GRID_COLUMNS,
 							transform: `translateY(${-scroll.row * SHAPE_GALLERY_ROW_HEIGHT}px)`,
 						}}
 					>
@@ -95,7 +95,10 @@ export function ShapesGroup() {
 						</button>
 						{openMenu === "shapes" && (
 							<Menu width={SHAPE_PANEL_WIDTH}>
-								<div className="shape-gallery__panel">
+								<div
+									className="shape-gallery__panel"
+									style={{ gridTemplateColumns: SHAPE_GRID_COLUMNS }}
+								>
 									{SHAPE_ORDER.map(kind => (
 										<ShapeCell
 											key={kind}

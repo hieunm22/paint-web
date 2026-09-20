@@ -1,11 +1,16 @@
+import { MAX_DIMENSION } from "common/constant"
 import { History } from "engine/History"
 import { reportSelectionBox } from "engine/overlay"
 import { SelectionManager } from "engine/SelectionManager"
 import { Surface } from "engine/Surface"
 import { TOOLS } from "engine/tools/registry"
 import { TextTool } from "engine/tools/TextTool"
-import { flipImage, rotateImage, transformImage } from "engine/transform"
-import { visibleOrigin } from "engine/viewport"
+import {
+	flipImage,
+	padImage,
+	rotateImage,
+	transformImage,
+} from "engine/transform"
 import { translate } from "locales/translate"
 import { store } from "store"
 import { historyChanged } from "store/actions"
@@ -25,6 +30,9 @@ import type {
 import type { Point, Rect } from "types/store.types"
 
 const EMPTY: Size = { width: 0, height: 0 }
+
+/** a paste lands in the top left corner of the paper, whatever is in view. */
+const PASTE_CORNER: Point = { x: 0, y: 0 }
 
 /** the settings a held shape or selection is redrawn from. */
 interface Watched {
@@ -139,13 +147,18 @@ class PaintEngine {
 	/** a pasted picture arrives as a floating selection, ready to be moved. */
 	pasteBitmap(bitmap: ImageBitmap): void {
 		const tool = TOOLS["select-rect"]
+		if (!tool) return
+
+		// paper too small for the paste grows first, giving the picture room
+		this.resizeCanvas(grownDocument(bitmap, this.surface.documentSize))
+
 		const ctx = this.context()
-		if (!tool || !ctx) return
+		if (!ctx) return
 
 		store.dispatch(setTool("select-rect"))
 		this.hold(tool)
 		this.heldLabel = translate("history.label.paste")
-		this.selection.adopt(ctx, bitmap, pasteCorner(bitmap, ctx.doc))
+		this.selection.adopt(ctx, bitmap, PASTE_CORNER)
 		reportSelectionBox(this.selection.bounds, this.selection.lasso)
 		this.syncSelection()
 	}
@@ -175,6 +188,24 @@ class PaintEngine {
 		this.recompose(
 			source => flipImage(source, axis),
 			translate("history.label.flip"),
+		)
+	}
+
+	/**
+	 * a handle drag on the paper's edge: it grows or crops the document and
+	 * never scales the picture, which stays in the corner it was drawn in.
+	 */
+	resizeCanvas(size: Size): void {
+		const current = this.surface.documentSize
+		if (size.width === current.width && size.height === current.height) return
+
+		this.commitHeld()
+		const source = this.surface.snapshot()
+		if (!source) return
+
+		this.replaceDocument(
+			padImage(source, size),
+			translate("history.label.canvas"),
 		)
 	}
 
@@ -608,6 +639,7 @@ class PaintEngine {
 			size: state.tool.size,
 			zoom: state.view.zoom,
 			shape: state.tool.shape,
+			brush: state.tool.brush,
 			outline: state.tool.outline,
 			fill: state.tool.fill,
 			transparent: state.selection.transparent,
@@ -621,13 +653,11 @@ class PaintEngine {
 	}
 }
 
-/** a paste lands at the viewed corner, nudged back onto the paper if it hangs off. */
-function pasteCorner(bitmap: ImageBitmap, doc: Size): Point {
-	const at = visibleOrigin()
-
+/** the paper a paste needs: never smaller than it was, never past the limit. */
+function grownDocument(bitmap: ImageBitmap, doc: Size): Size {
 	return {
-		x: Math.max(0, Math.min(at.x, doc.width - bitmap.width)),
-		y: Math.max(0, Math.min(at.y, doc.height - bitmap.height)),
+		width: Math.min(MAX_DIMENSION, Math.max(doc.width, bitmap.width)),
+		height: Math.min(MAX_DIMENSION, Math.max(doc.height, bitmap.height)),
 	}
 }
 

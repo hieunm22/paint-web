@@ -1,10 +1,5 @@
 import { useMemo } from "react"
-import {
-	CAN_SAVE_IN_PLACE,
-	DEFAULT_DOCUMENT,
-	MAX_DIMENSION,
-	MIME_TYPES,
-} from "common/constant"
+import { CAN_SAVE_IN_PLACE, MAX_DIMENSION, MIME_TYPES } from "common/constant"
 import {
 	activeHandle,
 	deferOpen,
@@ -20,6 +15,7 @@ import {
 } from "common/fileSystem"
 import { formatOfMime, stemOf, withExtension } from "common/format"
 import { rememberRecent } from "common/recents"
+import { readPageSize } from "store/common"
 import {
 	decodeImage,
 	encodeImage,
@@ -87,9 +83,10 @@ export function useFileCommands(): FileCommands {
 		}
 
 		const applyNew = () => {
-			paint.newDocument(DEFAULT_DOCUMENT)
+			const size = readPageSize()
+			paint.newDocument(size)
 			setActiveHandle(null)
-			dispatch(resetDocument())
+			dispatch(resetDocument(size))
 			dispatch(closeBackstage())
 		}
 

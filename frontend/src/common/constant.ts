@@ -5,6 +5,7 @@ import {
 	faPencil,
 } from "@fortawesome/pro-solid-svg-icons"
 import type {
+	BrushSpec,
 	CursorArt,
 	ShapeDef,
 	ShapeSegment,
@@ -13,10 +14,12 @@ import type {
 } from "types/engine.types"
 import type { Language, LanguageDef } from "types/locales.types"
 import type {
+	BrushKind,
 	ImageFormat,
 	Point,
 	QatItemId,
 	ShapeKind,
+	StrokeStyle,
 } from "types/store.types"
 
 /** localStorage key holding the chosen language. */
@@ -24,6 +27,9 @@ export const LANGUAGE_STORAGE_KEY = "language"
 
 /** localStorage key holding which Quick Access Toolbar buttons are on show. */
 export const QAT_STORAGE_KEY = "qat"
+
+/** localStorage key holding the page size the last manual resize settled on. */
+export const PAGE_SIZE_STORAGE_KEY = "page-size"
 
 /** the Quick Access Toolbar in its fixed order; all three start visible. */
 export const QAT_DEFAULT: QatItemId[] = ["save", "undo", "redo"]
@@ -42,6 +48,9 @@ export const CAN_SAVE_IN_PLACE =
 
 /** the canvas Paint opens with, which New goes back to. */
 export const DEFAULT_DOCUMENT: Size = { width: 1152, height: 648 }
+
+/** bare paper, which is what a new or a widened document shows. */
+export const PAPER_COLOR = "#ffffff"
 
 /** Ctrl+click is the right button on macOS, and Cmd carries the shortcuts. */
 export const IS_MAC =
@@ -137,6 +146,17 @@ export const BOX_CURSORS = [
 /** the pointer is over something it can pick up and carry. */
 export const MOVE_CURSOR = "move"
 
+/**
+ * every field the app draws turns the browser's own helpers off: the text box
+ * over the picture was being offered saved addresses to complete.
+ */
+export const NO_AUTOFILL = {
+	autoComplete: "off",
+	autoCorrect: "off",
+	autoCapitalize: "off",
+	spellCheck: false,
+} as const
+
 /** a font size is given in points and every canvas measure is in pixels. */
 export const POINT_TO_PIXEL = 96 / 72
 
@@ -166,9 +186,8 @@ export const NUDGE_KEYS: Record<string, Point | undefined> = {
 }
 
 /**
- * the cursors are the ribbon's own glyphs, taken from the icon package: a
- * hand-drawn lookalike drifts from the toolbar the moment either side is
- * touched. hotspots come from where each glyph's working end sits.
+ * the cursors are the ribbon's own glyphs: a hand-drawn lookalike drifts from
+ * the toolbar the moment either side is touched. the hotspot is the tip.
  */
 export const PENCIL_CURSOR: CursorArt = {
 	icon: faPencil,
@@ -197,6 +216,45 @@ export const MAGNIFIER_CURSOR: CursorArt = {
 	hotX: 0.34,
 	hotY: 0.34,
 }
+
+/**
+ * the 9 brushes, every measure relative to the chosen size.
+ */
+export const BRUSH_SPECS: Record<BrushKind, BrushSpec> = {
+	brush: { width: 2, alpha: 1 },
+	calligraphy1: { width: 2, alpha: 1, nib: { angle: -45, thickness: 0.25 } },
+	calligraphy2: { width: 2, alpha: 1, nib: { angle: 45, thickness: 0.25 } },
+	airbrush: { width: 1, alpha: 0.08, spray: { radius: 3, rate: 40 } },
+	oil: { width: 1.6, alpha: 0.4, passes: 5, jitter: 0.6, dry: 0.45 },
+	crayon: { width: 2, alpha: 0.6, grain: true },
+	marker: { width: 2, alpha: 0.4, multiply: true },
+	"natural-pencil": { width: 1, alpha: 0.9, speed: [0.9, 0.5] },
+	watercolor: { width: 3, alpha: 0.05, passes: 3, blur: 1 },
+}
+
+/** the outline and fill textures of the shape gallery, named after brushes. */
+export const STROKE_TEXTURES: Partial<Record<StrokeStyle, BrushKind>> = {
+	crayon: "crayon",
+	marker: "marker",
+	oil: "oil",
+	"natural-pencil": "natural-pencil",
+	watercolor: "watercolor",
+}
+
+/** side of the pre-rendered noise tile; building one per frame is fatal. */
+export const GRAIN_TILE = 24
+
+/** share of the tile a crayon leaves coloured, the rest showing through. */
+export const GRAIN_DENSITY = 0.55
+
+/** the airbrush keeps spraying on a held button, at about one frame apart. */
+export const SPRAY_INTERVAL_MS = 16
+
+/** pointer travel between samples that counts as full speed, in pixels. */
+export const BRUSH_FULL_SPEED = 14
+
+/** stroke length over which an oil brush runs down to its dry opacity. */
+export const BRUSH_DRY_LENGTH = 600
 
 const DEG = Math.PI / 180
 
@@ -232,9 +290,8 @@ function arcStops(from: number, to: number): number[] {
 }
 
 /**
- * cubic approximation of an elliptical arc that turns clockwise from `from` to
- * `to`, in degrees with y pointing down. cutting it on the quarter turns puts
- * a corner on each end of the box, which is what makes the shape fill it.
+ * cubic approximation of an elliptical arc, clockwise, in degrees with y down.
+ * cutting it on the quarter turns puts a corner on each end of the box.
  */
 function arc(
 	cx: number,

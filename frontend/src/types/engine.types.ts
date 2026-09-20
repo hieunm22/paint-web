@@ -3,6 +3,7 @@ import type { SelectionManager } from "engine/SelectionManager"
 import type { Surface } from "engine/Surface"
 import type { AppDispatch } from "store"
 import type {
+	BrushKind,
 	Point,
 	Rect,
 	ShapeKind,
@@ -37,6 +38,66 @@ export interface RGBA {
 	a: number
 }
 
+/**
+ * hue, saturation and luminance on the scale the Windows colour dialog shows:
+ * hue runs to 239 and the other two to 240, not to 360 and 100.
+ */
+export interface WinHsl {
+	h: number
+	s: number
+	l: number
+}
+
+/** the flat nib of a calligraphy brush, stamped at a fixed angle. */
+export interface BrushNib {
+	/** degrees, measured clockwise because y points down. */
+	angle: number
+	/** short side of the nib as a multiple of the stroke width. */
+	thickness: number
+}
+
+/** the scatter an airbrush keeps up for as long as the button is held. */
+export interface BrushSpray {
+	/** radius of the scatter disc as a multiple of the stroke width. */
+	radius: number
+	/** dots laid down per sample. */
+	rate: number
+}
+
+/** how one brush lays paint down; the tool reads it once per segment. */
+export interface BrushSpec {
+	/** stroke width as a multiple of the tool size. */
+	width: number
+	/** opacity of a single pass. */
+	alpha: number
+	nib?: BrushNib
+	spray?: BrushSpray
+	/** parallel passes, spread sideways over `jitter` stroke widths. */
+	passes?: number
+	jitter?: number
+	/** painted through a noise tile, which is what grains a crayon. */
+	grain?: boolean
+	/** darkens what it crosses instead of covering it. */
+	multiply?: boolean
+	/** blur radius in image pixels, for paint that bleeds. */
+	blur?: number
+	/** opacity at a standstill and at full speed; between them it slides. */
+	speed?: [number, number]
+	/** the stroke runs dry over its length, down to this share of `alpha`. */
+	dry?: number
+}
+
+/** one brush or styled outline, ready to paint with. */
+export interface BrushPaint {
+	target: CanvasRenderingContext2D
+	spec: BrushSpec
+	color: string
+	/** stroke width in image pixels, the spec multiplier already applied. */
+	width: number
+	/** extra opacity on top of the spec, which speed and drying move. */
+	fade: number
+}
+
 /** pointer state a tool reads: which button started the gesture, plus keys. */
 export interface Modifiers {
 	/** right button, or Ctrl+click on macOS: the gesture uses colour 2. */
@@ -61,6 +122,8 @@ export interface ToolContext {
 	/** current view zoom, which only the magnifier steps through. */
 	zoom: number
 	shape: ShapeKind
+	/** which of the nine brushes the gallery has selected. */
+	brush: BrushKind
 	outline: StrokeStyle
 	fill: StrokeStyle
 	/** colour 2 drops out of a lifted selection when this is on. */

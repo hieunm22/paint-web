@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next"
-import { EXTENSIONS, FORMATS } from "common/constant"
+import { EXTENSIONS, FORMATS, NO_AUTOFILL } from "common/constant"
 import { FORMAT_HINT_KEYS } from "../constant"
 import { useFileCommands } from "hooks/useFileCommands"
 import { useAppDispatch, useAppSelector } from "store/hooks"
@@ -54,6 +54,7 @@ export function SaveAsDialog() {
 					<span className="dialog__label">{t("dialog.save-as.file-name")}</span>
 					<input
 						className="dialog__num dialog__num--wide"
+						{...NO_AUTOFILL}
 						value={form.name}
 						onChange={e => form.setName(e.target.value)}
 					/>

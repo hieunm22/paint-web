@@ -9,7 +9,7 @@ import type { Point } from "types/store.types"
 
 /**
  * reads one committed pixel into a swatch and hands the previous tool back.
- * nothing is drawn, so this tool never pushes a history step.
+ * nothing is drawn: this tool never pushes a history step.
  */
 export class PickerTool implements Tool {
 	readonly id = "picker"

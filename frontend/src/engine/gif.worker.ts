@@ -2,9 +2,8 @@ import { applyPalette, GIFEncoder, quantize } from "gifenc"
 import type { GifRequest, GifResponse } from "types/engine.types"
 
 /**
- * GIF encoding off the main thread: quantising a megapixel down to 256 colours
- * stalls a frame badly. self is typed as a Worker because the DOM and webworker
- * libs cannot both be loaded.
+ * gif encoding off the main thread: quantising a megapixel to 256 colours
+ * stalls a frame badly. self is cast: the dom lib is the one loaded.
  */
 const worker = self as unknown as Worker
 

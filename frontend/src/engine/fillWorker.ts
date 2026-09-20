@@ -14,9 +14,8 @@ function ensureWorker(): Worker {
 }
 
 /**
- * runs the fill off the main thread and hands back the filled pixels. one
- * request at a time, which is all the engine allows: it blocks new gestures
- * while a fill is in flight.
+ * runs the fill off the main thread. one request at a time is all the engine
+ * allows: it blocks new gestures while a fill is in flight.
  */
 export function floodFillOffThread(
 	image: ImageData,

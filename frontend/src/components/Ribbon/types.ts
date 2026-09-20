@@ -33,6 +33,13 @@ export interface StrokeStyleDef {
 	labelKey: string
 }
 
+/** what the font box lists, and the ask that turns it into the real one. */
+export interface FontFamilyList {
+	families: string[]
+	/** opening the box is the gesture the permission prompt needs behind it. */
+	load(): void
+}
+
 /** the four character styles of the Text tab, each an independent toggle. */
 export type FontStyleId = "bold" | "italic" | "underline" | "strikethrough"
 

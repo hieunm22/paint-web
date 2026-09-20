@@ -1,7 +1,24 @@
-import type { Modifiers } from "types/engine.types"
+import type { RefObject } from "react"
+import type { Modifiers, Size } from "types/engine.types"
 import type { Point, Rect } from "types/store.types"
 
-export type HandlePosition = "nw" | "n" | "ne" | "w" | "e" | "sw" | "s" | "se"
+/** the three edges Paint lets a document be dragged by. */
+export type HandlePosition = "e" | "s" | "se"
+
+export interface ResizeHandlesProps {
+	doc: Size
+	zoom: number
+}
+
+/** live handle drag, kept in a ref to stop pointer moves re-rendering. */
+export interface ResizeSession {
+	pointerId: number
+	handle: HandlePosition
+	/** where the pointer went down, in client pixels. */
+	start: Point
+	/** the paper the drag has reached, committed when the pointer lifts. */
+	size: Size
+}
 
 export interface RulerProps {
 	orientation: "h" | "v"
@@ -21,13 +38,18 @@ export interface RulerTick {
 
 /**
  * pointer positions waiting for the next frame. a pen reports up to 1000 times
- * a second, and drawing each batch as it lands would paint several times in
- * one frame for nothing.
+ * a second, and drawing each batch as it lands repeats work within a frame.
  */
 export interface PointerBatch {
 	points: Point[]
 	mods: Modifiers
 	frame: number | null
+}
+
+export interface ThumbnailProps {
+	zoom: number
+	/** the scrolling viewport the frame moves. */
+	scrollRef: RefObject<HTMLDivElement>
 }
 
 export interface TextBoxProps {

@@ -5,8 +5,7 @@ import "./RibbonButton.scss"
 
 /**
  * large button: 32px icon on top, label below. with `caret` the whole button
- * opens a menu instead of splitting into two halves, which is what the Size
- * button does.
+ * opens a menu rather than splitting in two, which is what Size does.
  */
 export function LargeButton({
 	label,

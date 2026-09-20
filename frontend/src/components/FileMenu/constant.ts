@@ -2,8 +2,8 @@ import type { ImageFormat } from "types/store.types"
 import type { FileMenuRow } from "./types"
 
 /**
- * left column. Three original entries are remapped for the web: scanner
- * becomes From camera, email becomes Copy image, desktop background is dropped.
+ * left column. three entries are remapped for the web: scanner becomes From
+ * camera, email becomes Copy image, desktop background is dropped.
  */
 export const FILE_MENU_ROWS: FileMenuRow[] = [
 	{

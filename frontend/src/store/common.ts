@@ -1,5 +1,12 @@
-import { QAT_DEFAULT, QAT_STORAGE_KEY } from "common/constant"
+import {
+	DEFAULT_DOCUMENT,
+	MAX_DIMENSION,
+	PAGE_SIZE_STORAGE_KEY,
+	QAT_DEFAULT,
+	QAT_STORAGE_KEY,
+} from "common/constant"
 import { translate } from "locales/translate"
+import type { Size } from "types/engine.types"
 import type { QatItemId } from "types/store.types"
 
 /**
@@ -25,6 +32,44 @@ export function writeQat(items: QatItemId[]): void {
 	} catch {
 		// storage blocked: the toolbar simply forgets between sessions
 	}
+}
+
+/**
+ * the page size the last handle drag settled on, which New and the next visit
+ * open at. a paste that widens the paper is not a choice and never lands here.
+ */
+export function readPageSize(): Size {
+	try {
+		return parsePageSize(
+			JSON.parse(localStorage.getItem(PAGE_SIZE_STORAGE_KEY) ?? "null"),
+		)
+	} catch {
+		return DEFAULT_DOCUMENT
+	}
+}
+
+export function writePageSize(size: Size): void {
+	try {
+		localStorage.setItem(PAGE_SIZE_STORAGE_KEY, JSON.stringify(size))
+	} catch {
+		// storage blocked: every visit opens at the default size
+	}
+}
+
+/** a stored size is taken whole: one unusable side and the default wins. */
+export function parsePageSize(saved: unknown): Size {
+	const size = saved as Partial<Size> | null
+	const width = usableSide(size?.width)
+	const height = usableSide(size?.height)
+
+	return width && height ? { width, height } : DEFAULT_DOCUMENT
+}
+
+/** zero stands for unusable, which is a side the document can never have. */
+function usableSide(value: unknown): number {
+	if (typeof value !== "number" || !Number.isInteger(value)) return 0
+
+	return value >= 1 && value <= MAX_DIMENSION ? value : 0
 }
 
 /** a document that has never been named shows the localised "Untitled". */

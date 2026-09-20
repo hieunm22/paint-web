@@ -3,10 +3,8 @@ import { MenuAnchorContext } from "./hooks"
 import type { MenuAnchorProps } from "./types"
 
 /**
- * marks the element a portalled menu should align itself to, and shields the
- * button inside from the outside-click handler: dismissing on the way down
- * would let the opener's own click reopen what it just closed.
- * keeps the anchor's own class, which stops the wrapper from changing layout.
+ * what a portalled menu aligns itself to. it also shields its button from the
+ * outside-click handler, which would reopen the menu that click just closed.
  */
 export function MenuAnchor({ children, className }: MenuAnchorProps) {
 	const ref = useRef<HTMLDivElement>(null)

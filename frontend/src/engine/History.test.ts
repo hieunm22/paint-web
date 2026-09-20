@@ -142,7 +142,7 @@ describe("the 50 step limit", () => {
 		while (history.undo()) undone++
 
 		expect(undone).toBe(50)
-		// the first stroke fell out of the stack, so its value is what remains
+		// the first stroke fell out of the stack; its value is what remains
 		expect(at(1, 1)).toBe(1)
 	})
 })

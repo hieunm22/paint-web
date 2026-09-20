@@ -3,7 +3,10 @@ import {
 	describe,
 	expect,
 	it,
+	vi,
 } from "vitest"
+import { SPRAY_INTERVAL_MS } from "common/constant"
+import { BrushTool } from "engine/tools/BrushTool"
 import { EraserTool } from "engine/tools/EraserTool"
 import { FillTool } from "engine/tools/FillTool"
 import { MagnifierTool } from "engine/tools/MagnifierTool"
@@ -67,8 +70,8 @@ const RIGHT: Modifiers = { ...LEFT, secondary: true }
 const SHIFT: Modifiers = { ...LEFT, shift: true }
 
 /**
- * a tool only ever touches its context, so the whole of one can be stood up
- * from arrays: what it stamped, what it snapshotted, what it dispatched.
+ * a tool only ever touches its context; the whole of one stands up from
+ * arrays: what it stamped, what it snapshotted, what it dispatched.
  */
 function harness(
 	size = 1,
@@ -90,8 +93,18 @@ function harness(
 		lineWidth: 1,
 		lineJoin: "",
 		lineCap: "",
+		globalAlpha: 1,
+		globalCompositeOperation: "source-over",
+		filter: "none",
 		save() {},
 		restore() {},
+		translate() {},
+		rotate() {},
+		beginPath() {},
+		moveTo() {},
+		lineTo() {},
+		arc() {},
+		createPattern: () => null,
 		fill() {
 			painted.push({ kind: "fill", style: this.fillStyle })
 		},
@@ -160,6 +173,7 @@ function harness(
 		size,
 		zoom,
 		shape: "rect",
+		brush: "brush",
 		outline: "solid",
 		fill: "none",
 		doc: { width: DOC, height: DOC },
@@ -220,6 +234,50 @@ describe("PencilTool", () => {
 		pencil.update([{ x: 3, y: 1 }], SHIFT, h.ctx)
 
 		expect(h.stamps.every(s => s.y === 0)).toBe(true)
+	})
+})
+
+describe("BrushTool", () => {
+	it("strokes with colour 1, and with colour 2 on the right button", () => {
+		const left = harness()
+		const right = harness()
+		new BrushTool().begin({ x: 1, y: 1 }, LEFT, left.ctx)
+		new BrushTool().begin({ x: 1, y: 1 }, RIGHT, right.ctx)
+
+		expect(left.painted[0].style).toBe(BLACK)
+		expect(right.painted[0].style).toBe(WHITE)
+	})
+
+	it("stamps a flat nib instead of stroking for a calligraphy brush", () => {
+		const h = harness(3, 1, { brush: "calligraphy1" })
+		new BrushTool().begin({ x: 1, y: 1 }, LEFT, h.ctx)
+
+		expect(h.painted).toEqual([])
+		expect(h.stamps.length).toBeGreaterThan(0)
+	})
+
+	it("snapshots the whole disc an airbrush scatters into", () => {
+		const h = harness(1, 1, { brush: "airbrush" })
+		new BrushTool().begin({ x: 2, y: 2 }, LEFT, h.ctx)
+
+		expect(h.dirty[0]).toEqual({ x: 0, y: 0, w: 4, h: 4 })
+	})
+
+	it("keeps an airbrush spraying while held and stops it at the end", () => {
+		vi.useFakeTimers()
+		const h = harness(1, 1, { brush: "airbrush" })
+		const brush = new BrushTool()
+
+		brush.begin({ x: 2, y: 2 }, LEFT, h.ctx)
+		const sprayed = h.stamps.length
+		vi.advanceTimersByTime(SPRAY_INTERVAL_MS * 3)
+		const held = h.stamps.length
+		expect(held).toBeGreaterThan(sprayed)
+
+		brush.end()
+		vi.advanceTimersByTime(SPRAY_INTERVAL_MS * 3)
+		expect(h.stamps.length).toBe(held)
+		vi.useRealTimers()
 	})
 })
 

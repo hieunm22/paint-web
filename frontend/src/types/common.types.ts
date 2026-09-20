@@ -25,6 +25,16 @@ export interface FilePickerWindow {
 	showSaveFilePicker(options?: SavePickerOptions): Promise<FileSystemFileHandle>
 }
 
+/** one installed face, of which the font box reads only the family name. */
+export interface LocalFontData {
+	family: string
+}
+
+/** Chromium alone will name the installed fonts, and only once allowed to. */
+export interface LocalFontWindow {
+	queryLocalFonts(): Promise<LocalFontData[]>
+}
+
 export interface PermissionMode {
 	mode: "read" | "readwrite"
 }

@@ -151,6 +151,7 @@ statusbar.zoom.out;Zoom out;Thu nhỏ
 statusbar.zoom.percent;{0}%;{0}%
 canvas.thumbnail.title;Thumbnail;Ảnh thu nhỏ
 canvas.text.label;Text box;Hộp văn bản
+canvas.full-screen.exit;Click the picture to leave full screen;Bấm vào ảnh để thoát toàn màn hình
 filemenu.nav.back;Back;Quay lại
 filemenu.item.new;New;Mới
 filemenu.item.open;Open;Mở
@@ -242,6 +243,7 @@ toast.clipboard.no-image;The clipboard holds no picture;Bảng tạm không có 
 toast.clipboard.copy-failed;The picture could not be copied;Không sao chép được ảnh
 toast.clipboard.paste-shortcut;This browser only pastes with the keyboard shortcut;Trình duyệt này chỉ dán được bằng phím tắt
 history.label.pencil;Pencil;Bút chì
+history.label.brush;Brush;Cọ vẽ
 history.label.eraser;Eraser;Tẩy
 history.label.fill;Fill with color;Tô màu
 history.label.picker;Pick color;Lấy màu
@@ -254,4 +256,5 @@ history.label.crop;Crop;Cắt xén
 history.label.rotate;Rotate;Xoay
 history.label.flip;Flip;Lật
 history.label.resize;Resize;Đổi cỡ
+history.label.canvas;Canvas size;Cỡ trang vẽ
 history.label.text;Text;Văn bản

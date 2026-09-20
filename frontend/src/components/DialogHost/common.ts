@@ -1,4 +1,6 @@
 import { MAX_DIMENSION, MAX_SKEW } from "common/constant"
+import { HUE_MAX, LEVEL_MAX } from "./constant"
+import type { RGBA, WinHsl } from "types/engine.types"
 import type {
 	DragBase,
 	Point,
@@ -76,4 +78,47 @@ export function clampScale(scale: number, side: number): number {
 	if (!(scale > 0) || !side) return 1
 
 	return Math.min(scale, MAX_DIMENSION / side)
+}
+
+/** hue wraps at the top of its scale; saturation and luminance stop there. */
+export function clampHsl({ h, s, l }: WinHsl): WinHsl {
+	return {
+		h: ((Math.round(h) % HUE_MAX) + HUE_MAX) % HUE_MAX,
+		s: clamp(Math.round(s), 0, LEVEL_MAX),
+		l: clamp(Math.round(l), 0, LEVEL_MAX),
+	}
+}
+
+export function clampRgba({ r, g, b }: RGBA): RGBA {
+	return {
+		r: clamp(Math.round(r), 0, 255),
+		g: clamp(Math.round(g), 0, 255),
+		b: clamp(Math.round(b), 0, 255),
+		a: 255,
+	}
+}
+
+/**
+ * the tone a click in the hue field lands on. black and white carry no hue,
+ * and picking one there brings the luminance back to the middle to show it.
+ */
+export function toneAt(across: number, down: number, lum: number): WinHsl {
+	const showsHue = lum > 0 && lum < LEVEL_MAX
+
+	return {
+		h: across * HUE_MAX,
+		s: (1 - down) * LEVEL_MAX,
+		l: showsHue ? lum : LEVEL_MAX / 2,
+	}
+}
+
+/** the luminance bar runs from black at the bottom to white at the top. */
+export function levelAt(down: number): number {
+	return (1 - down) * LEVEL_MAX
+}
+
+/** what the typed text means, or the value already there when it means nothing. */
+export function parseLevel(text: string, current: number): number {
+	const value = Number.parseInt(text, 10)
+	return Number.isFinite(value) ? value : current
 }

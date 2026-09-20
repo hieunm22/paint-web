@@ -9,24 +9,40 @@ import {
 	type ChangeEvent,
 	type PointerEvent,
 	type RefObject,
-	type UIEvent,
 } from "react"
 import { TEXT_PADDING } from "common/constant"
-import { CANVAS_MARGIN } from "./constant"
+import {
+	CANVAS_MARGIN,
+	THUMBNAIL_BOX,
+	THUMBNAIL_FRAME,
+	THUMBNAIL_INTERVAL_MS,
+} from "./constant"
 import { isSecondaryButton } from "common/platform"
-import { screenToImage, visiblePixel } from "./common"
+import { writePageSize } from "store/common"
+import {
+	boxToThumb,
+	fittedBox,
+	resizedDocument,
+	screenToImage,
+	thumbToImage,
+	visibleRect,
+} from "./common"
 import { reportCursor } from "engine/cursor"
 import { getOverlayState, subscribeOverlay } from "engine/overlay"
 import { paint } from "engine/PaintEngine"
-import { reportVisibleOrigin } from "engine/viewport"
-import type { Modifiers, OverlayState } from "types/engine.types"
+import type { Modifiers, OverlayState, Size } from "types/engine.types"
 import type {
 	Point,
 	Rect,
 	ToolId,
 	ZoomFocus,
 } from "types/store.types"
-import type { PointerBatch, TextDragSession } from "./types"
+import type {
+	HandlePosition,
+	PointerBatch,
+	ResizeSession,
+	TextDragSession,
+} from "./types"
 
 type CanvasPointerEvent = PointerEvent<HTMLCanvasElement>
 
@@ -72,9 +88,8 @@ export function useSurface(width: number, height: number) {
 }
 
 /**
- * drives the engine straight from the pointer and feeds the throttled cursor
- * store. nothing here dispatches: a move must not re-render the app.
- * memoised so the canvas keeps one handler identity across renders.
+ * drives the engine straight from the pointer, dispatching nothing: a move
+ * must not re-render the app. memoised to keep one handler identity.
  */
 export function usePointerTools(
 	zoom: number,
@@ -172,20 +187,6 @@ export function useOverlayReset(tool: ToolId) {
 }
 
 /**
- * tells the engine which corner is in view, straight from the scroll event.
- * a dispatch here would re-render the app as thickly as a pointer move does.
- */
-export function useVisibleOrigin(zoom: number) {
-	return useCallback(
-		(e: UIEvent<HTMLDivElement>) => {
-			const el = e.currentTarget
-			reportVisibleOrigin(visiblePixel(el.scrollLeft, el.scrollTop, zoom))
-		},
-		[zoom],
-	)
-}
-
-/**
  * holds what is typed in the text box and hands it to the engine, which keeps
  * it until something bakes it. the box follows the text down as it grows.
  */
@@ -257,6 +258,169 @@ export function useTextBoxDrag(box: Rect, zoom: number) {
 		onPointerUp,
 		onPointerCancel: onPointerUp,
 	}
+}
+
+/**
+ * drags the paper's edge. the outline follows the pointer through the dom and
+ * only the lift reaches the engine: a size per move would redraw the app.
+ */
+export function useDocumentResize(doc: Size, zoom: number) {
+	const previewRef = useRef<HTMLDivElement>(null)
+	const session = useRef<ResizeSession | null>(null)
+
+	const show = useCallback(
+		(size: Size | null) => {
+			const el = previewRef.current
+			if (!el) return
+
+			el.style.display = size ? "block" : "none"
+			if (!size) return
+
+			el.style.width = `${size.width * zoom}px`
+			el.style.height = `${size.height * zoom}px`
+		},
+		[zoom],
+	)
+
+	const onPointerDown = useCallback(
+		(handle: HandlePosition) => (e: PointerEvent<HTMLElement>) => {
+			if (e.button !== 0) return
+
+			e.currentTarget.setPointerCapture(e.pointerId)
+			session.current = {
+				pointerId: e.pointerId,
+				handle,
+				start: { x: e.clientX, y: e.clientY },
+				size: doc,
+			}
+			show(doc)
+		},
+		[doc, show],
+	)
+
+	const onPointerMove = useCallback(
+		(e: PointerEvent<HTMLElement>) => {
+			const drag = session.current
+			if (!drag || drag.pointerId !== e.pointerId) return
+
+			drag.size = resizedDocument(drag.handle, doc, {
+				x: (e.clientX - drag.start.x) / zoom,
+				y: (e.clientY - drag.start.y) / zoom,
+			})
+			show(drag.size)
+		},
+		[doc, zoom, show],
+	)
+
+	const onPointerUp = useCallback(
+		(e: PointerEvent<HTMLElement>) => {
+			const drag = session.current
+			if (!drag || drag.pointerId !== e.pointerId) return
+
+			session.current = null
+			show(null)
+			paint.resizeCanvas(drag.size)
+			// the size the user chose by hand outlives the document
+			writePageSize(drag.size)
+		},
+		[show],
+	)
+
+	return {
+		previewRef,
+		handleProps: (handle: HandlePosition) => ({
+			onPointerDown: onPointerDown(handle),
+			onPointerMove,
+			onPointerUp,
+			onPointerCancel: onPointerUp,
+		}),
+	}
+}
+
+/**
+ * keeps the thumbnail painted and lets its frame scroll the viewport. neither
+ * the timer nor a drag goes through react.
+ */
+export function useThumbnail(
+	zoom: number,
+	scrollRef: RefObject<HTMLDivElement>,
+) {
+	const ref = useRef<HTMLCanvasElement>(null)
+
+	useEffect(() => {
+		const timer = setInterval(() => {
+			const target = ref.current?.getContext("2d")
+			const scroller = scrollRef.current
+			if (target && scroller) drawThumbnail(target, scroller, zoom)
+		}, THUMBNAIL_INTERVAL_MS)
+
+		return () => clearInterval(timer)
+	}, [zoom, scrollRef])
+
+	const scrollTo = useCallback(
+		(e: PointerEvent<HTMLCanvasElement>) => {
+			const scroller = scrollRef.current
+			const fit = fittedBox(paint.surface.documentSize, THUMBNAIL_BOX)
+			if (!scroller || !fit) return
+
+			const box = e.currentTarget.getBoundingClientRect()
+			const at = thumbToImage(
+				{ x: e.clientX - box.left, y: e.clientY - box.top },
+				paint.surface.documentSize,
+				fit,
+			)
+			scroller.scrollLeft =
+				at.x * zoom + CANVAS_MARGIN - scroller.clientWidth / 2
+			scroller.scrollTop =
+				at.y * zoom + CANVAS_MARGIN - scroller.clientHeight / 2
+		},
+		[zoom, scrollRef],
+	)
+
+	return {
+		ref,
+		onPointerDown: (e: PointerEvent<HTMLCanvasElement>) => {
+			e.currentTarget.setPointerCapture(e.pointerId)
+			scrollTo(e)
+		},
+		onPointerMove: (e: PointerEvent<HTMLCanvasElement>) => {
+			if (e.buttons) scrollTo(e)
+		},
+	}
+}
+
+/** the picture scaled into the box, with the viewed part framed in red. */
+function drawThumbnail(
+	target: CanvasRenderingContext2D,
+	scroller: HTMLDivElement,
+	zoom: number,
+): void {
+	const doc = paint.surface.documentSize
+	const fit = fittedBox(doc, THUMBNAIL_BOX)
+	target.clearRect(0, 0, THUMBNAIL_BOX.width, THUMBNAIL_BOX.height)
+	if (!fit) return
+
+	paint.surface.drawInto(target, fit)
+
+	const view = boxToThumb(
+		visibleRect(
+			{ x: scroller.scrollLeft, y: scroller.scrollTop },
+			{ width: scroller.clientWidth, height: scroller.clientHeight },
+			zoom,
+		),
+		doc,
+		fit,
+	)
+	target.save()
+	target.strokeStyle = THUMBNAIL_FRAME
+	target.lineWidth = 1
+	target.strokeRect(
+		Math.round(view.x) + 0.5,
+		Math.round(view.y) + 0.5,
+		Math.round(Math.min(view.w, fit.w)),
+		Math.round(Math.min(view.h, fit.h)),
+	)
+	target.restore()
 }
 
 /** pointer position in the overlay's own css pixels. */

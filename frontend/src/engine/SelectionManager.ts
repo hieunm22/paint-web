@@ -147,9 +147,8 @@ export class SelectionManager {
 	}
 
 	/**
-	 * stretches the floating pixels into a new box, always from the copy that
-	 * was picked up: scaling the scaled one would soften a bit more each drag.
-	 * a stretched lasso no longer traces its pixels, and the mask goes with it.
+	 * stretches the floating pixels into a new box, always from the copy picked
+	 * up: scaling the scaled one softens a little more with every drag.
 	 */
 	resizeTo(ctx: ToolContext, box: Rect): void {
 		const raw = this.raw
@@ -169,9 +168,8 @@ export class SelectionManager {
 	}
 
 	/**
-	 * runs a rotate, a flip or a resize over the floating pixels, keeping them
-	 * centred where they were. the result is a plain box: a traced outline no
-	 * longer describes pixels that have been turned or stretched.
+	 * rotates, flips or resizes the floating pixels about their centre. what
+	 * comes back is a plain box: a traced outline no longer fits them.
 	 */
 	reshape(ctx: ToolContext, make: ImageRecipe): void {
 		this.lift(ctx, true)
@@ -270,8 +268,7 @@ export class SelectionManager {
 
 	/**
 	 * the selected box as a picture of its own, which Crop makes the document.
-	 * a lasso leaves gaps inside that box, and Paint fills them with colour 2
-	 * rather than leaving them clear.
+	 * a lasso leaves gaps in it, and Paint fills those with colour 2.
 	 */
 	crop(ctx: ToolContext): HTMLCanvasElement | null {
 		const box = this.box

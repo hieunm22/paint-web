@@ -29,9 +29,8 @@ function glyphFor(icon: IconDefinition): Glyph | null {
 }
 
 /**
- * puts the glyph's hotspot on the pointer. drawn on the overlay rather than
- * handed to css because macOS scales a css cursor by its accessibility pointer
- * size, and these have to keep the size they were drawn at.
+ * puts the glyph's hotspot on the pointer. drawn on the overlay because macOS
+ * scales a css cursor by the accessibility pointer size.
  */
 export function drawCursor(
 	paint: CanvasRenderingContext2D,

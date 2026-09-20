@@ -1,4 +1,5 @@
-import type { FlipAxis, TransformSpec } from "types/engine.types"
+import { PAPER_COLOR } from "common/constant"
+import type { FlipAxis, Size, TransformSpec } from "types/engine.types"
 
 const DEGREES = Math.PI / 180
 
@@ -7,6 +8,24 @@ export function canvasOf(width: number, height: number): HTMLCanvasElement {
 	const canvas = document.createElement("canvas")
 	canvas.width = Math.max(1, Math.round(width))
 	canvas.height = Math.max(1, Math.round(height))
+	return canvas
+}
+
+/**
+ * the picture on a sheet of another size, never scaled and anchored top left:
+ * what the new paper does not reach is cropped, the rest comes out white.
+ */
+export function padImage(
+	source: HTMLCanvasElement,
+	size: Size,
+): HTMLCanvasElement {
+	const canvas = canvasOf(size.width, size.height)
+	const ctx = canvas.getContext("2d")
+	if (!ctx) return canvas
+
+	ctx.fillStyle = PAPER_COLOR
+	ctx.fillRect(0, 0, canvas.width, canvas.height)
+	ctx.drawImage(source, 0, 0)
 	return canvas
 }
 

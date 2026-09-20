@@ -1,15 +1,26 @@
 import { useTranslation } from "react-i18next"
 import {
+	NO_AUTOFILL,
 	POINT_TO_PIXEL,
 	TEXT_GRAB_BAND,
 	TEXT_LINE_HEIGHT,
 	TEXT_PADDING,
 } from "common/constant"
-import { HANDLES, RULER_SIZE } from "./constant"
+import { HANDLES, RULER_SIZE, THUMBNAIL_BOX } from "./constant"
 import { buildRulerTicks, textDecoration, textFrameBox } from "./common"
 import { useAppSelector } from "store/hooks"
-import { useTextBox, useTextBoxDrag } from "./hooks"
-import type { RulerProps, TextBoxProps } from "./types"
+import {
+	useDocumentResize,
+	useTextBox,
+	useTextBoxDrag,
+	useThumbnail,
+} from "./hooks"
+import type {
+	ResizeHandlesProps,
+	RulerProps,
+	TextBoxProps,
+	ThumbnailProps,
+} from "./types"
 
 /** ruler drawn as SVG, which keeps the ticks crisp at every zoom level. */
 export function Ruler({ orientation, length, zoom }: RulerProps) {
@@ -79,23 +90,29 @@ export function Ruler({ orientation, length, zoom }: RulerProps) {
 }
 
 /**
- * eight document resize handles: dragging adds white space or crops,
- * it never scales the content. Drag behaviour is not wired up yet.
+ * the three edges the paper can be dragged by: it gains white space or is
+ * cropped, and the picture inside is never scaled.
  */
-export function ResizeHandles() {
+export function ResizeHandles({ doc, zoom }: ResizeHandlesProps) {
+	const { previewRef, handleProps } = useDocumentResize(doc, zoom)
+
 	return (
 		<>
+			<div ref={previewRef} className="canvas__resize-preview" />
 			{HANDLES.map(pos => (
-				<span key={pos} className={`canvas__handle canvas__handle--${pos}`} />
+				<span
+					key={pos}
+					className={`canvas__handle canvas__handle--${pos}`}
+					{...handleProps(pos)}
+				/>
 			))}
 		</>
 	)
 }
 
 /**
- * the text box is a real textarea laid over the picture: the caret, the
- * selection and every input method come with it for nothing. the engine bakes
- * what it holds onto the bitmap when the box is committed.
+ * a real textarea laid over the picture: the caret, the selection and every
+ * input method come with it. the engine bakes what it holds on commit.
  */
 export function TextBox({ box, zoom }: TextBoxProps) {
 	const { t } = useTranslation()
@@ -128,7 +145,7 @@ export function TextBox({ box, zoom }: TextBoxProps) {
 				}}
 				aria-label={t("canvas.text.label")}
 				autoFocus
-				spellCheck={false}
+				{...NO_AUTOFILL}
 				value={value}
 				onChange={onChange}
 			/>
@@ -136,15 +153,27 @@ export function TextBox({ box, zoom }: TextBoxProps) {
 	)
 }
 
-export function Thumbnail() {
+/**
+ * the whole picture in miniature, the viewed part framed in red. dragging the
+ * frame scrolls the canvas, which is what Paint's thumbnail does.
+ */
+export function Thumbnail({ zoom, scrollRef }: ThumbnailProps) {
 	const { t } = useTranslation()
+	const { ref, onPointerDown, onPointerMove } = useThumbnail(zoom, scrollRef)
 
 	return (
 		<div className="canvas__thumbnail">
 			<div className="canvas__thumbnail-title">
 				{t("canvas.thumbnail.title")}
 			</div>
-			<div className="canvas__thumbnail-body" />
+			<canvas
+				ref={ref}
+				className="canvas__thumbnail-body"
+				width={THUMBNAIL_BOX.width}
+				height={THUMBNAIL_BOX.height}
+				onPointerDown={onPointerDown}
+				onPointerMove={onPointerMove}
+			/>
 		</div>
 	)
 }

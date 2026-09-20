@@ -1,4 +1,5 @@
 import { useTranslation } from "react-i18next"
+import { NO_AUTOFILL } from "common/constant"
 import { useAppSelector } from "store/hooks"
 import { Dialog } from "./Dialog"
 
@@ -70,11 +71,19 @@ export function ImagePropertiesDialog() {
 					<span className="dialog__label">
 						{t("dialog.image-properties.width")}
 					</span>
-					<input className="dialog__num" defaultValue={doc.width} />
+					<input
+						className="dialog__num"
+						{...NO_AUTOFILL}
+						defaultValue={doc.width}
+					/>
 					<span className="dialog__label dialog__label--short">
 						{t("dialog.image-properties.height")}
 					</span>
-					<input className="dialog__num" defaultValue={doc.height} />
+					<input
+						className="dialog__num"
+						{...NO_AUTOFILL}
+						defaultValue={doc.height}
+					/>
 				</div>
 			</div>
 		</Dialog>

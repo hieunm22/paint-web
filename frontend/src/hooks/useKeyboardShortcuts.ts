@@ -16,6 +16,7 @@ import { toggleView, zoomIn, zoomOut } from "store/slices/viewSlice"
 export function useKeyboardShortcuts() {
 	const dispatch = useAppDispatch()
 	const zoom = useAppSelector(s => s.view.zoom)
+	const fullScreen = useAppSelector(s => s.view.fullScreen)
 	const files = useFileCommands()
 
 	useEffect(() => {
@@ -95,13 +96,19 @@ export function useKeyboardShortcuts() {
 			}
 
 			switch (e.key) {
+				case "F11":
+					e.preventDefault()
+					dispatch(toggleView("fullScreen"))
+					return
 				case "Delete":
 				case "Backspace":
 					e.preventDefault()
 					paint.deleteSelection()
 					return
 				case "Escape":
-					paint.discardHeld()
+					// full screen goes first: it is the newest thing on the screen
+					if (fullScreen) dispatch(toggleView("fullScreen"))
+					else paint.discardHeld()
 					return
 				case "Enter":
 					paint.commitHeld()
@@ -128,5 +135,5 @@ export function useKeyboardShortcuts() {
 
 		window.addEventListener("keydown", onKeyDown)
 		return () => window.removeEventListener("keydown", onKeyDown)
-	}, [dispatch, zoom, files])
+	}, [dispatch, zoom, fullScreen, files])
 }

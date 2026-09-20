@@ -1,4 +1,5 @@
 import { useTranslation } from "react-i18next"
+import { NO_AUTOFILL } from "common/constant"
 import { Icon } from "components/Icon"
 import { useAppDispatch, useAppSelector } from "store/hooks"
 import { useResizeSkewForm } from "../hooks"
@@ -74,6 +75,7 @@ export function ResizeSkewDialog() {
 						</span>
 						<input
 							className="dialog__num"
+							{...NO_AUTOFILL}
 							type="number"
 							min={1}
 							value={form.horizontal}
@@ -87,6 +89,7 @@ export function ResizeSkewDialog() {
 						</span>
 						<input
 							className="dialog__num"
+							{...NO_AUTOFILL}
 							type="number"
 							min={1}
 							value={form.vertical}
@@ -116,6 +119,7 @@ export function ResizeSkewDialog() {
 						</span>
 						<input
 							className="dialog__num"
+							{...NO_AUTOFILL}
 							type="number"
 							value={form.skewH}
 							onChange={e => form.setSkewH(Number(e.target.value))}
@@ -128,6 +132,7 @@ export function ResizeSkewDialog() {
 						</span>
 						<input
 							className="dialog__num"
+							{...NO_AUTOFILL}
 							type="number"
 							value={form.skewV}
 							onChange={e => form.setSkewV(Number(e.target.value))}

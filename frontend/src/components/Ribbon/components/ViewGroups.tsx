@@ -78,7 +78,6 @@ export function ViewTabGroups() {
 						"ribbon.display.full-screen",
 						"shortcut.view.full-screen",
 					)}
-					disabled
 					selected={view.fullScreen}
 					onClick={() => dispatch(toggleView("fullScreen"))}
 				/>

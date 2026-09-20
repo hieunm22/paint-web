@@ -11,6 +11,15 @@ export const FORMAT_HINT_KEYS: Record<ImageFormat, string> = {
 	webp: "dialog.save-as.hint-webp",
 }
 
+/** hue wraps at 240 rather than reaching it, the way Windows counts it. */
+export const HUE_MAX = 240
+
+/** top of the saturation and luminance scales, and of the fields drawn for them. */
+export const LEVEL_MAX = 240
+
+/** side of the hue and saturation field, in css pixels. */
+export const COLOR_FIELD_SIZE = 176
+
 /** the 48 fixed Basic colors from the classic Windows dialog. */
 export const BASIC_COLORS = [
 	"#ff8080",

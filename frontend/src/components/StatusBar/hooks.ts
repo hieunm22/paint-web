@@ -23,10 +23,8 @@ export function useSelectionBox() {
 }
 
 /**
- * the size the picture would take on disk, measured by encoding it rather than
- * guessed from its dimensions. lazy on purpose: a cosmetic cell is not worth
- * encoding a large canvas on every stroke, so it waits a second for the picture
- * to settle and re-measures only when a step lands or the format changes.
+ * what the picture would weigh on disk, encoded rather than guessed. it waits
+ * for the canvas to stand still: a cosmetic cell cannot cost every stroke.
  */
 export function useEncodedSize(): number | null {
 	const { width, height, format } = useAppSelector(s => s.doc)

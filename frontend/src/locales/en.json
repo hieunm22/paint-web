@@ -213,6 +213,9 @@
 		},
 		"text": {
 			"label": "Text box"
+		},
+		"full-screen": {
+			"exit": "Click the picture to leave full screen"
 		}
 	},
 	"filemenu": {
@@ -346,6 +349,7 @@
 	"history": {
 		"label": {
 			"pencil": "Pencil",
+			"brush": "Brush",
 			"eraser": "Eraser",
 			"fill": "Fill with color",
 			"picker": "Pick color",
@@ -358,6 +362,7 @@
 			"rotate": "Rotate",
 			"flip": "Flip",
 			"resize": "Resize",
+			"canvas": "Canvas size",
 			"text": "Text"
 		}
 	}

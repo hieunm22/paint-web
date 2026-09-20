@@ -65,9 +65,8 @@ export function useMenuPlacement(
 }
 
 /**
- * a windows menu closes the moment an item is activated, whatever the item
- * does. listening on the menu itself covers every gallery cell and size rule
- * without each of them having to remember to dismiss.
+ * a windows menu closes the moment an item is activated. listening on the menu
+ * itself covers every cell without each one remembering to dismiss.
  */
 export function useMenuDismiss() {
 	const dispatch = useAppDispatch()

@@ -1,8 +1,9 @@
 import type { CSSProperties } from "react"
+import { MAX_DIMENSION } from "common/constant"
 import { CANVAS_MARGIN, RULER_MAJOR_STEP, RULER_MINOR_STEP } from "./constant"
 import type { Size } from "types/engine.types"
 import type { Point, Rect, TextOptions } from "types/store.types"
-import type { RulerTick } from "./types"
+import type { HandlePosition, RulerTick } from "./types"
 
 /** css size of a document-space layer at the current zoom. */
 export function zoomedSize(width: number, height: number, zoom: number): Size {
@@ -104,5 +105,68 @@ export function visiblePixel(
 	return {
 		x: Math.max(0, Math.floor((scrollLeft - CANVAS_MARGIN) / zoom)),
 		y: Math.max(0, Math.floor((scrollTop - CANVAS_MARGIN) / zoom)),
+	}
+}
+
+/** the part of the picture a scrolled viewport shows, in image pixels. */
+export function visibleRect(scroll: Point, view: Size, zoom: number): Rect {
+	const at = visiblePixel(scroll.x, scroll.y, zoom)
+
+	return { x: at.x, y: at.y, w: view.width / zoom, h: view.height / zoom }
+}
+
+/** the picture centred in the thumbnail box, its proportions kept. */
+export function fittedBox(doc: Size, box: Size): Rect | null {
+	if (!doc.width || !doc.height) return null
+
+	const scale = Math.min(box.width / doc.width, box.height / doc.height)
+	const w = Math.max(1, Math.round(doc.width * scale))
+	const h = Math.max(1, Math.round(doc.height * scale))
+
+	return {
+		x: Math.round((box.width - w) / 2),
+		y: Math.round((box.height - h) / 2),
+		w,
+		h,
+	}
+}
+
+/** an image-space box in the coordinates of the fitted thumbnail. */
+export function boxToThumb(rect: Rect, doc: Size, fit: Rect): Rect {
+	const sx = fit.w / doc.width
+	const sy = fit.h / doc.height
+
+	return {
+		x: fit.x + rect.x * sx,
+		y: fit.y + rect.y * sy,
+		w: rect.w * sx,
+		h: rect.h * sy,
+	}
+}
+
+/**
+ * the paper a handle drag would leave behind. only the right and bottom edges
+ * move, which keeps the picture in the corner it is anchored to.
+ */
+export function resizedDocument(
+	handle: HandlePosition,
+	doc: Size,
+	delta: Point,
+): Size {
+	return {
+		width: clampSide(doc.width + (handle.includes("e") ? delta.x : 0)),
+		height: clampSide(doc.height + (handle.includes("s") ? delta.y : 0)),
+	}
+}
+
+function clampSide(value: number): number {
+	return Math.max(1, Math.min(MAX_DIMENSION, Math.round(value)))
+}
+
+/** where a click in the thumbnail lands on the picture. */
+export function thumbToImage(at: Point, doc: Size, fit: Rect): Point {
+	return {
+		x: ((at.x - fit.x) / fit.w) * doc.width,
+		y: ((at.y - fit.y) / fit.h) * doc.height,
 	}
 }

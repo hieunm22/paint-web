@@ -213,6 +213,9 @@
 		},
 		"text": {
 			"label": "Hộp văn bản"
+		},
+		"full-screen": {
+			"exit": "Bấm vào ảnh để thoát toàn màn hình"
 		}
 	},
 	"filemenu": {
@@ -346,6 +349,7 @@
 	"history": {
 		"label": {
 			"pencil": "Bút chì",
+			"brush": "Cọ vẽ",
 			"eraser": "Tẩy",
 			"fill": "Tô màu",
 			"picker": "Lấy màu",
@@ -358,6 +362,7 @@
 			"rotate": "Xoay",
 			"flip": "Lật",
 			"resize": "Đổi cỡ",
+			"canvas": "Cỡ trang vẽ",
 			"text": "Văn bản"
 		}
 	}

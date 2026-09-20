@@ -97,11 +97,12 @@
 	padding: 4px 2px;
 }
 
-// Text tab: family and size boxes on top, the four styles under them.
+// Text tab: the family box on top, the size box and the four styles under it.
 .font-grid {
 	display: grid;
-	grid-template-columns: 148px 54px;
+	grid-template-columns: 54px auto;
 	grid-template-rows: auto auto;
+	justify-content: start;
 	gap: 3px;
 	padding: 4px 2px;
 
@@ -114,8 +115,12 @@
 		padding: 0 2px;
 	}
 
-	&__styles {
+	// the family box runs the width of the size box and the four buttons
+	&__box--family {
 		grid-column: 1 / -1;
+	}
+
+	&__styles {
 		display: flex;
 		gap: 1px;
 	}
@@ -217,9 +222,9 @@
 		display: flex;
 	}
 
+	// the column count comes with the element: the strip is laid out from it too
 	&__panel {
 		display: grid;
-		grid-template-columns: repeat(8, 26px);
 		gap: 1px;
 		padding: 3px;
 	}
@@ -282,7 +287,7 @@
 		flex-direction: column;
 		align-items: center;
 		gap: 2px;
-		width: 44px;
+		width: 45px;
 		padding: 2px;
 		border: 1px solid transparent;
 		border-radius: 2px;
