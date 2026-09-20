@@ -13,9 +13,9 @@ import { toggleMenu } from "store/slices/uiSlice"
 export function BrushesGroup() {
 	const { t } = useTranslation()
 	const dispatch = useAppDispatch()
-	const { active, brush } = useAppSelector((s) => s.tool)
-	const open = useAppSelector((s) => s.ui.openMenu) === "brushes"
-	const current = BRUSHES.find((b) => b.id === brush) ?? BRUSHES[0]
+	const { active, brush } = useAppSelector(s => s.tool)
+	const open = useAppSelector(s => s.ui.openMenu) === "brushes"
+	const current = BRUSHES.find(b => b.id === brush) ?? BRUSHES[0]
 
 	return (
 		<RibbonGroup label={t("ribbon.brushes.label")}>
@@ -32,7 +32,7 @@ export function BrushesGroup() {
 				menu={
 					<Menu width={0}>
 						<div className="brush-gallery">
-							{BRUSHES.map((b) => (
+							{BRUSHES.map(b => (
 								<button
 									key={b.id}
 									type="button"

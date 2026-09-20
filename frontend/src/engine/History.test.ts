@@ -14,30 +14,37 @@ import type { Rect } from "types/store.types"
  * size and copies boxes of pixels in and out, which a flat array can do.
  */
 function fakeSurface(width: number, height: number) {
-	const pixels = new Uint8ClampedArray(width * height * 4)
-
 	return {
-		pixels,
+		pixels: new Uint8ClampedArray(width * height * 4),
 		documentSize: { width, height },
+
 		readRegion({
 			x,
 			y,
 			w,
 			h,
 		}: Rect): ImageData {
+			const stride = this.documentSize.width * 4
 			const data = new Uint8ClampedArray(w * h * 4)
 			for (let row = 0; row < h; row++) {
-				const from = ((y + row) * width + x) * 4
-				data.set(pixels.subarray(from, from + w * 4), row * w * 4)
+				const from = (y + row) * stride + x * 4
+				data.set(this.pixels.subarray(from, from + w * 4), row * w * 4)
 			}
 			return { data, width: w, height: h } as ImageData
 		},
+
 		writeRegion(data: ImageData, x: number, y: number): void {
-			const stride = data.width * 4
+			const stride = this.documentSize.width * 4
+			const run = data.width * 4
 			for (let row = 0; row < data.height; row++) {
-				const to = ((y + row) * width + x) * 4
-				pixels.set(data.data.subarray(row * stride, (row + 1) * stride), to)
+				const to = (y + row) * stride + x * 4
+				this.pixels.set(data.data.subarray(row * run, (row + 1) * run), to)
 			}
+		},
+
+		restoreDocument(data: ImageData): void {
+			this.documentSize = { width: data.width, height: data.height }
+			this.pixels = new Uint8ClampedArray(data.data)
 		},
 	}
 }
@@ -45,14 +52,15 @@ function fakeSurface(width: number, height: number) {
 const DOC = 300
 let surface: ReturnType<typeof fakeSurface>
 let changed: ReturnType<typeof vi.fn>
+let resized: ReturnType<typeof vi.fn>
 let history: History
 
 function paint(x: number, y: number, value: number): void {
-	surface.pixels[(y * DOC + x) * 4] = value
+	surface.pixels[(y * surface.documentSize.width + x) * 4] = value
 }
 
 function at(x: number, y: number): number {
-	return surface.pixels[(y * DOC + x) * 4]
+	return surface.pixels[(y * surface.documentSize.width + x) * 4]
 }
 
 /** one stroke: snapshot the area, then write to it, the order tools must use. */
@@ -71,7 +79,8 @@ function stroke(
 beforeEach(() => {
 	surface = fakeSurface(DOC, DOC)
 	changed = vi.fn()
-	history = new History(surface as unknown as Surface, changed)
+	resized = vi.fn()
+	history = new History(surface as unknown as Surface, changed, resized)
 })
 
 describe("a committed stroke", () => {
@@ -135,6 +144,47 @@ describe("the 50 step limit", () => {
 		expect(undone).toBe(50)
 		// the first stroke fell out of the stack, so its value is what remains
 		expect(at(1, 1)).toBe(1)
+	})
+})
+
+describe("a full step, which a crop or a rotate pushes", () => {
+	/** shrinks the document the way an image operation does. */
+	function shrink(label: string): void {
+		const before = surface.readRegion({ x: 0, y: 0, w: DOC, h: DOC })
+		surface.restoreDocument({
+			data: new Uint8ClampedArray(100 * 100 * 4),
+			width: 100,
+			height: 100,
+		} as ImageData)
+		history.pushFull(label, before)
+	}
+
+	it("puts the old size and its pixels back", () => {
+		stroke(1, 1, 40)
+		shrink("Crop")
+		expect(surface.documentSize.width).toBe(100)
+
+		history.undo()
+		expect(surface.documentSize).toEqual({ width: DOC, height: DOC })
+		expect(at(1, 1)).toBe(40)
+		expect(resized).toHaveBeenCalledWith({ width: DOC, height: DOC })
+	})
+
+	it("redoes back to the cropped size", () => {
+		shrink("Crop")
+		history.undo()
+		history.redo()
+		expect(surface.documentSize).toEqual({ width: 100, height: 100 })
+	})
+
+	/** a tile id means nothing without the width its grid was cut against. */
+	it("leaves the tile steps under it undoable", () => {
+		stroke(1, 1, 40)
+		shrink("Crop")
+
+		history.undo()
+		history.undo()
+		expect(at(1, 1)).toBe(0)
 	})
 })
 

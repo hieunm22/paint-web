@@ -29,8 +29,8 @@ export function useSelectionBox() {
  * to settle and re-measures only when a step lands or the format changes.
  */
 export function useEncodedSize(): number | null {
-	const { width, height, format } = useAppSelector((s) => s.doc)
-	const revision = useAppSelector((s) => s.history.revision)
+	const { width, height, format } = useAppSelector(s => s.doc)
+	const revision = useAppSelector(s => s.history.revision)
 	const [bytes, setBytes] = useState<number | null>(null)
 
 	useEffect(() => {
@@ -39,7 +39,7 @@ export function useEncodedSize(): number | null {
 
 		let live = true
 		const timer = setTimeout(() => {
-			canvas.toBlob((blob) => {
+			canvas.toBlob(blob => {
 				if (live) setBytes(blob?.size ?? null)
 			}, MIME_TYPES[format])
 		}, SIZE_ESTIMATE_MS)

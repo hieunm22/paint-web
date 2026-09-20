@@ -7,13 +7,13 @@ const POINT_DRIVEN: ShapeKind[] = ["line", "curve", "polygon"]
 
 /** the corners a subpath passes through, control points aside. */
 function anchorsOf(subpath: ShapeSubpath) {
-	return [subpath.start, ...subpath.segments.map((segment) => segment.to)]
+	return [subpath.start, ...subpath.segments.map(segment => segment.to)]
 }
 
 /** a control point may sit outside the box; the curve it pulls may not. */
 function controlsOf(subpath: ShapeSubpath) {
-	return subpath.segments.flatMap((segment) =>
-		[segment.c1, segment.c2].filter((one) => one !== undefined),
+	return subpath.segments.flatMap(segment =>
+		[segment.c1, segment.c2].filter(one => one !== undefined),
 	)
 }
 
@@ -56,12 +56,12 @@ describe("SHAPE_DEFS", () => {
 		for (const [kind, def] of Object.entries(SHAPE_DEFS)) {
 			if (!def.outline) continue
 
-			const points = def.outline.flatMap((subpath) => [
+			const points = def.outline.flatMap(subpath => [
 				...anchorsOf(subpath),
 				...controlsOf(subpath),
 			])
-			const wide = Math.max(...points.map((p) => p.x)) > 0.9
-			const tall = Math.max(...points.map((p) => p.y)) > 0.9
+			const wide = Math.max(...points.map(p => p.x)) > 0.9
+			const tall = Math.max(...points.map(p => p.y)) > 0.9
 
 			expect([kind, wide && tall]).toEqual([kind, true])
 		}

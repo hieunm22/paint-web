@@ -14,7 +14,7 @@ import {
 export function ViewTabGroups() {
 	const { t } = useTranslation()
 	const dispatch = useAppDispatch()
-	const view = useAppSelector((s) => s.view)
+	const view = useAppSelector(s => s.view)
 
 	return (
 		<>

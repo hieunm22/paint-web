@@ -8,7 +8,7 @@ import { useAppSelector } from "store/hooks"
 import "./DialogHost.scss"
 
 export function DialogHost() {
-	const dialog = useAppSelector((s) => s.ui.dialog)
+	const dialog = useAppSelector(s => s.ui.dialog)
 
 	switch (dialog) {
 		case "resize-skew":

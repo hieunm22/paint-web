@@ -34,6 +34,16 @@
 			margin-bottom: -1px;
 		}
 
+		// a contextual tab carries a tint of its own, as Office ribbons do.
+		&--contextual {
+			color: #7a3b9c;
+			border-top: 2px solid #b072d4;
+
+			&.ribbon__tab--active {
+				border-color: #b072d4 var(--rb-border) var(--rb-tab-active);
+			}
+		}
+
 		&--file {
 			background: var(--bs-bg);
 			color: #fff;
@@ -52,10 +62,29 @@
 		height: var(--rb-height);
 		background: var(--rb-tab-active);
 		border-bottom: 1px solid var(--rb-border);
-		overflow: hidden; // No adaptive ribbon; overflowing groups are clipped.
+		// no adaptive ribbon: a group keeps its size and the strip scrolls to it,
+		// which is the only way to reach the right-hand groups on a phone
+		overflow-x: auto;
+		overflow-y: hidden;
+		overscroll-behavior-x: contain;
+		scrollbar-width: thin;
 		padding: 2px 0 0;
 		position: relative;
 		z-index: 1;
+
+		// a full-width bar would eat the slack the groups sit in
+		&::-webkit-scrollbar {
+			height: 6px;
+		}
+
+		&::-webkit-scrollbar-thumb {
+			background: #c3c3c3;
+			border-radius: 3px;
+		}
+
+		&::-webkit-scrollbar-thumb:hover {
+			background: #a8a8a8;
+		}
 	}
 }
 
@@ -66,6 +95,30 @@
 	grid-auto-rows: 26px;
 	gap: 1px;
 	padding: 4px 2px;
+}
+
+// Text tab: family and size boxes on top, the four styles under them.
+.font-grid {
+	display: grid;
+	grid-template-columns: 148px 54px;
+	grid-template-rows: auto auto;
+	gap: 3px;
+	padding: 4px 2px;
+
+	&__box {
+		height: 21px;
+		font-size: 12px;
+		font-family: var(--font-ui);
+		border: 1px solid #abadb3;
+		background: #fff;
+		padding: 0 2px;
+	}
+
+	&__styles {
+		grid-column: 1 / -1;
+		display: flex;
+		gap: 1px;
+	}
 }
 
 // Brushes: 9-cell gallery

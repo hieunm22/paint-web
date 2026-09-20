@@ -9,7 +9,7 @@ import "./Toast.scss"
 export function Toast() {
 	const { t } = useTranslation()
 	const dispatch = useAppDispatch()
-	const toast = useAppSelector((s) => s.ui.toast)
+	const toast = useAppSelector(s => s.ui.toast)
 	useToastTimeout(toast)
 
 	if (!toast) return null

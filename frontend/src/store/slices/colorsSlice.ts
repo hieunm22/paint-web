@@ -35,7 +35,7 @@ const colorsSlice = createSlice({
 			}
 		},
 	},
-	extraReducers: (builder) => {
+	extraReducers: builder => {
 		builder.addCase(pickerPicked, (state, action) => {
 			state[action.payload.which] = action.payload.hex
 		})

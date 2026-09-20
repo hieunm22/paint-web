@@ -1,5 +1,10 @@
 import { TOOL_CURSORS } from "./constant"
-import { ResizeHandles, Ruler, Thumbnail } from "./components"
+import {
+	ResizeHandles,
+	Ruler,
+	TextBox,
+	Thumbnail,
+} from "./components"
 import {
 	lassoPoints,
 	overlayBox,
@@ -12,6 +17,7 @@ import {
 	useOverlayState,
 	usePointerTools,
 	useSurface,
+	useVisibleOrigin,
 	useZoomFocus,
 } from "./hooks"
 import "./CanvasViewport.scss"
@@ -24,10 +30,10 @@ export function CanvasViewport() {
 		showGrid,
 		showThumbnail,
 	} = useAppSelector(
-		(s) => s.view,
+		s => s.view,
 	)
-	const focus = useAppSelector((s) => s.view.focus)
-	const activeTool = useAppSelector((s) => s.tool.active)
+	const focus = useAppSelector(s => s.view.focus)
+	const activeTool = useAppSelector(s => s.tool.active)
 	const overlay = useOverlayState()
 	const {
 		baseRef,
@@ -37,6 +43,7 @@ export function CanvasViewport() {
 	} = useSurface(width, height)
 	const pointerProps = usePointerTools(zoom, paneRef)
 	const viewportRef = useZoomFocus(focus)
+	const onScroll = useVisibleOrigin(zoom)
 	useOverlayReset(activeTool)
 
 	// rulers need zoom >= 1, gridlines need zoom >= 4.
@@ -55,7 +62,7 @@ export function CanvasViewport() {
 			)}
 
 			<div className="canvas__pane" ref={paneRef}>
-				<div className="canvas__viewport" ref={viewportRef}>
+				<div className="canvas__viewport" ref={viewportRef} onScroll={onScroll}>
 					<div className="canvas__stage">
 						<div
 							className="canvas__frame"
@@ -119,6 +126,16 @@ export function CanvasViewport() {
 									style={overlayGrip(handle, zoom)}
 								/>
 							))}
+
+							{overlay.grips?.map((handle, i) => (
+								<span
+									key={i}
+									className="canvas__grip"
+									style={overlayGrip(handle, zoom)}
+								/>
+							))}
+
+							{overlay.text && <TextBox box={overlay.text} zoom={zoom} />}
 
 							<ResizeHandles />
 						</div>

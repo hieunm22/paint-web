@@ -1,21 +1,32 @@
 import {
+	useCallback,
 	useEffect,
 	useLayoutEffect,
 	useMemo,
 	useRef,
+	useState,
 	useSyncExternalStore,
+	type ChangeEvent,
 	type PointerEvent,
 	type RefObject,
+	type UIEvent,
 } from "react"
+import { TEXT_PADDING } from "common/constant"
 import { CANVAS_MARGIN } from "./constant"
 import { isSecondaryButton } from "common/platform"
-import { screenToImage } from "./common"
+import { screenToImage, visiblePixel } from "./common"
 import { reportCursor } from "engine/cursor"
 import { getOverlayState, subscribeOverlay } from "engine/overlay"
 import { paint } from "engine/PaintEngine"
+import { reportVisibleOrigin } from "engine/viewport"
 import type { Modifiers, OverlayState } from "types/engine.types"
-import type { Point, ToolId, ZoomFocus } from "types/store.types"
-import type { PointerBatch } from "./types"
+import type {
+	Point,
+	Rect,
+	ToolId,
+	ZoomFocus,
+} from "types/store.types"
+import type { PointerBatch, TextDragSession } from "./types"
 
 type CanvasPointerEvent = PointerEvent<HTMLCanvasElement>
 
@@ -48,7 +59,7 @@ export function useSurface(width: number, height: number) {
 		const pane = paneRef.current
 		if (!pane) return
 
-		const observer = new ResizeObserver((entries) => {
+		const observer = new ResizeObserver(entries => {
 			const box = entries[entries.length - 1]?.contentRect
 			if (!box) return
 			paint.surface.resizeOverlay({ width: box.width, height: box.height })
@@ -160,6 +171,94 @@ export function useOverlayReset(tool: ToolId) {
 	useEffect(() => paint.clearOverlay(), [tool])
 }
 
+/**
+ * tells the engine which corner is in view, straight from the scroll event.
+ * a dispatch here would re-render the app as thickly as a pointer move does.
+ */
+export function useVisibleOrigin(zoom: number) {
+	return useCallback(
+		(e: UIEvent<HTMLDivElement>) => {
+			const el = e.currentTarget
+			reportVisibleOrigin(visiblePixel(el.scrollLeft, el.scrollTop, zoom))
+		},
+		[zoom],
+	)
+}
+
+/**
+ * holds what is typed in the text box and hands it to the engine, which keeps
+ * it until something bakes it. the box follows the text down as it grows.
+ */
+export function useTextBox(zoom: number) {
+	const ref = useRef<HTMLTextAreaElement>(null)
+	const [value, setValue] = useState("")
+
+	const onChange = useCallback(
+		(e: ChangeEvent<HTMLTextAreaElement>) => {
+			setValue(e.target.value)
+			paint.setTextValue(e.target.value)
+
+			// scrollHeight is screen pixels and the box is image ones
+			const el = ref.current
+			if (el) {
+				paint.growTextBox(Math.ceil(el.scrollHeight / zoom) + TEXT_PADDING * 2)
+			}
+		},
+		[zoom],
+	)
+
+	return { ref, value, onChange }
+}
+
+/**
+ * drags the open text box by the band around it. the engine takes the new
+ * corner straight: one dispatch per pointer move would re-render the app.
+ */
+export function useTextBoxDrag(box: Rect, zoom: number) {
+	const session = useRef<TextDragSession | null>(null)
+
+	const onPointerDown = useCallback(
+		(e: PointerEvent<HTMLDivElement>) => {
+			// a click on the text itself belongs to the textarea, not to the band
+			if (e.target !== e.currentTarget || e.button !== 0) return
+
+			// keeps the caret in the textarea while the border is dragged
+			e.preventDefault()
+			session.current = {
+				pointerId: e.pointerId,
+				start: { x: e.clientX, y: e.clientY },
+				origin: { x: box.x, y: box.y },
+			}
+			e.currentTarget.setPointerCapture(e.pointerId)
+		},
+		[box.x, box.y],
+	)
+
+	const onPointerMove = useCallback(
+		(e: PointerEvent<HTMLDivElement>) => {
+			const drag = session.current
+			if (!drag || drag.pointerId !== e.pointerId) return
+
+			paint.moveTextBox(
+				drag.origin.x + (e.clientX - drag.start.x) / zoom,
+				drag.origin.y + (e.clientY - drag.start.y) / zoom,
+			)
+		},
+		[zoom],
+	)
+
+	const onPointerUp = useCallback((e: PointerEvent<HTMLDivElement>) => {
+		if (session.current?.pointerId === e.pointerId) session.current = null
+	}, [])
+
+	return {
+		onPointerDown,
+		onPointerMove,
+		onPointerUp,
+		onPointerCancel: onPointerUp,
+	}
+}
+
 /** pointer position in the overlay's own css pixels. */
 function paneOffset(
 	e: CanvasPointerEvent,
@@ -184,7 +283,7 @@ function coalescedPoints(e: CanvasPointerEvent, zoom: number): Point[] {
 	const batch = native.getCoalescedEvents?.() ?? []
 	const events = batch.length ? batch : [native]
 
-	return events.map((ev) => screenToImage(ev.clientX, ev.clientY, rect, zoom))
+	return events.map(ev => screenToImage(ev.clientX, ev.clientY, rect, zoom))
 }
 
 function modifiersOf(e: CanvasPointerEvent): Modifiers {

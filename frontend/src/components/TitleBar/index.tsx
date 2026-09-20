@@ -9,7 +9,7 @@ import "./TitleBar.scss"
 export function TitleBar() {
 	// no t() of its own; the call is what re-renders the title on a language change
 	useTranslation()
-	const { fileName, isDirty } = useAppSelector((s) => s.doc)
+	const { fileName, isDirty } = useAppSelector(s => s.doc)
 
 	return (
 		<div className="title-bar">

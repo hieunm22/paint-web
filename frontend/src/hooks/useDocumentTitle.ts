@@ -9,8 +9,8 @@ import { useAppSelector } from "store/hooks"
  */
 export function useDocumentTitle(): void {
 	const { i18n } = useTranslation()
-	const fileName = useAppSelector((s) => s.doc.fileName)
-	const isDirty = useAppSelector((s) => s.doc.isDirty)
+	const fileName = useAppSelector(s => s.doc.fileName)
+	const isDirty = useAppSelector(s => s.doc.isDirty)
 
 	useEffect(() => {
 		document.title = windowTitle(fileName, isDirty)

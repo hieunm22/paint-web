@@ -10,7 +10,7 @@ import vi from "locales/vi.json"
 import type { Language } from "types/locales.types"
 
 function isLanguage(value: unknown): value is Language {
-	return LANGUAGES.some((lang) => lang.id === value)
+	return LANGUAGES.some(lang => lang.id === value)
 }
 
 /** a browser with site data blocked throws here rather than returning null. */

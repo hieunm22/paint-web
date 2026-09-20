@@ -33,6 +33,18 @@ export const ICONS = {
 	resize: "fa-solid fa-up-right-and-down-left-from-center",
 	rotate: "fa-solid fa-rotate",
 
+	// Image, rotate menu
+	flipVertical: "fa-solid fa-arrows-up-down",
+	flipHorizontal: "fa-solid fa-arrows-left-right",
+
+	// Text tab
+	bold: "fa-solid fa-bold",
+	italic: "fa-solid fa-italic",
+	underline: "fa-solid fa-underline",
+	strikethrough: "fa-solid fa-strikethrough",
+	backgroundTransparent: "fa-regular fa-square",
+	backgroundOpaque: "fa-solid fa-square",
+
 	// Tools
 	pencil: "fa-solid fa-pencil",
 	fill: "fa-solid fa-fill-drip",

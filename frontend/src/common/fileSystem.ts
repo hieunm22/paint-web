@@ -24,7 +24,7 @@ function cancelled(error: unknown): boolean {
  * promise would otherwise sit unsettled whenever the user backs out.
  */
 function promptWithInput(): Promise<File | null> {
-	return new Promise((resolve) => {
+	return new Promise(resolve => {
 		const input = document.createElement("input")
 		input.type = "file"
 		input.accept = Object.values(MIME_TYPES).join(",")

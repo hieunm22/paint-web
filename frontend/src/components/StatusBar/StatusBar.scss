@@ -9,6 +9,14 @@
 	font-size: 11px;
 	color: #303030;
 	flex: 0 0 auto;
+	// the zoom slider sits at the far right, out of reach on a narrow window
+	overflow-x: auto;
+	overflow-y: hidden;
+	scrollbar-width: none;
+
+	&::-webkit-scrollbar {
+		display: none;
+	}
 
 	&__cell {
 		display: flex;
@@ -19,6 +27,7 @@
 		border-right: 1px solid #cfcfcf;
 		white-space: nowrap;
 		min-width: 108px;
+		flex: 0 0 auto;
 	}
 
 	&__cell-icon {
@@ -36,6 +45,7 @@
 		padding: 0 10px;
 		border-left: 1px solid #cfcfcf;
 		height: 100%;
+		flex: 0 0 auto;
 	}
 
 	&__zoom-label {

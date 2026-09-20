@@ -11,6 +11,8 @@ import type {
 
 const initialState: UiState = {
 	tab: "home",
+	textTab: false,
+	priorTab: "home",
 	backstageOpen: false,
 	openMenu: null,
 	dialog: null,
@@ -25,7 +27,21 @@ const uiSlice = createSlice({
 	reducers: {
 		setTab(state, action: PayloadAction<RibbonTabId>) {
 			state.tab = action.payload
+			if (action.payload !== "text") state.priorTab = action.payload
 			state.backstageOpen = false
+			state.openMenu = null
+		},
+		/** a text box opened on the canvas: the Text tab appears and takes over. */
+		showTextTab(state) {
+			state.textTab = true
+			state.tab = "text"
+			state.backstageOpen = false
+			state.openMenu = null
+		},
+		/** the box was baked or dropped, and the tab the user came from is back. */
+		hideTextTab(state) {
+			state.textTab = false
+			if (state.tab === "text") state.tab = state.priorTab
 			state.openMenu = null
 		},
 		openBackstage(state) {
@@ -45,7 +61,7 @@ const uiSlice = createSlice({
 		toggleQat(state, action: PayloadAction<QatItemId>) {
 			const id = action.payload
 			const shown = state.qat.includes(id)
-			state.qat = QAT_DEFAULT.filter((one) =>
+			state.qat = QAT_DEFAULT.filter(one =>
 				one === id ? !shown : state.qat.includes(one),
 			)
 		},
@@ -77,6 +93,8 @@ const uiSlice = createSlice({
 
 export const {
 	setTab,
+	showTextTab,
+	hideTextTab,
 	openBackstage,
 	closeBackstage,
 	toggleMenu,

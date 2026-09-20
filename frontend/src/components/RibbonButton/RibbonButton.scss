@@ -81,6 +81,11 @@
 	&__caret {
 		font-size: 8px;
 		color: var(--rb-ink);
+
+		// under the label of a large button, tight against it as Paint has it
+		&--large {
+			margin-top: -2px;
+		}
 	}
 }
 

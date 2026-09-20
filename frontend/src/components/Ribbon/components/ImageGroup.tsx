@@ -20,9 +20,9 @@ import { openDialog, toggleMenu } from "store/slices/uiSlice"
 export function ImageGroup() {
 	const { t } = useTranslation()
 	const dispatch = useAppDispatch()
-	const openMenu = useAppSelector((s) => s.ui.openMenu)
-	const selection = useAppSelector((s) => s.selection)
-	const activeTool = useAppSelector((s) => s.tool.active)
+	const openMenu = useAppSelector(s => s.ui.openMenu)
+	const selection = useAppSelector(s => s.selection)
+	const activeTool = useAppSelector(s => s.tool.active)
 	const hasSelection = selection.kind !== "none"
 	const canSelect = Boolean(IMPLEMENTED["select-rect"])
 
@@ -86,6 +86,7 @@ export function ImageGroup() {
 					label={t("ribbon.image.crop")}
 					icon="crop"
 					disabled={!hasSelection}
+					onClick={() => paint.crop()}
 				/>
 				<SmallButton
 					label={t("ribbon.image.resize")}
@@ -94,7 +95,6 @@ export function ImageGroup() {
 						"dialog.resize-skew.title",
 						"shortcut.image.resize",
 					)}
-					disabled
 					onClick={() => dispatch(openDialog("resize-skew"))}
 				/>
 				<MenuAnchor>
@@ -102,17 +102,36 @@ export function ImageGroup() {
 						label={t("ribbon.image.rotate")}
 						icon="rotate"
 						caret
-						disabled
 						onClick={() => dispatch(toggleMenu("rotate"))}
 					/>
 					{openMenu === "rotate" && (
 						<Menu>
-							<MenuItem label={t("ribbon.image.rotate-right")} icon="redo" />
-							<MenuItem label={t("ribbon.image.rotate-left")} icon="undo" />
-							<MenuItem label={t("ribbon.image.rotate-180")} icon="rotate" />
+							<MenuItem
+								label={t("ribbon.image.rotate-right")}
+								icon="redo"
+								onClick={() => paint.rotate(1)}
+							/>
+							<MenuItem
+								label={t("ribbon.image.rotate-left")}
+								icon="undo"
+								onClick={() => paint.rotate(-1)}
+							/>
+							<MenuItem
+								label={t("ribbon.image.rotate-180")}
+								icon="rotate"
+								onClick={() => paint.rotate(2)}
+							/>
 							<MenuSeparator />
-							<MenuItem label={t("ribbon.image.flip-vertical")} />
-							<MenuItem label={t("ribbon.image.flip-horizontal")} />
+							<MenuItem
+								label={t("ribbon.image.flip-vertical")}
+								icon="flipVertical"
+								onClick={() => paint.flip("v")}
+							/>
+							<MenuItem
+								label={t("ribbon.image.flip-horizontal")}
+								icon="flipHorizontal"
+								onClick={() => paint.flip("h")}
+							/>
 						</Menu>
 					)}
 				</MenuAnchor>

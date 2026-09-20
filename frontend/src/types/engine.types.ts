@@ -7,6 +7,7 @@ import type {
 	Rect,
 	ShapeKind,
 	StrokeStyle,
+	TextOptions,
 	ToolId,
 } from "types/store.types"
 
@@ -64,6 +65,8 @@ export interface ToolContext {
 	fill: StrokeStyle
 	/** colour 2 drops out of a lifted selection when this is on. */
 	transparent: boolean
+	/** font and background of the text box, which only the text tool reads. */
+	text: TextOptions
 	doc: Size
 	/** the one floating selection, shared by both select tools. */
 	selection: SelectionManager
@@ -135,17 +138,50 @@ export interface Tool {
 	/** redraws the held object after a colour, size or style change. */
 	repaint?(ctx: ToolContext): void
 	/**
+	 * css cursor for the pixel under the pointer, or null for the tool's own.
+	 * a resize arrow says which way a handle drags, which no drawn glyph can.
+	 */
+	cursorAt?(pt: Point, ctx: ToolContext): string | null
+	/**
 	 * draws hover guidance on the overlay, in css pixels relative to the pane.
 	 * a tool that declares it gets called on every pointer move.
 	 */
 	paintOverlay?(screen: Point, ctx: ToolContext): void
 }
 
-/** one undo step: the tiles as they were before the stroke rewrote them. */
-export interface HistoryEntry {
+/** one undo step over part of the bitmap, as it was before the stroke. */
+export interface HistoryTiles {
 	label: string
+	kind: "tiles"
+	/** the document size the tile grid was cut against. */
+	docSize: Size
 	tiles: Map<number, ImageData>
 }
+
+/** one undo step over the whole bitmap, which a size change has to record. */
+export interface HistoryFull {
+	label: string
+	kind: "full"
+	/** the picture as it was, carrying the size to go back to. */
+	image: ImageData
+}
+
+export type HistoryEntry = HistoryTiles | HistoryFull
+
+/** which way a flip folds the picture. */
+export type FlipAxis = "h" | "v"
+
+/** what Resize and Skew asks for: two scale factors and two shear angles. */
+export interface TransformSpec {
+	scaleX: number
+	scaleY: number
+	/** degrees, limited to the open range between -90 and 90. */
+	skewH: number
+	skewV: number
+}
+
+/** swaps a picture for another one; every image operation is one of these. */
+export type ImageRecipe = (source: HTMLCanvasElement) => HTMLCanvasElement
 
 /** one cubic or straight step of a normalised shape outline. */
 export interface ShapeSegment {
@@ -189,7 +225,11 @@ export interface OverlayState {
 	selection: Rect | null
 	/** the traced corners of a free-form selection; null when it is a box. */
 	lasso: Point[] | null
+	/** the eight handles of a settled selection, absent while one is drawn. */
+	grips: Point[] | null
 	draft: OverlayShape | null
+	/** the open text box, which react fills with a real textarea. */
+	text: Rect | null
 }
 
 /** the shape sitting on preview, still editable until it is baked. */

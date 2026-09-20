@@ -5,6 +5,7 @@ import { PencilTool } from "engine/tools/PencilTool"
 import { PickerTool } from "engine/tools/PickerTool"
 import { SelectTool } from "engine/tools/SelectTool"
 import { ShapeTool } from "engine/tools/ShapeTool"
+import { TextTool } from "engine/tools/TextTool"
 import type { Tool } from "types/engine.types"
 import type { ToolId } from "types/store.types"
 
@@ -20,6 +21,7 @@ export const TOOLS: Partial<Record<ToolId, Tool>> = {
 	picker: new PickerTool(),
 	magnifier: new MagnifierTool(),
 	shape: new ShapeTool(),
+	text: new TextTool(),
 	"select-rect": new SelectTool("select-rect"),
 	"select-free": new SelectTool("select-free"),
 }

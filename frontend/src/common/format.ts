@@ -9,7 +9,7 @@ import type { ImageFormat } from "types/store.types"
 
 /** which of the five a file claims to be; anything else opens as png. */
 export function formatOfMime(mime: string): ImageFormat {
-	const match = FORMATS.find((format) => MIME_TYPES[format] === mime)
+	const match = FORMATS.find(format => MIME_TYPES[format] === mime)
 	return match ?? DEFAULT_FORMAT
 }
 

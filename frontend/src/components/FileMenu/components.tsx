@@ -44,7 +44,7 @@ function SaveAsMenu({ onPick, onOther }: SaveAsMenuProps) {
 
 	return (
 		<Menu width={196}>
-			{QUICK_SAVE_FORMATS.map((format) => (
+			{QUICK_SAVE_FORMATS.map(format => (
 				<MenuItem
 					key={format}
 					icon="saveAs"
@@ -69,7 +69,7 @@ export function FileMenuList() {
 	const { t } = useTranslation()
 	const dispatch = useAppDispatch()
 	const files = useFileCommands()
-	const saveAsOpen = useAppSelector((s) => s.ui.openMenu) === SAVE_AS_MENU
+	const saveAsOpen = useAppSelector(s => s.ui.openMenu) === SAVE_AS_MENU
 
 	const run = (row: FileMenuEntry) => {
 		if (row.dialog) {
@@ -139,7 +139,7 @@ export function LanguagePicker() {
 			<span className="file-menu__language-label">
 				{t("filemenu.language.label")}
 			</span>
-			{LANGUAGES.map((language) => (
+			{LANGUAGES.map(language => (
 				<button
 					key={language.id}
 					type="button"
@@ -171,7 +171,7 @@ export function RecentPictureList() {
 
 	return (
 		<div className="file-menu__recent-list">
-			{entries.map((entry) => (
+			{entries.map(entry => (
 				<button
 					key={entry.name}
 					type="button"

@@ -1,6 +1,6 @@
 import { useEffect } from "react"
 import { NUDGE_KEYS } from "common/constant"
-import { isTypingTarget } from "common/dom"
+import { isTypingTarget, reachesCanvas } from "common/dom"
 import { isPrimaryModifier } from "common/platform"
 import { paint } from "engine/PaintEngine"
 import { useFileCommands } from "hooks/useFileCommands"
@@ -9,23 +9,19 @@ import { stepSize } from "store/slices/toolSlice"
 import { openDialog } from "store/slices/uiSlice"
 import { toggleView, zoomIn, zoomOut } from "store/slices/viewSlice"
 
-/** the two keys a text field never swallows, per the shortcut table. */
-const ALWAYS_KEYS = ["Escape", "Enter"]
-
 /**
  * Paint's keys. undo, redo, zoom, the file commands and the four brush sizes
  * take Cmd on macOS, while the keys Paint alone owns keep Ctrl everywhere.
  */
 export function useKeyboardShortcuts() {
 	const dispatch = useAppDispatch()
-	const zoom = useAppSelector((s) => s.view.zoom)
+	const zoom = useAppSelector(s => s.view.zoom)
 	const files = useFileCommands()
 
 	useEffect(() => {
 		const onKeyDown = (e: KeyboardEvent) => {
 			if (e.altKey) return
-			// Esc and Enter still belong to the canvas while a field has focus
-			if (isTypingTarget(e.target) && !ALWAYS_KEYS.includes(e.key)) return
+			if (isTypingTarget(e.target) && !reachesCanvas(e)) return
 
 			if (isPrimaryModifier(e)) {
 				switch (e.key.toLowerCase()) {
@@ -117,6 +113,9 @@ export function useKeyboardShortcuts() {
 				if (e.key === "e") {
 					e.preventDefault()
 					dispatch(openDialog("image-properties"))
+				} else if (e.key === "w") {
+					e.preventDefault()
+					dispatch(openDialog("resize-skew"))
 				} else if (e.key === "r" && zoom >= 1) {
 					e.preventDefault()
 					dispatch(toggleView("showRuler"))

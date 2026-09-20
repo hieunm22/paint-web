@@ -66,9 +66,9 @@ const toolSlice = createSlice({
 			Object.assign(state.text, action.payload)
 		},
 	},
-	extraReducers: (builder) => {
+	extraReducers: builder => {
 		// picking a colour hands the previous tool back, the way Paint does
-		builder.addCase(pickerPicked, (state) => {
+		builder.addCase(pickerPicked, state => {
 			state.active = state.prevTool
 		})
 	},

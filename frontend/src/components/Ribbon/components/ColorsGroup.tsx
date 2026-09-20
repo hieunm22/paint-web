@@ -16,7 +16,7 @@ export function ColorsGroup() {
 		palette,
 		custom,
 	} = useAppSelector(
-		(s) => s.colors,
+		s => s.colors,
 	)
 
 	return (
@@ -36,7 +36,7 @@ export function ColorsGroup() {
 				/>
 
 				<div className="colors__palette">
-					{palette.map((hex) => (
+					{palette.map(hex => (
 						<button
 							key={hex}
 							type="button"

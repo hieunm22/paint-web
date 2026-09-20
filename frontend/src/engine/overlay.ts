@@ -1,9 +1,16 @@
+import { boxHandles } from "engine/geometry"
 import type { OverlayShape, OverlayState } from "types/engine.types"
 import type { Point, Rect } from "types/store.types"
 
 const PUBLISH_MS = 40
 
-const EMPTY: OverlayState = { selection: null, lasso: null, draft: null }
+const EMPTY: OverlayState = {
+	selection: null,
+	lasso: null,
+	grips: null,
+	draft: null,
+	text: null,
+}
 
 type Listener = () => void
 
@@ -38,7 +45,9 @@ function publish(): void {
 	if (
 		sameRect(published.selection, pending.selection) &&
 		samePoints(published.lasso, pending.lasso) &&
-		sameDraft(published.draft, pending.draft)
+		samePoints(published.grips, pending.grips) &&
+		sameDraft(published.draft, pending.draft) &&
+		sameRect(published.text, pending.text)
 	) {
 		return
 	}
@@ -59,16 +68,30 @@ function report(next: OverlayState): void {
 	timer = setTimeout(publish, PUBLISH_MS)
 }
 
-/** `lasso` traces a free-form selection; a box selection passes null. */
+/**
+ * `lasso` traces a free-form selection; a box selection passes null. a region
+ * still being dragged out is not `settled`, and carries no handles yet.
+ */
 export function reportSelectionBox(
 	rect: Rect | null,
 	lasso: Point[] | null = null,
+	settled = true,
 ): void {
-	report({ selection: rect, lasso, draft: pending.draft })
+	report({
+		...pending,
+		selection: rect,
+		lasso,
+		grips: rect && settled ? boxHandles(rect) : null,
+	})
 }
 
 export function reportDraft(draft: OverlayShape | null): void {
-	report({ selection: pending.selection, lasso: pending.lasso, draft })
+	report({ ...pending, draft })
+}
+
+/** the open text box, which react covers with a real textarea. */
+export function reportTextBox(rect: Rect | null): void {
+	report({ ...pending, text: rect })
 }
 
 export function clearOverlayState(): void {

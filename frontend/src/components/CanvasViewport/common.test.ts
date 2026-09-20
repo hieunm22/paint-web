@@ -37,9 +37,9 @@ describe("buildRulerTicks", () => {
 	const ticks = buildRulerTicks(200, 1)
 
 	it("labels the major ticks only, and never the zero", () => {
-		expect(
-			ticks.filter((t) => t.label !== undefined).map((t) => t.label),
-		).toEqual([100, 200])
+		expect(ticks.filter(t => t.label !== undefined).map(t => t.label)).toEqual([
+			100, 200,
+		])
 	})
 
 	it("steps every ten image pixels and offsets by the canvas margin", () => {

@@ -2,6 +2,7 @@
 ribbon.tab.file;File;Tệp
 ribbon.tab.home;Home;Trang chủ
 ribbon.tab.view;View;Xem
+ribbon.tab.text;Text;Văn bản
 ribbon.clipboard.label;Clipboard;Bảng tạm
 ribbon.clipboard.paste;Paste;Dán
 ribbon.clipboard.paste-from;Paste from...;Dán từ...
@@ -27,10 +28,10 @@ ribbon.image.flip-vertical;Flip vertical;Lật dọc
 ribbon.image.flip-horizontal;Flip horizontal;Lật ngang
 ribbon.tools.label;Tools;Công cụ
 ribbon.tools.pencil;Pencil;Bút chì
-ribbon.tools.fill;Fill with colour;Tô màu
+ribbon.tools.fill;Fill with color;Tô màu
 ribbon.tools.text;Text;Chữ
 ribbon.tools.eraser;Eraser;Tẩy
-ribbon.tools.picker;Colour picker;Lấy màu
+ribbon.tools.picker;Color picker;Lấy màu
 ribbon.tools.magnifier;Magnifier;Kính lúp
 ribbon.brushes.label;Brushes;Cọ vẽ
 ribbon.brushes.brush;Brush;Cọ
@@ -41,7 +42,7 @@ ribbon.brushes.oil;Oil brush;Cọ sơn dầu
 ribbon.brushes.crayon;Crayon;Bút sáp
 ribbon.brushes.marker;Marker;Bút dạ
 ribbon.brushes.natural-pencil;Natural pencil;Bút chì tự nhiên
-ribbon.brushes.watercolor;Watercolour;Màu nước
+ribbon.brushes.watercolor;Watercolor;Màu nước
 ribbon.shapes.label;Shapes;Hình
 ribbon.shapes.line;Line;Đường thẳng
 ribbon.shapes.curve;Curve;Đường cong
@@ -73,20 +74,30 @@ ribbon.shapes.outline;Outline;Viền
 ribbon.shapes.fill;Fill;Tô
 ribbon.stroke.none;No outline;Không viền
 ribbon.stroke.none-fill;No fill;Không tô
-ribbon.stroke.solid;Solid colour;Màu đặc
+ribbon.stroke.solid;Solid color;Màu đặc
 ribbon.stroke.crayon;Crayon;Bút sáp
 ribbon.stroke.marker;Marker;Bút dạ
 ribbon.stroke.oil;Oil;Sơn dầu
 ribbon.stroke.natural-pencil;Natural pencil;Bút chì tự nhiên
-ribbon.stroke.watercolor;Watercolour;Màu nước
+ribbon.stroke.watercolor;Watercolor;Màu nước
 ribbon.size.label;Size;Cỡ nét
 ribbon.size.value;{0}px;{0}px
 ribbon.size.tooltip;Size ({0}px) - Ctrl+= / Ctrl+-;Cỡ nét ({0}px) - Ctrl+= / Ctrl+-
-ribbon.colors.label;Colours;Màu
-ribbon.colors.color1;Colour 1;Màu 1
-ribbon.colors.color2;Colour 2;Màu 2
-ribbon.colors.custom-empty;Custom colour slot;Ô màu tuỳ chỉnh trống
-ribbon.colors.edit;Edit colours;Sửa màu
+ribbon.colors.label;Colors;Màu
+ribbon.colors.color1;Color 1;Màu 1
+ribbon.colors.color2;Color 2;Màu 2
+ribbon.colors.custom-empty;Custom color slot;Ô màu tuỳ chỉnh trống
+ribbon.colors.edit;Edit colors;Sửa màu
+ribbon.font.label;Font;Phông chữ
+ribbon.font.family;Font family;Kiểu phông
+ribbon.font.size;Font size;Cỡ phông
+ribbon.font.bold;Bold;Đậm
+ribbon.font.italic;Italic;Nghiêng
+ribbon.font.underline;Underline;Gạch chân
+ribbon.font.strikethrough;Strikethrough;Gạch ngang
+ribbon.background.label;Background;Nền
+ribbon.background.transparent;Transparent;Trong suốt
+ribbon.background.opaque;Opaque;Đục
 ribbon.extras.label;Extras;Khác
 ribbon.extras.copy;Copy to clipboard;Chép ra bảng tạm
 ribbon.extras.copy-tooltip;Copy the whole image or the selection to the system clipboard;Chép toàn ảnh hoặc vùng chọn ra bảng tạm của hệ thống
@@ -139,6 +150,7 @@ statusbar.zoom.in;Zoom in;Phóng to
 statusbar.zoom.out;Zoom out;Thu nhỏ
 statusbar.zoom.percent;{0}%;{0}%
 canvas.thumbnail.title;Thumbnail;Ảnh thu nhỏ
+canvas.text.label;Text box;Hộp văn bản
 filemenu.nav.back;Back;Quay lại
 filemenu.item.new;New;Mới
 filemenu.item.open;Open;Mở
@@ -171,10 +183,10 @@ dialog.confirm-discard.title;Paint;Paint
 dialog.confirm-discard.message;Do you want to save changes to {0}?;Bạn có muốn lưu thay đổi cho {0} không?
 dialog.confirm-discard.save;Save;Lưu
 dialog.confirm-discard.dont-save;Don't Save;Không lưu
-dialog.edit-colors.title;Edit Colours;Sửa màu
-dialog.edit-colors.basic;Basic colours:;Màu cơ bản:
-dialog.edit-colors.add-custom;Add to Custom Colours;Thêm vào màu tuỳ chỉnh
-dialog.edit-colors.color-solid;Colour|Solid:;Màu|Đặc:
+dialog.edit-colors.title;Edit Colors;Sửa màu
+dialog.edit-colors.basic;Basic colors:;Màu cơ bản:
+dialog.edit-colors.add-custom;Add to Custom Colors;Thêm vào màu tuỳ chỉnh
+dialog.edit-colors.color-solid;Color|Solid:;Màu|Đặc:
 dialog.edit-colors.hue;Hue:;Tông:
 dialog.edit-colors.sat;Sat:;Bão hoà:
 dialog.edit-colors.lum;Lum:;Độ sáng:
@@ -193,9 +205,9 @@ dialog.image-properties.units;Units;Đơn vị
 dialog.image-properties.inches;Inches;Inch
 dialog.image-properties.centimeters;Centimeters;Xentimét
 dialog.image-properties.pixels;Pixels;Điểm ảnh
-dialog.image-properties.colors;Colours;Màu
+dialog.image-properties.colors;Colors;Màu
 dialog.image-properties.black-and-white;Black and white;Đen trắng
-dialog.image-properties.color;Colour;Màu
+dialog.image-properties.color;Color;Màu
 dialog.image-properties.width;Width:;Rộng:
 dialog.image-properties.height;Height:;Cao:
 dialog.resize-skew.title;Resize and Skew;Đổi cỡ và nghiêng
@@ -216,7 +228,7 @@ dialog.save-as.format-option;{0} ({1});{0} ({1})
 dialog.save-as.hint-png;PNG keeps alpha - the default format.;PNG giữ nguyên alpha - định dạng mặc định.
 dialog.save-as.hint-jpeg;JPEG has no alpha: a transparent background turns white.;JPEG không có alpha: nền trong suốt sẽ thành trắng.
 dialog.save-as.hint-bmp;BMP is written by a hand-rolled encoder, 24-bit uncompressed - alpha is flattened onto white.;BMP ghi bằng encoder tự viết, 24-bit không nén - alpha hợp nhất với nền trắng.
-dialog.save-as.hint-gif;GIF is quantised to 256 colours with 1-bit alpha.;GIF lượng tử hoá về 256 màu, alpha 1-bit.
+dialog.save-as.hint-gif;GIF is quantised to 256 colors with 1-bit alpha.;GIF lượng tử hoá về 256 màu, alpha 1-bit.
 dialog.save-as.hint-webp;"WEBP keeps alpha; Safari 16 and later.";"WEBP giữ alpha; Safari 16 trở lên."
 document.name.untitled;Untitled;Chưa đặt tên
 toast.file.gif-flattened;An animated GIF opens as its first frame only;Ảnh GIF động chỉ mở được khung hình đầu tiên
@@ -231,10 +243,15 @@ toast.clipboard.copy-failed;The picture could not be copied;Không sao chép đ�
 toast.clipboard.paste-shortcut;This browser only pastes with the keyboard shortcut;Trình duyệt này chỉ dán được bằng phím tắt
 history.label.pencil;Pencil;Bút chì
 history.label.eraser;Eraser;Tẩy
-history.label.fill;Fill with colour;Tô màu
-history.label.picker;Pick colour;Lấy màu
+history.label.fill;Fill with color;Tô màu
+history.label.picker;Pick color;Lấy màu
 history.label.magnifier;Magnifier;Kính lúp
 history.label.shape;Shape;Hình
 history.label.selection;Selection;Vùng chọn
 history.label.delete;Delete selection;Xoá vùng chọn
 history.label.paste;Paste;Dán
+history.label.crop;Crop;Cắt xén
+history.label.rotate;Rotate;Xoay
+history.label.flip;Flip;Lật
+history.label.resize;Resize;Đổi cỡ
+history.label.text;Text;Văn bản

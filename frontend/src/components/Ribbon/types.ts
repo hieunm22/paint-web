@@ -4,6 +4,7 @@ import type {
 	RibbonTabId,
 	ShapeKind,
 	StrokeStyle,
+	TextOptions,
 	ToolId,
 } from "types/store.types"
 import type { IconName } from "components/Icon/types"
@@ -30,6 +31,24 @@ export interface BrushDef {
 export interface StrokeStyleDef {
 	id: StrokeStyle
 	labelKey: string
+}
+
+/** the four character styles of the Text tab, each an independent toggle. */
+export type FontStyleId = "bold" | "italic" | "underline" | "strikethrough"
+
+export interface FontStyleDef {
+	id: FontStyleId
+	icon: IconName
+	labelKey: string
+}
+
+/** what the Font and Background groups read and write, in one place. */
+export interface TextRibbonState {
+	options: TextOptions
+	setFamily(family: string): void
+	setSize(size: number): void
+	toggleStyle(id: FontStyleId): void
+	setBackground(background: TextOptions["background"]): void
 }
 
 export type SizeDef = BrushSize

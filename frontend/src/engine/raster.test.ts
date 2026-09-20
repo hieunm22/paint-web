@@ -39,7 +39,7 @@ describe("bresenham", () => {
 
 	it("walks backwards as readily as forwards", () => {
 		const seen: string[] = []
-		bresenham({ x: 2, y: 0 }, { x: 0, y: 0 }, (x) => seen.push(String(x)))
+		bresenham({ x: 2, y: 0 }, { x: 0, y: 0 }, x => seen.push(String(x)))
 		expect(seen).toEqual(["2", "1", "0"])
 	})
 })

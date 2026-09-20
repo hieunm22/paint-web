@@ -10,8 +10,8 @@ const LEVELS = [1, 2, 4, 8]
 
 function nextLevel(zoom: number, back: boolean): number | undefined {
 	return back
-		? [...LEVELS].reverse().find((level) => level < zoom)
-		: LEVELS.find((level) => level > zoom)
+		? [...LEVELS].reverse().find(level => level < zoom)
+		: LEVELS.find(level => level > zoom)
 }
 
 export class MagnifierTool implements Tool {

@@ -41,7 +41,7 @@ export function ZoomControl({
 				step={1}
 				value={stepIndex}
 				aria-label={t("statusbar.zoom.label")}
-				onChange={(e) => onStep(Number(e.target.value))}
+				onChange={e => onStep(Number(e.target.value))}
 			/>
 			<button
 				type="button"

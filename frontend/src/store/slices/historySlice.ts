@@ -16,7 +16,7 @@ const historySlice = createSlice({
 	name: "history",
 	initialState,
 	reducers: {},
-	extraReducers: (builder) => {
+	extraReducers: builder => {
 		builder.addCase(historyChanged, (state, action) => {
 			state.canUndo = action.payload.canUndo
 			state.canRedo = action.payload.canRedo

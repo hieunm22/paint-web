@@ -8,7 +8,7 @@ import { Dialog } from "./Dialog"
 export function ConfirmDiscardDialog() {
 	const { t } = useTranslation()
 	const files = useFileCommands()
-	const fileName = useAppSelector((s) => s.doc.fileName)
+	const fileName = useAppSelector(s => s.doc.fileName)
 
 	// a save the user backed out of must not take the document with it
 	const saveThenResume = async () => {

@@ -1,3 +1,4 @@
+import { BOX_HANDLE_SPOTS, GRIP_REACH } from "common/constant"
 import type { Size } from "types/engine.types"
 import type { Point, Rect } from "types/store.types"
 
@@ -123,6 +124,40 @@ export function boundsOfPoints(points: Point[]): Rect | null {
 	}
 
 	return { x: minX, y: minY, w: maxX - minX, h: maxY - minY }
+}
+
+/** the eight grab points of a box: four corners, then the edge midpoints. */
+export function boxHandles(rect: Rect): Point[] {
+	return BOX_HANDLE_SPOTS.map(spot => ({
+		x: rect.x + spot.x * rect.w,
+		y: rect.y + spot.y * rect.h,
+	}))
+}
+
+/** which handle the pointer grabbed, or -1. the reach follows the zoom. */
+export function nearestGrip(handles: Point[], pt: Point, zoom: number): number {
+	const reach = Math.max(2, GRIP_REACH / zoom)
+
+	return handles.findIndex(
+		handle =>
+			Math.abs(handle.x - pt.x) <= reach && Math.abs(handle.y - pt.y) <= reach,
+	)
+}
+
+/** drags one of the eight handles, leaving the opposite side of the box put. */
+export function resizeBox(rect: Rect, grip: number, at: Point): Rect {
+	const spot = BOX_HANDLE_SPOTS[grip]
+	let left = rect.x
+	let right = rect.x + rect.w
+	let top = rect.y
+	let bottom = rect.y + rect.h
+
+	if (spot.x === 0) left = at.x
+	else if (spot.x === 1) right = at.x
+	if (spot.y === 0) top = at.y
+	else if (spot.y === 1) bottom = at.y
+
+	return rectFromPoints({ x: left, y: top }, { x: right, y: bottom })
 }
 
 /** moves points from one box into another, which is how a handle resizes. */

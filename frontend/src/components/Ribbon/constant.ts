@@ -1,5 +1,6 @@
 import type {
 	BrushDef,
+	FontStyleDef,
 	RibbonTabDef,
 	SizeDef,
 	StrokeStyleDef,
@@ -84,3 +85,40 @@ export const SHAPE_GALLERY_ROW_HEIGHT = 23
 
 /** the panel behind the expand button holds the same eight columns. */
 export const SHAPE_PANEL_WIDTH = 8 * 27 + 10
+
+/**
+ * a fixed list rather than the installed fonts: enumerating those is blocked
+ * as a fingerprinting surface, and every name here ships with some platform
+ * and falls back cleanly where it does not.
+ */
+export const FONT_FAMILIES = [
+	"Arial",
+	"Calibri",
+	"Cambria",
+	"Comic Sans MS",
+	"Courier New",
+	"Georgia",
+	"Helvetica",
+	"Impact",
+	"Tahoma",
+	"Times New Roman",
+	"Trebuchet MS",
+	"Verdana",
+]
+
+/** the point sizes Paint's size box offers. */
+export const FONT_SIZES = [
+	8, 9, 10, 11, 12, 14, 16, 18, 20, 22, 24, 26, 28, 36, 48, 72,
+]
+
+/** the four character styles, each a toggle of its own. */
+export const FONT_STYLES: FontStyleDef[] = [
+	{ id: "bold", icon: "bold", labelKey: "ribbon.font.bold" },
+	{ id: "italic", icon: "italic", labelKey: "ribbon.font.italic" },
+	{ id: "underline", icon: "underline", labelKey: "ribbon.font.underline" },
+	{
+		id: "strikethrough",
+		icon: "strikethrough",
+		labelKey: "ribbon.font.strikethrough",
+	},
+]

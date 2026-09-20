@@ -7,9 +7,26 @@ import {
 import { DEFAULT_QUALITY } from "./constant"
 import { stemOf } from "common/format"
 import { documentName } from "store/common"
-import { clampDragOffset } from "./common"
+import {
+	clampDragOffset,
+	clampScale,
+	clampSkew,
+	linkedValue,
+	scaleOf,
+	wholeOf,
+} from "./common"
+import { paint } from "engine/PaintEngine"
+import { useAppDispatch } from "store/hooks"
+import { closeDialog } from "store/slices/uiSlice"
+import type { Size } from "types/engine.types"
 import type { ImageFormat } from "types/store.types"
-import type { DragSession, Point, SaveAsForm } from "./types"
+import type {
+	DragSession,
+	Point,
+	ResizeSkewForm,
+	ResizeUnit,
+	SaveAsForm,
+} from "./types"
 
 const NO_OFFSET: Point = { x: 0, y: 0 }
 
@@ -92,4 +109,62 @@ export function useSaveAsForm(
 	const [quality, setQuality] = useState(DEFAULT_QUALITY)
 
 	return { name, format, quality, setName, setFormat, setQuality }
+}
+
+/**
+ * holds Resize and Skew. `size` is what the numbers describe, which is the
+ * selection when one is up and the whole picture when none is.
+ */
+export function useResizeSkewForm(size: Size): ResizeSkewForm {
+	const dispatch = useAppDispatch()
+	const [unit, setUnitState] = useState<ResizeUnit>("percent")
+	const [ratio, setRatio] = useState(true)
+	const [horizontal, setH] = useState(() => wholeOf("percent", size.width))
+	const [vertical, setV] = useState(() => wholeOf("percent", size.height))
+	const [skewH, setSkewH] = useState(0)
+	const [skewV, setSkewV] = useState(0)
+
+	/** switching unit restates the same size rather than keeping the digits. */
+	const setUnit = (next: ResizeUnit) => {
+		if (next === unit) return
+
+		const scaleX = scaleOf(unit, horizontal, size.width)
+		const scaleY = scaleOf(unit, vertical, size.height)
+		setUnitState(next)
+		setH(Math.round(wholeOf(next, size.width) * scaleX))
+		setV(Math.round(wholeOf(next, size.height) * scaleY))
+	}
+
+	return {
+		unit,
+		horizontal,
+		vertical,
+		ratio,
+		skewH,
+		skewV,
+		setUnit,
+		setRatio,
+		setSkewH: value => setSkewH(clampSkew(value)),
+		setSkewV: value => setSkewV(clampSkew(value)),
+
+		setHorizontal: value => {
+			setH(value)
+			if (ratio) setV(linkedValue(unit, value, size.width, size.height))
+		},
+
+		setVertical: value => {
+			setV(value)
+			if (ratio) setH(linkedValue(unit, value, size.height, size.width))
+		},
+
+		apply: () => {
+			paint.transform({
+				scaleX: clampScale(scaleOf(unit, horizontal, size.width), size.width),
+				scaleY: clampScale(scaleOf(unit, vertical, size.height), size.height),
+				skewH: clampSkew(skewH),
+				skewV: clampSkew(skewV),
+			})
+			dispatch(closeDialog())
+		},
+	}
 }

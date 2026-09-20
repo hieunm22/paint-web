@@ -107,6 +107,56 @@ export const CUSTOM_SLOTS = 10
 /** the eleven stops the zoom slider and Ctrl+plus step through. */
 export const ZOOM_STEPS = [0.125, 0.25, 0.5, 1, 2, 3, 4, 5, 6, 7, 8]
 
+/** the eight handles of a box: four corners, then the edge midpoints. */
+export const BOX_HANDLE_SPOTS: Point[] = [
+	{ x: 0, y: 0 },
+	{ x: 0.5, y: 0 },
+	{ x: 1, y: 0 },
+	{ x: 0, y: 0.5 },
+	{ x: 1, y: 0.5 },
+	{ x: 0, y: 1 },
+	{ x: 0.5, y: 1 },
+	{ x: 1, y: 1 },
+]
+
+/** how close the pointer has to come to a handle, in screen pixels. */
+export const GRIP_REACH = 7
+
+/** the arrow each of those eight handles drags along, in the same order. */
+export const BOX_CURSORS = [
+	"nwse-resize",
+	"ns-resize",
+	"nesw-resize",
+	"ew-resize",
+	"ew-resize",
+	"nesw-resize",
+	"ns-resize",
+	"nwse-resize",
+]
+
+/** the pointer is over something it can pick up and carry. */
+export const MOVE_CURSOR = "move"
+
+/** a font size is given in points and every canvas measure is in pixels. */
+export const POINT_TO_PIXEL = 96 / 72
+
+/** line spacing of a text box, shared by the textarea and the baked text. */
+export const TEXT_LINE_HEIGHT = 1.2
+
+/** the gap Paint leaves between the text box edge and the first glyph. */
+export const TEXT_PADDING = 1
+
+/**
+ * the band around a text box that drags it, in screen pixels.
+ */
+export const TEXT_GRAB_BAND = 5
+
+/** a click that never became a drag opens a text box this big. */
+export const TEXT_BOX_DEFAULT: Size = { width: 220, height: 26 }
+
+/** either shear angle stops short of 90, where the matrix degenerates. */
+export const MAX_SKEW = 89
+
 /** the arrow keys nudge a selection one pixel at a time. */
 export const NUDGE_KEYS: Record<string, Point | undefined> = {
 	ArrowLeft: { x: -1, y: 0 },
@@ -165,7 +215,7 @@ function at(x: number, y: number): Point {
 /** straight steps through a list of corners. */
 function polyline(points: Point[], closed = true): ShapeSubpath {
 	const [start, ...rest] = points
-	return { start, segments: rest.map((to) => ({ to })), closed }
+	return { start, segments: rest.map(to => ({ to })), closed }
 }
 
 /** the angles an arc is cut at: every quarter turn it crosses, then its end. */
@@ -254,7 +304,7 @@ function roundedBox(
 			...arc(1 - rx, top + ry, rx, ry, -90, 0),
 			{ to: at(1, bottom - ry) },
 			...arc(1 - rx, bottom - ry, rx, ry, 0, 90),
-			...tail.map((to) => ({ to })),
+			...tail.map(to => ({ to })),
 			{ to: at(rx, bottom) },
 			...arc(rx, bottom - ry, rx, ry, 90, 180),
 			{ to: at(0, top + ry) },
@@ -332,12 +382,12 @@ const ARROW_RIGHT: Point[] = [
 
 /** mirrors a unit-box outline through the middle of the box. */
 function mirror(points: Point[], axis: "x" | "y"): Point[] {
-	return points.map((p) => (axis === "x" ? at(1 - p.x, p.y) : at(p.x, 1 - p.y)))
+	return points.map(p => (axis === "x" ? at(1 - p.x, p.y) : at(p.x, 1 - p.y)))
 }
 
 /** turns a unit-box outline on its side, which is how the arrows relate. */
 function transpose(points: Point[]): Point[] {
-	return points.map((p) => at(p.y, p.x))
+	return points.map(p => at(p.y, p.x))
 }
 
 /** the 23 gallery shapes; line, curve and polygon follow drawn points. */

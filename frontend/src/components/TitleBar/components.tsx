@@ -20,15 +20,15 @@ export function QuickAccessToolbar() {
 	const { t } = useTranslation()
 	const dispatch = useAppDispatch()
 	const items = useQatItems()
-	const shown = useAppSelector((s) => s.ui.qat)
-	const open = useAppSelector((s) => s.ui.openMenu) === "qat"
+	const shown = useAppSelector(s => s.ui.qat)
+	const open = useAppSelector(s => s.ui.openMenu) === "qat"
 	useQatPersistence(shown)
 
 	return (
 		<div className="title-bar__qat">
 			{items
-				.filter((item) => shown.includes(item.id))
-				.map((item) => (
+				.filter(item => shown.includes(item.id))
+				.map(item => (
 					<button
 						key={item.id}
 						type="button"
@@ -53,7 +53,7 @@ export function QuickAccessToolbar() {
 				{open && (
 					<Menu width={QAT_MENU_WIDTH}>
 						<MenuSectionLabel>{t("titlebar.qat.customise")}</MenuSectionLabel>
-						{items.map((item) => (
+						{items.map(item => (
 							<MenuItem
 								key={item.id}
 								label={t(item.labelKey)}
@@ -82,7 +82,7 @@ export function WindowButtons() {
 
 	return (
 		<div className="title-bar__window-btns">
-			{WINDOW_BUTTONS.map((btn) => (
+			{WINDOW_BUTTONS.map(btn => (
 				<button
 					key={btn.id}
 					type="button"

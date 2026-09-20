@@ -1,16 +1,46 @@
-import { useState } from "react"
 import { useTranslation } from "react-i18next"
 import { Icon } from "components/Icon"
+import { useAppDispatch, useAppSelector } from "store/hooks"
+import { useResizeSkewForm } from "../hooks"
+import { closeDialog } from "store/slices/uiSlice"
 import { Dialog } from "./Dialog"
 
-/** Resize and Skew dialog (Ctrl+W). */
+/** Resize and Skew (Ctrl+W), over the selection when one is up. */
 export function ResizeSkewDialog() {
 	const { t } = useTranslation()
-	const [unit, setUnit] = useState<"percent" | "pixels">("percent")
-	const [ratio, setRatio] = useState(true)
+	const dispatch = useAppDispatch()
+	const width = useAppSelector(s => s.doc.width)
+	const height = useAppSelector(s => s.doc.height)
+	const bounds = useAppSelector(s => s.selection.bounds)
+	const form = useResizeSkewForm({
+		width: bounds?.w ?? width,
+		height: bounds?.h ?? height,
+	})
+	const percent = form.unit === "percent"
 
 	return (
-		<Dialog title={t("dialog.resize-skew.title")} width={318}>
+		<Dialog
+			title={t("dialog.resize-skew.title")}
+			width={318}
+			footer={
+				<>
+					<button
+						type="button"
+						className="dialog__btn dialog__btn--primary"
+						onClick={form.apply}
+					>
+						{t("dialog.common.ok")}
+					</button>
+					<button
+						type="button"
+						className="dialog__btn"
+						onClick={() => dispatch(closeDialog())}
+					>
+						{t("dialog.common.cancel")}
+					</button>
+				</>
+			}
+		>
 			<div className="dialog__body">
 				<div className="dialog__section">
 					<div className="dialog__section-title">
@@ -22,8 +52,8 @@ export function ResizeSkewDialog() {
 							<input
 								type="radio"
 								name="unit"
-								checked={unit === "percent"}
-								onChange={() => setUnit("percent")}
+								checked={percent}
+								onChange={() => form.setUnit("percent")}
 							/>{" "}
 							{t("dialog.resize-skew.percentage")}
 						</label>
@@ -31,8 +61,8 @@ export function ResizeSkewDialog() {
 							<input
 								type="radio"
 								name="unit"
-								checked={unit === "pixels"}
-								onChange={() => setUnit("pixels")}
+								checked={!percent}
+								onChange={() => form.setUnit("pixels")}
 							/>{" "}
 							{t("dialog.resize-skew.pixels")}
 						</label>
@@ -44,7 +74,10 @@ export function ResizeSkewDialog() {
 						</span>
 						<input
 							className="dialog__num"
-							defaultValue={unit === "percent" ? 100 : 1152}
+							type="number"
+							min={1}
+							value={form.horizontal}
+							onChange={e => form.setHorizontal(Number(e.target.value))}
 						/>
 					</div>
 					<div className="dialog__row">
@@ -54,15 +87,18 @@ export function ResizeSkewDialog() {
 						</span>
 						<input
 							className="dialog__num"
-							defaultValue={unit === "percent" ? 100 : 648}
+							type="number"
+							min={1}
+							value={form.vertical}
+							onChange={e => form.setVertical(Number(e.target.value))}
 						/>
 					</div>
 					<div className="dialog__row">
 						<label>
 							<input
 								type="checkbox"
-								checked={ratio}
-								onChange={(e) => setRatio(e.target.checked)}
+								checked={form.ratio}
+								onChange={e => form.setRatio(e.target.checked)}
 							/>{" "}
 							{t("dialog.resize-skew.maintain-ratio")}
 						</label>
@@ -78,14 +114,24 @@ export function ResizeSkewDialog() {
 							<Icon name="arrowsH" size={11} />{" "}
 							{t("dialog.resize-skew.horizontal")}
 						</span>
-						<input className="dialog__num" defaultValue={0} />
+						<input
+							className="dialog__num"
+							type="number"
+							value={form.skewH}
+							onChange={e => form.setSkewH(Number(e.target.value))}
+						/>
 					</div>
 					<div className="dialog__row">
 						<span className="dialog__label">
 							<Icon name="arrowsV" size={11} />{" "}
 							{t("dialog.resize-skew.vertical")}
 						</span>
-						<input className="dialog__num" defaultValue={0} />
+						<input
+							className="dialog__num"
+							type="number"
+							value={form.skewV}
+							onChange={e => form.setSkewV(Number(e.target.value))}
+						/>
 					</div>
 					<div className="dialog__hint">{t("dialog.resize-skew.hint")}</div>
 				</div>

@@ -19,7 +19,7 @@ worker.onmessage = ({ data }: MessageEvent<GifRequest>) => {
 	// all the format carries
 	const palette = quantize(rgba, COLORS, { format: FORMAT, oneBitAlpha: true })
 	const index = applyPalette(rgba, palette, FORMAT)
-	const clear = palette.findIndex((color) => color[3] === 0)
+	const clear = palette.findIndex(color => color[3] === 0)
 
 	const gif = GIFEncoder()
 	gif.writeFrame(index, width, height, {

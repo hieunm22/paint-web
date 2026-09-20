@@ -37,7 +37,7 @@ export function useFileDrop(): void {
 			e.preventDefault()
 			// the item is only readable while the event is being dispatched
 			const pending = handleOf(e.dataTransfer?.items?.[0])
-			void pending.then((handle) => commands.openPicked({ file, handle }))
+			void pending.then(handle => commands.openPicked({ file, handle }))
 		}
 
 		window.addEventListener("dragover", onDragOver)

@@ -41,6 +41,8 @@ export class Surface {
 	private docSize: Size = EMPTY
 	private overlayCss: Size = EMPTY
 	private scratch: CanvasRenderingContext2D | null = null
+	/** the cursor last written, which keeps a pointer move off the dom. */
+	private cursor = ""
 
 	/**
 	 * the recorded sizes are dropped, forcing the next resize to re-sync. that is
@@ -55,6 +57,7 @@ export class Surface {
 		}
 		this.docSize = EMPTY
 		this.overlayCss = EMPTY
+		this.cursor = ""
 	}
 
 	detach(): void {
@@ -112,6 +115,26 @@ export class Surface {
 	}
 
 	/**
+	 * swaps the whole bitmap for another picture, the document taking its size.
+	 * a crop or a rotate replaces what is there rather than growing the paper.
+	 */
+	replaceDocument(source: HTMLCanvasElement): void {
+		this.resizeLayers(source.width, source.height)
+		this.ctx?.base.drawImage(source, 0, 0)
+	}
+
+	/** puts a whole saved bitmap back, which is how a size change undoes. */
+	restoreDocument(data: ImageData): void {
+		this.resizeLayers(data.width, data.height)
+		this.ctx?.base.putImageData(data, 0, 0)
+	}
+
+	/** detached copy of the committed bitmap, which a transform reads from. */
+	snapshot(): HTMLCanvasElement | null {
+		return this.layers ? copyOf(this.layers.base) : null
+	}
+
+	/**
 	 * overlay lives in screen space: its bitmap is device pixels while the
 	 * transform lets callers keep drawing in css pixels.
 	 */
@@ -162,6 +185,18 @@ export class Surface {
 		return readPixel(this.scratch.getImageData(0, 0, 1, 1), 0, 0)
 	}
 
+	/**
+	 * css cursor over the drawing surface, which sits above the one the tool
+	 * sets. an empty string hands it back, whether that is a drawn glyph or a
+	 * crosshair.
+	 */
+	setCursor(value: string): void {
+		if (value === this.cursor) return
+
+		this.cursor = value
+		if (this.layers) this.layers.preview.style.cursor = value
+	}
+
 	clearPreview(): void {
 		const { width, height } = this.docSize
 		this.ctx?.preview.clearRect(0, 0, width, height)
@@ -179,6 +214,23 @@ export class Surface {
 
 		ctx.base.drawImage(layers.preview, 0, 0)
 		this.clearPreview()
+	}
+
+	/**
+	 * resizes base and preview and lays fresh paper down. assigning width wipes
+	 * the bitmap, which is what leaves the caller a clean sheet to draw onto.
+	 */
+	private resizeLayers(width: number, height: number): void {
+		const { layers, ctx } = this
+		if (!layers || !ctx) return
+
+		layers.base.width = width
+		layers.base.height = height
+		layers.preview.width = width
+		layers.preview.height = height
+		this.docSize = { width, height }
+		ctx.base.fillStyle = PAPER
+		ctx.base.fillRect(0, 0, width, height)
 	}
 
 	/** repaints the whole document white, dropping every committed pixel. */

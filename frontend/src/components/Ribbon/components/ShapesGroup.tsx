@@ -22,11 +22,18 @@ import { StrokeMenuButton } from "./StrokeMenuButton"
 export function ShapesGroup() {
 	const { t } = useTranslation()
 	const dispatch = useAppDispatch()
-	const { shape, outline, fill } = useAppSelector((s) => s.tool)
-	const openMenu = useAppSelector((s) => s.ui.openMenu)
+	const {
+		active,
+		shape,
+		outline,
+		fill,
+	} = useAppSelector(s => s.tool)
+	const openMenu = useAppSelector(s => s.ui.openMenu)
 	const scroll = useShapeGalleryScroll(SHAPE_ORDER.length)
 	const hasInterior = shapeHasInterior(shape)
 	const ready = Boolean(IMPLEMENTED.shape)
+	// the gallery remembers the last shape; only the active tool is highlighted
+	const drawing = ready && active === "shape"
 
 	return (
 		<RibbonGroup label={t("ribbon.shapes.label")}>
@@ -44,13 +51,13 @@ export function ShapesGroup() {
 							transform: `translateY(${-scroll.row * SHAPE_GALLERY_ROW_HEIGHT}px)`,
 						}}
 					>
-						{SHAPE_ORDER.map((kind) => (
+						{SHAPE_ORDER.map(kind => (
 							<ShapeCell
 								key={kind}
 								kind={kind}
-								selected={ready && shape === kind}
+								selected={drawing && shape === kind}
 								disabled={!ready}
-								onPick={(picked) => dispatch(setShape(picked))}
+								onPick={picked => dispatch(setShape(picked))}
 							/>
 						))}
 					</div>
@@ -89,13 +96,13 @@ export function ShapesGroup() {
 						{openMenu === "shapes" && (
 							<Menu width={SHAPE_PANEL_WIDTH}>
 								<div className="shape-gallery__panel">
-									{SHAPE_ORDER.map((kind) => (
+									{SHAPE_ORDER.map(kind => (
 										<ShapeCell
 											key={kind}
 											kind={kind}
-											selected={shape === kind}
+											selected={drawing && shape === kind}
 											disabled={!ready}
-											onPick={(picked) => dispatch(setShape(picked))}
+											onPick={picked => dispatch(setShape(picked))}
 										/>
 									))}
 								</div>
@@ -112,7 +119,7 @@ export function ShapesGroup() {
 						disabled={!ready}
 						open={openMenu === "outline"}
 						onToggle={() => dispatch(toggleMenu("outline"))}
-						onPick={(style) => dispatch(setOutline(style))}
+						onPick={style => dispatch(setOutline(style))}
 					/>
 					<StrokeMenuButton
 						menuId="fill"
@@ -121,7 +128,7 @@ export function ShapesGroup() {
 						disabled={!ready || !hasInterior}
 						open={openMenu === "fill"}
 						onToggle={() => dispatch(toggleMenu("fill"))}
-						onPick={(style) => dispatch(setFill(style))}
+						onPick={style => dispatch(setFill(style))}
 					/>
 				</div>
 			</div>

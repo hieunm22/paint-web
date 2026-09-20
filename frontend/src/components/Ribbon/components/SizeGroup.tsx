@@ -1,40 +1,46 @@
 import { useTranslation } from "react-i18next"
 import { SIZES } from "../constant"
-import { Menu } from "components/Menu"
-import { SplitButton } from "components/RibbonButton"
+import { Menu, MenuAnchor } from "components/Menu"
+import { LargeButton } from "components/RibbonButton"
 import { RibbonGroup } from "components/RibbonGroup"
 import { useAppDispatch, useAppSelector } from "store/hooks"
 import { setSize } from "store/slices/toolSlice"
 import { toggleMenu } from "store/slices/uiSlice"
 
-/** the menu renders real 1, 3, 5 and 8 px rules. */
+/**
+ * one button rather than a split one: Size has no action of its own, every
+ * click opens the menu. the menu renders real 1, 3, 5 and 8 px rules.
+ */
 export function SizeGroup() {
 	const { t } = useTranslation()
 	const dispatch = useAppDispatch()
-	const size = useAppSelector((s) => s.tool.size)
-	const open = useAppSelector((s) => s.ui.openMenu) === "size"
+	const size = useAppSelector(s => s.tool.size)
+	const open = useAppSelector(s => s.ui.openMenu) === "size"
 
 	return (
 		<RibbonGroup label={t("ribbon.size.label")}>
-			<SplitButton
-				label={t("ribbon.size.label")}
-				title={t("ribbon.size.tooltip", { 0: size })}
-				iconNode={
-					<div className="size-preview">
-						{SIZES.map((s) => (
-							<div
-								key={s}
-								className="size-line"
-								style={{ height: s, width: 28 }}
-							/>
-						))}
-					</div>
-				}
-				open={open}
-				onToggleMenu={() => dispatch(toggleMenu("size"))}
-				menu={
+			<MenuAnchor>
+				<LargeButton
+					label={t("ribbon.size.label")}
+					title={t("ribbon.size.tooltip", { 0: size })}
+					caret
+					selected={open}
+					iconNode={
+						<div className="size-preview">
+							{SIZES.map(s => (
+								<div
+									key={s}
+									className="size-line"
+									style={{ height: s, width: 28 }}
+								/>
+							))}
+						</div>
+					}
+					onClick={() => dispatch(toggleMenu("size"))}
+				/>
+				{open && (
 					<Menu width={96}>
-						{SIZES.map((s) => (
+						{SIZES.map(s => (
 							<button
 								key={s}
 								type="button"
@@ -48,8 +54,8 @@ export function SizeGroup() {
 							</button>
 						))}
 					</Menu>
-				}
-			/>
+				)}
+			</MenuAnchor>
 		</RibbonGroup>
 	)
 }

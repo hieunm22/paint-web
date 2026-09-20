@@ -22,8 +22,8 @@ export default function App() {
 	useFileDrop()
 	useClipboard()
 	useBeforeUnload()
-	const backstageOpen = useAppSelector((s) => s.ui.backstageOpen)
-	const showStatusBar = useAppSelector((s) => s.view.showStatusBar)
+	const backstageOpen = useAppSelector(s => s.ui.backstageOpen)
+	const showStatusBar = useAppSelector(s => s.view.showStatusBar)
 
 	return (
 		<div className="app">

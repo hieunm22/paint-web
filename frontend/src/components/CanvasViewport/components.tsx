@@ -1,7 +1,15 @@
 import { useTranslation } from "react-i18next"
+import {
+	POINT_TO_PIXEL,
+	TEXT_GRAB_BAND,
+	TEXT_LINE_HEIGHT,
+	TEXT_PADDING,
+} from "common/constant"
 import { HANDLES, RULER_SIZE } from "./constant"
-import { buildRulerTicks } from "./common"
-import type { RulerProps } from "./types"
+import { buildRulerTicks, textDecoration, textFrameBox } from "./common"
+import { useAppSelector } from "store/hooks"
+import { useTextBox, useTextBoxDrag } from "./hooks"
+import type { RulerProps, TextBoxProps } from "./types"
 
 /** ruler drawn as SVG, which keeps the ticks crisp at every zoom level. */
 export function Ruler({ orientation, length, zoom }: RulerProps) {
@@ -16,7 +24,7 @@ export function Ruler({ orientation, length, zoom }: RulerProps) {
 				height={horizontal ? RULER_SIZE : px + 40}
 				shapeRendering="crispEdges"
 			>
-				{ticks.map((tick) =>
+				{ticks.map(tick =>
 					horizontal ? (
 						<line
 							key={tick.pos}
@@ -40,8 +48,8 @@ export function Ruler({ orientation, length, zoom }: RulerProps) {
 					),
 				)}
 				{ticks
-					.filter((t) => t.label !== undefined)
-					.map((tick) =>
+					.filter(t => t.label !== undefined)
+					.map(tick =>
 						horizontal ? (
 							<text
 								key={`l${tick.pos}`}
@@ -77,10 +85,54 @@ export function Ruler({ orientation, length, zoom }: RulerProps) {
 export function ResizeHandles() {
 	return (
 		<>
-			{HANDLES.map((pos) => (
+			{HANDLES.map(pos => (
 				<span key={pos} className={`canvas__handle canvas__handle--${pos}`} />
 			))}
 		</>
+	)
+}
+
+/**
+ * the text box is a real textarea laid over the picture: the caret, the
+ * selection and every input method come with it for nothing. the engine bakes
+ * what it holds onto the bitmap when the box is committed.
+ */
+export function TextBox({ box, zoom }: TextBoxProps) {
+	const { t } = useTranslation()
+	const options = useAppSelector(s => s.tool.text)
+	const color1 = useAppSelector(s => s.colors.color1)
+	const color2 = useAppSelector(s => s.colors.color2)
+	const { ref, value, onChange } = useTextBox(zoom)
+	const dragProps = useTextBoxDrag(box, zoom)
+	const em = options.fontSize * POINT_TO_PIXEL * zoom
+
+	return (
+		<div
+			className="canvas__text-frame"
+			style={textFrameBox(box, zoom, TEXT_GRAB_BAND)}
+			{...dragProps}
+		>
+			<textarea
+				ref={ref}
+				className="canvas__text"
+				style={{
+					padding: TEXT_PADDING * zoom,
+					fontFamily: `"${options.fontFamily}", sans-serif`,
+					fontSize: em,
+					lineHeight: `${Math.round(options.fontSize * POINT_TO_PIXEL * TEXT_LINE_HEIGHT) * zoom}px`,
+					fontWeight: options.bold ? "bold" : "normal",
+					fontStyle: options.italic ? "italic" : "normal",
+					textDecoration: textDecoration(options),
+					color: color1,
+					background: options.background === "opaque" ? color2 : "transparent",
+				}}
+				aria-label={t("canvas.text.label")}
+				autoFocus
+				spellCheck={false}
+				value={value}
+				onChange={onChange}
+			/>
+		</div>
 	)
 }
 

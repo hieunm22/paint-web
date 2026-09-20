@@ -1,13 +1,16 @@
-import { SHAPE_DEFS } from "common/constant"
+import { BOX_CURSORS, MOVE_CURSOR, SHAPE_DEFS } from "common/constant"
 import {
 	boundsOfPoints,
+	boxHandles,
 	clampPoint,
 	clampRect,
 	constrainToAxis,
 	inflateRect,
 	insideRect,
+	nearestGrip,
 	rectFromPoints,
 	remapPoints,
+	resizeBox,
 	squareFromPoints,
 } from "engine/geometry"
 import { reportDraft } from "engine/overlay"
@@ -27,21 +30,6 @@ import type {
 } from "types/store.types"
 
 const ORIGIN: Point = { x: 0, y: 0 }
-
-/** corners then edge midpoints, as fractions of the draft box. */
-const HANDLE_SPOTS: Point[] = [
-	{ x: 0, y: 0 },
-	{ x: 0.5, y: 0 },
-	{ x: 1, y: 0 },
-	{ x: 0, y: 0.5 },
-	{ x: 1, y: 0.5 },
-	{ x: 0, y: 1 },
-	{ x: 0.5, y: 1 },
-	{ x: 1, y: 1 },
-]
-
-/** how close the pointer has to come to a handle, in screen pixels. */
-const GRIP_REACH = 7
 
 /** a curve takes two bends after the first drag, as Paint's does. */
 const CURVE_BENDS = 2
@@ -156,6 +144,33 @@ export class ShapeTool implements Tool {
 		return this.gripAt(pt, ctx) >= 0 || insideRect(draft.box, pt)
 	}
 
+	/**
+	 * a handle shows the arrow it drags along and the body shows the move
+	 * cross, which is the only hint that a dropped shape is still editable.
+	 */
+	cursorAt(pt: Point, ctx: ToolContext): string | null {
+		const draft = this.draft
+		if (!draft) return null
+
+		// the first drag draws the shape out rather than resizing it
+		if (this.mode === "resize") return this.gripCursor(this.grip)
+		if (this.mode) return this.mode === "move" ? MOVE_CURSOR : null
+		if (draft.open) return null
+
+		const grip = this.gripAt(pt, ctx)
+		if (grip >= 0) return this.gripCursor(grip)
+
+		return insideRect(draft.box, pt) ? MOVE_CURSOR : null
+	}
+
+	/** a line or a curve carries loose endpoints rather than a box to stretch. */
+	private gripCursor(grip: number): string {
+		const draft = this.draft
+		const boxed = draft && draft.kind !== "line" && draft.kind !== "curve"
+
+		return (boxed && BOX_CURSORS[grip]) || MOVE_CURSOR
+	}
+
 	/** a multi-step shape owns every click until it closes or runs out of bends. */
 	private unfinished(draft: ShapeDraft): boolean {
 		if (!SHAPE_DEFS[draft.kind].multiStep) return false
@@ -222,19 +237,7 @@ export class ShapeTool implements Tool {
 
 	/** drags one handle, keeping the opposite side of the box where it is. */
 	private resize(at: Point): void {
-		const spot = HANDLE_SPOTS[this.grip]
-		const box = this.origin
-		let left = box.x
-		let right = box.x + box.w
-		let top = box.y
-		let bottom = box.y + box.h
-
-		if (spot.x === 0) left = at.x
-		else if (spot.x === 1) right = at.x
-		if (spot.y === 0) top = at.y
-		else if (spot.y === 1) bottom = at.y
-
-		this.place(rectFromPoints({ x: left, y: top }, { x: right, y: bottom }))
+		this.place(resizeBox(this.origin, this.grip, at))
 	}
 
 	/** moves the whole draft into a new box, points and ends included. */
@@ -275,12 +278,7 @@ export class ShapeTool implements Tool {
 		const draft = this.draft
 		if (!draft || draft.open) return -1
 
-		const reach = Math.max(2, GRIP_REACH / ctx.zoom)
-		return this.handles().findIndex(
-			(handle) =>
-				Math.abs(handle.x - pt.x) <= reach &&
-				Math.abs(handle.y - pt.y) <= reach,
-		)
+		return nearestGrip(this.handles(), pt, ctx.zoom)
 	}
 
 	/** the endpoints of a line or curve, the box handles of everything else. */
@@ -291,11 +289,7 @@ export class ShapeTool implements Tool {
 			return [draft.from, draft.to, ...draft.controls]
 		}
 
-		const { box } = draft
-		return HANDLE_SPOTS.map((spot) => ({
-			x: box.x + spot.x * box.w,
-			y: box.y + spot.y * box.h,
-		}))
+		return boxHandles(draft.box)
 	}
 
 	private pathOf(draft: ShapeDraft): Path2D {

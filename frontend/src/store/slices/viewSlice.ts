@@ -29,11 +29,11 @@ const viewSlice = createSlice({
 			state.focus = { x: at.x, y: at.y, zoom }
 		},
 		zoomIn(state) {
-			state.zoom = ZOOM_STEPS.find((z) => z > state.zoom) ?? state.zoom
+			state.zoom = ZOOM_STEPS.find(z => z > state.zoom) ?? state.zoom
 		},
 		zoomOut(state) {
 			state.zoom =
-				[...ZOOM_STEPS].reverse().find((z) => z < state.zoom) ?? state.zoom
+				[...ZOOM_STEPS].reverse().find(z => z < state.zoom) ?? state.zoom
 		},
 		toggleView(state, action: PayloadAction<ToggleKey>) {
 			state[action.payload] = !state[action.payload]

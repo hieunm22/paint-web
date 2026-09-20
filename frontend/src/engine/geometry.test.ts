@@ -1,13 +1,17 @@
 import { describe, expect, it } from "vitest"
+import { BOX_CURSORS, BOX_HANDLE_SPOTS } from "common/constant"
 import {
 	boundsOfPoints,
+	boxHandles,
 	clampRect,
 	constrainToAxis,
 	contains,
 	insideRect,
+	nearestGrip,
 	rectFromPoints,
 	rectUnion,
 	remapPoints,
+	resizeBox,
 	segmentBounds,
 	squareFromPoints,
 } from "engine/geometry"
@@ -150,5 +154,80 @@ describe("insideRect", () => {
 
 		expect(insideRect(box, { x: 6, y: 6 })).toBe(true)
 		expect(insideRect(box, { x: 6.5, y: 4 })).toBe(false)
+	})
+})
+
+describe("boxHandles", () => {
+	it("gives the four corners then the edge midpoints", () => {
+		const handles = boxHandles({ x: 10, y: 20, w: 40, h: 60 })
+
+		expect(handles).toHaveLength(8)
+		expect(handles[0]).toEqual({ x: 10, y: 20 })
+		expect(handles[1]).toEqual({ x: 30, y: 20 })
+		expect(handles[7]).toEqual({ x: 50, y: 80 })
+	})
+})
+
+describe("nearestGrip", () => {
+	const handles = boxHandles({ x: 0, y: 0, w: 100, h: 100 })
+
+	it("finds the handle under the pointer", () => {
+		expect(nearestGrip(handles, { x: 100, y: 100 }, 1)).toBe(7)
+	})
+
+	it("reaches no further than a few pixels", () => {
+		expect(nearestGrip(handles, { x: 50, y: 50 }, 1)).toBe(-1)
+	})
+
+	// zoomed in, one image pixel covers several on screen
+	it("narrows the reach as the zoom grows", () => {
+		expect(nearestGrip(handles, { x: 5, y: 0 }, 1)).toBe(0)
+		expect(nearestGrip(handles, { x: 5, y: 0 }, 8)).toBe(-1)
+	})
+})
+
+describe("resizeBox", () => {
+	const box = { x: 10, y: 10, w: 100, h: 100 }
+
+	it("moves the dragged corner and leaves the opposite one put", () => {
+		expect(resizeBox(box, 7, { x: 60, y: 40 })).toEqual({
+			x: 10,
+			y: 10,
+			w: 50,
+			h: 30,
+		})
+	})
+
+	it("moves one side only when an edge handle is dragged", () => {
+		expect(resizeBox(box, 1, { x: 999, y: 30 })).toEqual({
+			x: 10,
+			y: 30,
+			w: 100,
+			h: 80,
+		})
+	})
+
+	it("normalises a drag past the opposite side", () => {
+		expect(resizeBox(box, 0, { x: 150, y: 150 })).toEqual({
+			x: 110,
+			y: 110,
+			w: 40,
+			h: 40,
+		})
+	})
+})
+
+describe("the handle cursors", () => {
+	// the two tables are read by index; a row added to one needs the other
+	it("line up with the handles they belong to", () => {
+		expect(BOX_CURSORS).toHaveLength(BOX_HANDLE_SPOTS.length)
+	})
+
+	it("point the way each handle stretches the box", () => {
+		const north = BOX_HANDLE_SPOTS.findIndex(s => s.x === 0.5 && s.y === 0)
+		const corner = BOX_HANDLE_SPOTS.findIndex(s => s.x === 1 && s.y === 1)
+
+		expect(BOX_CURSORS[north]).toBe("ns-resize")
+		expect(BOX_CURSORS[corner]).toBe("nwse-resize")
 	})
 })

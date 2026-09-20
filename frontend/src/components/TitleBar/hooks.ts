@@ -17,8 +17,8 @@ export function useQatPersistence(items: QatItemId[]): void {
 /** Undo and Redo follow the engine's stacks; Save is always available. */
 export function useQatItems(): QatItem[] {
 	const { i18n } = useTranslation()
-	const canUndo = useAppSelector((s) => s.history.canUndo)
-	const canRedo = useAppSelector((s) => s.history.canRedo)
+	const canUndo = useAppSelector(s => s.history.canUndo)
+	const canRedo = useAppSelector(s => s.history.canRedo)
 	const files = useFileCommands()
 
 	return useMemo(() => {
@@ -33,7 +33,7 @@ export function useQatItems(): QatItem[] {
 			redo: () => paint.redo(),
 		}
 
-		return QAT_ITEMS.map((item) => ({
+		return QAT_ITEMS.map(item => ({
 			...item,
 			title: tooltipWithShortcut(item.labelKey, item.shortcutKey),
 			disabled: !enabled[item.id],

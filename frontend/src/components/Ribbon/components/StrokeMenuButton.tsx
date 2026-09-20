@@ -32,7 +32,7 @@ export function StrokeMenuButton({
 			</button>
 			{open && !disabled && (
 				<Menu width={160}>
-					{STROKE_STYLES.map((style) => (
+					{STROKE_STYLES.map(style => (
 						<MenuItem
 							key={style.id}
 							label={t(strokeStyleKey(style.id, style.labelKey, isFill))}

@@ -3,7 +3,8 @@
 		"tab": {
 			"file": "File",
 			"home": "Home",
-			"view": "View"
+			"view": "View",
+			"text": "Text"
 		},
 		"clipboard": {
 			"label": "Clipboard",
@@ -35,10 +36,10 @@
 		"tools": {
 			"label": "Tools",
 			"pencil": "Pencil",
-			"fill": "Fill with colour",
+			"fill": "Fill with color",
 			"text": "Text",
 			"eraser": "Eraser",
-			"picker": "Colour picker",
+			"picker": "Color picker",
 			"magnifier": "Magnifier"
 		},
 		"brushes": {
@@ -51,7 +52,7 @@
 			"crayon": "Crayon",
 			"marker": "Marker",
 			"natural-pencil": "Natural pencil",
-			"watercolor": "Watercolour"
+			"watercolor": "Watercolor"
 		},
 		"shapes": {
 			"label": "Shapes",
@@ -87,12 +88,12 @@
 		"stroke": {
 			"none": "No outline",
 			"none-fill": "No fill",
-			"solid": "Solid colour",
+			"solid": "Solid color",
 			"crayon": "Crayon",
 			"marker": "Marker",
 			"oil": "Oil",
 			"natural-pencil": "Natural pencil",
-			"watercolor": "Watercolour"
+			"watercolor": "Watercolor"
 		},
 		"size": {
 			"label": "Size",
@@ -100,11 +101,25 @@
 			"tooltip": "Size ({0}px) - Ctrl+= / Ctrl+-"
 		},
 		"colors": {
-			"label": "Colours",
-			"color1": "Colour 1",
-			"color2": "Colour 2",
-			"custom-empty": "Custom colour slot",
-			"edit": "Edit colours"
+			"label": "Colors",
+			"color1": "Color 1",
+			"color2": "Color 2",
+			"custom-empty": "Custom color slot",
+			"edit": "Edit colors"
+		},
+		"font": {
+			"label": "Font",
+			"family": "Font family",
+			"size": "Font size",
+			"bold": "Bold",
+			"italic": "Italic",
+			"underline": "Underline",
+			"strikethrough": "Strikethrough"
+		},
+		"background": {
+			"label": "Background",
+			"transparent": "Transparent",
+			"opaque": "Opaque"
 		},
 		"extras": {
 			"label": "Extras",
@@ -195,6 +210,9 @@
 	"canvas": {
 		"thumbnail": {
 			"title": "Thumbnail"
+		},
+		"text": {
+			"label": "Text box"
 		}
 	},
 	"filemenu": {
@@ -249,10 +267,10 @@
 			"dont-save": "Don't Save"
 		},
 		"edit-colors": {
-			"title": "Edit Colours",
-			"basic": "Basic colours:",
-			"add-custom": "Add to Custom Colours",
-			"color-solid": "Colour|Solid:",
+			"title": "Edit Colors",
+			"basic": "Basic colors:",
+			"add-custom": "Add to Custom Colors",
+			"color-solid": "Color|Solid:",
 			"hue": "Hue:",
 			"sat": "Sat:",
 			"lum": "Lum:",
@@ -273,9 +291,9 @@
 			"inches": "Inches",
 			"centimeters": "Centimeters",
 			"pixels": "Pixels",
-			"colors": "Colours",
+			"colors": "Colors",
 			"black-and-white": "Black and white",
-			"color": "Colour",
+			"color": "Color",
 			"width": "Width:",
 			"height": "Height:"
 		},
@@ -300,7 +318,7 @@
 			"hint-png": "PNG keeps alpha - the default format.",
 			"hint-jpeg": "JPEG has no alpha: a transparent background turns white.",
 			"hint-bmp": "BMP is written by a hand-rolled encoder, 24-bit uncompressed - alpha is flattened onto white.",
-			"hint-gif": "GIF is quantised to 256 colours with 1-bit alpha.",
+			"hint-gif": "GIF is quantised to 256 colors with 1-bit alpha.",
 			"hint-webp": "WEBP keeps alpha; Safari 16 and later."
 		}
 	},
@@ -329,13 +347,18 @@
 		"label": {
 			"pencil": "Pencil",
 			"eraser": "Eraser",
-			"fill": "Fill with colour",
-			"picker": "Pick colour",
+			"fill": "Fill with color",
+			"picker": "Pick color",
 			"magnifier": "Magnifier",
 			"shape": "Shape",
 			"selection": "Selection",
 			"delete": "Delete selection",
-			"paste": "Paste"
+			"paste": "Paste",
+			"crop": "Crop",
+			"rotate": "Rotate",
+			"flip": "Flip",
+			"resize": "Resize",
+			"text": "Text"
 		}
 	}
 }

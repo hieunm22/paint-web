@@ -5,7 +5,7 @@ import { Dialog } from "./Dialog"
 /** image properties dialog (Ctrl+E). */
 export function ImagePropertiesDialog() {
 	const { t, i18n } = useTranslation()
-	const doc = useAppSelector((s) => s.doc)
+	const doc = useAppSelector(s => s.doc)
 	const sizeKB = Math.round((doc.width * doc.height * 3) / 1024)
 	const savedAt = doc.savedAt
 		? new Date(doc.savedAt).toLocaleString(i18n.language)

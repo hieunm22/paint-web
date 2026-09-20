@@ -1,14 +1,12 @@
 import { hexToRgba } from "engine/color"
 import { clampRect, insideRect, rectUnion } from "engine/geometry"
-import type { SelectionMask, ToolContext } from "types/engine.types"
+import { canvasOf, transformImage } from "engine/transform"
+import type {
+	ImageRecipe,
+	SelectionMask,
+	ToolContext,
+} from "types/engine.types"
 import type { Point, Rect, SelectionKind } from "types/store.types"
-
-function canvasOf(width: number, height: number): HTMLCanvasElement {
-	const canvas = document.createElement("canvas")
-	canvas.width = Math.max(1, Math.round(width))
-	canvas.height = Math.max(1, Math.round(height))
-	return canvas
-}
 
 let prober: CanvasRenderingContext2D | null | undefined
 
@@ -36,6 +34,8 @@ export class SelectionManager {
 	private outline: Point[] | null = null
 	/** the pixels as they were picked up, before transparency is applied. */
 	private raw: HTMLCanvasElement | null = null
+	/** the picked-up pixels stretched into a resized box, drawn from the raw. */
+	private stretched: HTMLCanvasElement | null = null
 	private buffer: HTMLCanvasElement | null = null
 
 	get kind(): SelectionKind {
@@ -59,6 +59,11 @@ export class SelectionManager {
 		return this.shape !== "none"
 	}
 
+	/** the floating pixels at their current size, untouched by transparency. */
+	private get pixels(): HTMLCanvasElement | null {
+		return this.stretched ?? this.raw
+	}
+
 	/** marks out a region whose pixels are still part of the picture. */
 	define(
 		kind: SelectionKind,
@@ -72,6 +77,7 @@ export class SelectionManager {
 		this.mask = mask
 		this.outline = outline
 		this.raw = null
+		this.stretched = null
 		this.buffer = null
 	}
 
@@ -82,6 +88,7 @@ export class SelectionManager {
 		this.mask = null
 		this.outline = null
 		this.raw = null
+		this.stretched = null
 		this.buffer = null
 	}
 
@@ -132,9 +139,59 @@ export class SelectionManager {
 	 * the raw copy is what makes it reversible: the knock-out is never baked.
 	 */
 	refresh(ctx: ToolContext): void {
-		if (!this.raw) return
+		const pixels = this.pixels
+		if (!pixels) return
 
-		this.buffer = this.shade(ctx, this.raw)
+		this.buffer = this.shade(ctx, pixels)
+		this.draw(ctx)
+	}
+
+	/**
+	 * stretches the floating pixels into a new box, always from the copy that
+	 * was picked up: scaling the scaled one would soften a bit more each drag.
+	 * a stretched lasso no longer traces its pixels, and the mask goes with it.
+	 */
+	resizeTo(ctx: ToolContext, box: Rect): void {
+		const raw = this.raw
+		if (!raw || box.w < 1 || box.h < 1) return
+
+		this.mask = null
+		this.outline = null
+		this.box = { ...box }
+		this.stretched = transformImage(raw, {
+			scaleX: box.w / raw.width,
+			scaleY: box.h / raw.height,
+			skewH: 0,
+			skewV: 0,
+		})
+		this.buffer = this.shade(ctx, this.stretched)
+		this.draw(ctx)
+	}
+
+	/**
+	 * runs a rotate, a flip or a resize over the floating pixels, keeping them
+	 * centred where they were. the result is a plain box: a traced outline no
+	 * longer describes pixels that have been turned or stretched.
+	 */
+	reshape(ctx: ToolContext, make: ImageRecipe): void {
+		this.lift(ctx, true)
+		const box = this.box
+		const pixels = this.pixels
+		if (!box || !pixels) return
+
+		const next = make(pixels)
+		this.shape = "rect"
+		this.mask = null
+		this.outline = null
+		this.raw = next
+		this.stretched = null
+		this.box = {
+			x: Math.round(box.x + (box.w - next.width) / 2),
+			y: Math.round(box.y + (box.h - next.height) / 2),
+			w: next.width,
+			h: next.height,
+		}
+		this.buffer = this.shade(ctx, next)
 		this.draw(ctx)
 	}
 
@@ -146,8 +203,7 @@ export class SelectionManager {
 		const dy = y - box.y
 		this.box = { ...box, x, y }
 		this.outline =
-			this.outline?.map((point) => ({ x: point.x + dx, y: point.y + dy })) ??
-			null
+			this.outline?.map(point => ({ x: point.x + dx, y: point.y + dy })) ?? null
 		this.draw(ctx)
 	}
 
@@ -181,6 +237,7 @@ export class SelectionManager {
 		if (dirty) ctx.markDirty(dirty)
 		this.draw(ctx)
 		this.raw = null
+		this.stretched = null
 		this.buffer = null
 		this.source = box
 	}
@@ -203,12 +260,38 @@ export class SelectionManager {
 		const rect = this.box && clampRect(this.box, ctx.doc)
 		if (!rect) return null
 
-		const source = this.shade(ctx, this.raw ?? this.extract(ctx, rect))
+		const source = this.shade(ctx, this.pixels ?? this.extract(ctx, rect))
 		return (
 			source
 				.getContext("2d")
 				?.getImageData(0, 0, source.width, source.height) ?? null
 		)
+	}
+
+	/**
+	 * the selected box as a picture of its own, which Crop makes the document.
+	 * a lasso leaves gaps inside that box, and Paint fills them with colour 2
+	 * rather than leaving them clear.
+	 */
+	crop(ctx: ToolContext): HTMLCanvasElement | null {
+		const box = this.box
+		const rect = box && clampRect(box, ctx.doc)
+		if (!box || !rect) return null
+
+		const floating = this.pixels
+		const pixels = floating ?? this.extract(ctx, rect)
+		const canvas = canvasOf(rect.w, rect.h)
+		const target = canvas.getContext("2d")
+		if (!target) return null
+
+		target.fillStyle = ctx.color2
+		target.fillRect(0, 0, rect.w, rect.h)
+		target.drawImage(
+			pixels,
+			floating ? box.x - rect.x : 0,
+			floating ? box.y - rect.y : 0,
+		)
+		return canvas
 	}
 
 	/**
@@ -232,8 +315,8 @@ export class SelectionManager {
 		)
 	}
 
-	/** a pasted picture arrives already floating, at the top left corner. */
-	adopt(ctx: ToolContext, bitmap: ImageBitmap): void {
+	/** a pasted picture arrives already floating, at the corner it was given. */
+	adopt(ctx: ToolContext, bitmap: ImageBitmap, at: Point): void {
 		const canvas = canvasOf(bitmap.width, bitmap.height)
 		canvas.getContext("2d")?.drawImage(bitmap, 0, 0)
 
@@ -241,8 +324,9 @@ export class SelectionManager {
 		this.mask = null
 		this.outline = null
 		this.raw = canvas
+		this.stretched = null
 		this.buffer = canvas
-		this.box = { x: 0, y: 0, w: bitmap.width, h: bitmap.height }
+		this.box = { x: at.x, y: at.y, w: bitmap.width, h: bitmap.height }
 		this.source = this.box
 		this.draw(ctx)
 	}

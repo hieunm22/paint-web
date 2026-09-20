@@ -9,13 +9,28 @@ import { FillTool } from "engine/tools/FillTool"
 import { MagnifierTool } from "engine/tools/MagnifierTool"
 import { PencilTool } from "engine/tools/PencilTool"
 import { PickerTool } from "engine/tools/PickerTool"
+import { ShapeTool } from "engine/tools/ShapeTool"
 import type { AppDispatch } from "store"
 import type { Modifiers, ToolContext } from "types/engine.types"
 import type { Rect } from "types/store.types"
 
 const BLACK = "#000000"
 const WHITE = "#ffffff"
+const RED = "#ed1c24"
+const BLUE = "#00a2e8"
 const DOC = 4
+
+/** node carries no Path2D, and a shape only ever builds one to hand it over. */
+class PathStub {
+	moveTo() {}
+	lineTo() {}
+	bezierCurveTo() {}
+	closePath() {}
+	rect() {}
+	addPath() {}
+}
+
+globalThis.Path2D ??= PathStub as unknown as typeof Path2D
 
 interface Stamp {
 	x: number
@@ -25,10 +40,17 @@ interface Stamp {
 	style: string
 }
 
+/** one whole path laid down, which is how a shape reaches the canvas. */
+interface Painted {
+	kind: "fill" | "stroke"
+	style: string
+}
+
 interface Harness {
 	ctx: ToolContext
 	stamps: Stamp[]
 	strokes: Stamp[]
+	painted: Painted[]
 	dirty: Rect[]
 	dispatched: { type: string; payload: unknown }[]
 	puts: Rect[]
@@ -48,9 +70,14 @@ const SHIFT: Modifiers = { ...LEFT, shift: true }
  * a tool only ever touches its context, so the whole of one can be stood up
  * from arrays: what it stamped, what it snapshotted, what it dispatched.
  */
-function harness(size = 1, zoom = 1): Harness {
+function harness(
+	size = 1,
+	zoom = 1,
+	overrides: Partial<ToolContext> = {},
+): Harness {
 	const stamps: Stamp[] = []
 	const strokes: Stamp[] = []
+	const painted: Painted[] = []
 	const dirty: Rect[] = []
 	const dispatched: { type: string; payload: unknown }[] = []
 	const puts: Rect[] = []
@@ -61,8 +88,16 @@ function harness(size = 1, zoom = 1): Harness {
 		fillStyle: "",
 		strokeStyle: "",
 		lineWidth: 1,
+		lineJoin: "",
+		lineCap: "",
 		save() {},
 		restore() {},
+		fill() {
+			painted.push({ kind: "fill", style: this.fillStyle })
+		},
+		stroke() {
+			painted.push({ kind: "stroke", style: this.strokeStyle })
+		},
 		fillRect(x: number, y: number, w: number, h: number) {
 			stamps.push({ x, y, w, h, style: this.fillStyle })
 		},
@@ -112,6 +147,7 @@ function harness(size = 1, zoom = 1): Harness {
 				a: pixels[i + 3],
 			}
 		},
+		clearPreview() {},
 	}
 
 	const ctx = {
@@ -123,14 +159,27 @@ function harness(size = 1, zoom = 1): Harness {
 		color2: WHITE,
 		size,
 		zoom,
+		shape: "rect",
+		outline: "solid",
+		fill: "none",
 		doc: { width: DOC, height: DOC },
 		dispatch: ((action: { type: string; payload: unknown }) =>
 			dispatched.push(action)) as unknown as AppDispatch,
 		markDirty: (rect: Rect) => dirty.push(rect),
 		defer: () => undefined,
+		...overrides,
 	} as unknown as ToolContext
 
-	return { ctx, stamps, strokes, dirty, dispatched, puts, pixels }
+	return {
+		ctx,
+		stamps,
+		strokes,
+		painted,
+		dirty,
+		dispatched,
+		puts,
+		pixels,
+	}
 }
 
 function at(h: Harness, x: number, y: number): number[] {
@@ -157,7 +206,7 @@ describe("PencilTool", () => {
 		pencil.begin({ x: 0, y: 1 }, LEFT, h.ctx)
 		pencil.update([{ x: 3, y: 1 }], LEFT, h.ctx)
 
-		expect(h.stamps.map((s) => s.x)).toEqual([0, 0, 1, 2, 3])
+		expect(h.stamps.map(s => s.x)).toEqual([0, 0, 1, 2, 3])
 	})
 
 	it("paints colour 2 when the gesture began on the right button", () => {
@@ -170,7 +219,7 @@ describe("PencilTool", () => {
 		pencil.begin({ x: 0, y: 0 }, SHIFT, h.ctx)
 		pencil.update([{ x: 3, y: 1 }], SHIFT, h.ctx)
 
-		expect(h.stamps.every((s) => s.y === 0)).toBe(true)
+		expect(h.stamps.every(s => s.y === 0)).toBe(true)
 	})
 })
 
@@ -187,7 +236,7 @@ describe("EraserTool", () => {
 		new EraserTool().paintOverlay({ x: 50, y: 50 }, h.ctx)
 
 		// an 8px brush at 200% covers sixteen screen pixels
-		expect(h.strokes.map((s) => s.w)).toEqual([17, 16])
+		expect(h.strokes.map(s => s.w)).toEqual([17, 16])
 	})
 
 	it("replaces only colour 1 on the right button", () => {
@@ -270,5 +319,40 @@ describe("MagnifierTool", () => {
 		new MagnifierTool().begin({ x: 0, y: 0 }, LEFT, h.ctx)
 
 		expect(h.dispatched).toEqual([])
+	})
+})
+
+describe("ShapeTool colours", () => {
+	/** drags a rectangle out and reports what the last repaint laid down. */
+	function draw(overrides: Partial<ToolContext>, mods = LEFT): Painted[] {
+		const h = harness(1, 1, { color1: RED, color2: BLUE, ...overrides })
+		const shape = new ShapeTool()
+		shape.begin({ x: 0, y: 0 }, mods, h.ctx)
+		// every gesture repaints the whole draft; only the latest one is on show
+		h.painted.length = 0
+		shape.update([{ x: 3, y: 3 }], mods, h.ctx)
+		return h.painted
+	}
+
+	it("strokes the outline in colour 1", () => {
+		expect(draw({})).toEqual([{ kind: "stroke", style: RED }])
+	})
+
+	it("fills the interior with colour 2 once a fill style is picked", () => {
+		expect(draw({ fill: "solid" })).toEqual([
+			{ kind: "fill", style: BLUE },
+			{ kind: "stroke", style: RED },
+		])
+	})
+
+	it("swaps the two when the drag began on the right button", () => {
+		expect(draw({ fill: "solid" }, RIGHT)).toEqual([
+			{ kind: "fill", style: RED },
+			{ kind: "stroke", style: BLUE },
+		])
+	})
+
+	it("leaves the interior alone while the fill style is none", () => {
+		expect(draw({}).some(p => p.kind === "fill")).toBe(false)
 	})
 })

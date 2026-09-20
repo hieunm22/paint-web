@@ -48,3 +48,23 @@ export interface NumFieldProps {
 	label: string
 	value: number
 }
+
+/** Resize takes either a percentage of the current size or a pixel count. */
+export type ResizeUnit = "percent" | "pixels"
+
+/** what Resize and Skew collects; only OK hands it to the engine. */
+export interface ResizeSkewForm {
+	unit: ResizeUnit
+	horizontal: number
+	vertical: number
+	ratio: boolean
+	skewH: number
+	skewV: number
+	setUnit(unit: ResizeUnit): void
+	setHorizontal(value: number): void
+	setVertical(value: number): void
+	setRatio(on: boolean): void
+	setSkewH(value: number): void
+	setSkewV(value: number): void
+	apply(): void
+}

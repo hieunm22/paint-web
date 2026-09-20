@@ -3,7 +3,11 @@ import { MenuAnchor } from "components/Menu"
 import type { RibbonButtonProps, SplitButtonProps } from "./types"
 import "./RibbonButton.scss"
 
-/** large button: 32px icon on top, label below. */
+/**
+ * large button: 32px icon on top, label below. with `caret` the whole button
+ * opens a menu instead of splitting into two halves, which is what the Size
+ * button does.
+ */
 export function LargeButton({
 	label,
 	icon,
@@ -11,6 +15,7 @@ export function LargeButton({
 	title,
 	disabled,
 	selected,
+	caret,
 	onClick,
 }: RibbonButtonProps) {
 	return (
@@ -19,7 +24,9 @@ export function LargeButton({
 			className={`ribbon-btn ribbon-btn--large${selected ? " ribbon-btn--selected" : ""}`}
 			title={title ?? label}
 			disabled={disabled}
-			aria-pressed={selected}
+			aria-pressed={caret ? undefined : selected}
+			aria-expanded={caret ? selected : undefined}
+			aria-haspopup={caret ? "menu" : undefined}
 			onClick={onClick}
 		>
 			<span className="ribbon-btn__icon ribbon-btn__icon--large">
@@ -28,6 +35,13 @@ export function LargeButton({
 			<span className="ribbon-btn__label ribbon-btn__label--large">
 				{label}
 			</span>
+			{caret && (
+				<Icon
+					name="caretDown"
+					size={8}
+					className="ribbon-btn__caret ribbon-btn__caret--large"
+				/>
+			)}
 		</button>
 	)
 }

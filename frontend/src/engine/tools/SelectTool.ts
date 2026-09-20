@@ -1,16 +1,27 @@
+import { BOX_CURSORS, MOVE_CURSOR } from "common/constant"
 import {
 	boundsOfPoints,
+	boxHandles,
 	clampPoint,
 	clampRect,
+	nearestGrip,
 	rectFromPoints,
+	resizeBox,
 } from "engine/geometry"
 import { reportSelectionBox } from "engine/overlay"
 import { buildPolygonPath } from "engine/shapes"
 import { translate } from "locales/translate"
 import type { Modifiers, Tool, ToolContext } from "types/engine.types"
-import type { Point, SelectionKind, ToolId } from "types/store.types"
+import type {
+	Point,
+	Rect,
+	SelectionKind,
+	ToolId,
+} from "types/store.types"
 
 const ORIGIN: Point = { x: 0, y: 0 }
+
+const NO_BOX: Rect = { x: 0, y: 0, w: 0, h: 0 }
 
 /** a marquee this small is a click, which drops the selection instead. */
 const MIN_SIZE = 2
@@ -18,7 +29,7 @@ const MIN_SIZE = 2
 /** dash pattern of the lasso drawn while a free-form selection is traced. */
 const LASSO_DASH = [4, 4]
 
-type Mode = "marquee" | "move" | null
+type Mode = "marquee" | "move" | "resize" | null
 
 /**
  * rectangular and free-form selection through one class. the pixels live in
@@ -39,6 +50,9 @@ export class SelectTool implements Tool {
 	private anchor: Point = ORIGIN
 	private grabbed: Point = ORIGIN
 	private trace: Point[] = []
+	/** the box a handle drag started from, and which handle it grabbed. */
+	private origin: Rect = NO_BOX
+	private grip = 0
 
 	private get kind(): SelectionKind {
 		return this.id === "select-free" ? "free" : "rect"
@@ -47,6 +61,17 @@ export class SelectTool implements Tool {
 	begin(pt: Point, mods: Modifiers, ctx: ToolContext): void {
 		const at = clampPoint(pt, ctx.doc)
 		const selection = ctx.selection
+
+		// a handle beats the interior: the corner ones sit inside the box too
+		const grip = selection.isActive ? this.gripAt(at, ctx) : -1
+		if (grip >= 0) {
+			this.mode = "resize"
+			this.grip = grip
+			selection.lift(ctx, true)
+			this.origin = selection.bounds ?? NO_BOX
+			selection.draw(ctx)
+			return
+		}
 
 		if (selection.isActive && selection.contains(at)) {
 			const box = selection.bounds
@@ -72,6 +97,11 @@ export class SelectTool implements Tool {
 		if (!last) return
 
 		const at = clampPoint(last, ctx.doc)
+		if (this.mode === "resize") {
+			ctx.selection.resizeTo(ctx, resizeBox(this.origin, this.grip, at))
+			reportSelectionBox(ctx.selection.bounds, ctx.selection.lasso)
+			return
+		}
 		if (this.mode === "move") {
 			ctx.selection.moveTo(
 				ctx,
@@ -88,10 +118,10 @@ export class SelectTool implements Tool {
 			for (const point of pts) this.trace.push(clampPoint(point, ctx.doc))
 			this.drawLasso(ctx)
 			// a copy: the overlay compares what it holds against what arrives
-			reportSelectionBox(boundsOfPoints(this.trace), [...this.trace])
+			reportSelectionBox(boundsOfPoints(this.trace), [...this.trace], false)
 			return
 		}
-		reportSelectionBox(rectFromPoints(this.anchor, at))
+		reportSelectionBox(rectFromPoints(this.anchor, at), null, false)
 	}
 
 	end(pt: Point, _mods: Modifiers, ctx: ToolContext): void {
@@ -129,7 +159,27 @@ export class SelectTool implements Tool {
 	}
 
 	hitTest(pt: Point, ctx: ToolContext): boolean {
-		return ctx.selection.contains(pt)
+		return ctx.selection.contains(pt) || this.gripAt(pt, ctx) >= 0
+	}
+
+	/** the same arrows the shape handles use, over the selection box. */
+	cursorAt(pt: Point, ctx: ToolContext): string | null {
+		if (!ctx.selection.isActive) return null
+		// mid-drag the pointer runs ahead of the handle it is pulling
+		if (this.mode === "resize") return BOX_CURSORS[this.grip] ?? null
+
+		const grip = this.gripAt(pt, ctx)
+		if (grip >= 0) return BOX_CURSORS[grip] ?? null
+
+		return ctx.selection.contains(pt) ? MOVE_CURSOR : null
+	}
+
+	/** which of the eight handles the pointer grabbed, or -1. */
+	private gripAt(pt: Point, ctx: ToolContext): number {
+		const box = ctx.selection.bounds
+		if (!box) return -1
+
+		return nearestGrip(boxHandles(box), pt, ctx.zoom)
 	}
 
 	/** a live colour 2 or transparency change re-shades the floating pixels. */

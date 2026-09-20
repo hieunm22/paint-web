@@ -1,5 +1,5 @@
 import type { Modifiers } from "types/engine.types"
-import type { Point } from "types/store.types"
+import type { Point, Rect } from "types/store.types"
 
 export type HandlePosition = "nw" | "n" | "ne" | "w" | "e" | "sw" | "s" | "se"
 
@@ -28,4 +28,18 @@ export interface PointerBatch {
 	points: Point[]
 	mods: Modifiers
 	frame: number | null
+}
+
+export interface TextBoxProps {
+	/** the open box in image pixels, which the zoom turns into screen ones. */
+	box: Rect
+	zoom: number
+}
+
+/** live text box drag, kept in a ref to stop pointer moves re-rendering. */
+export interface TextDragSession {
+	pointerId: number
+	start: Point
+	/** the corner the box sat at when the drag began, in image pixels. */
+	origin: Point
 }

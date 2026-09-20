@@ -9,11 +9,11 @@ import type { RecentEntry } from "types/common.types"
  */
 export function useRecents(): RecentEntry[] {
 	const [entries, setEntries] = useState<RecentEntry[]>([])
-	const fileName = useAppSelector((s) => s.doc.fileName)
+	const fileName = useAppSelector(s => s.doc.fileName)
 
 	useEffect(() => {
 		let live = true
-		void listRecents().then((rows) => {
+		void listRecents().then(rows => {
 			if (live) setEntries(rows)
 		})
 		return () => {

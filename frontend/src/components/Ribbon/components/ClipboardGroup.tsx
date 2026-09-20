@@ -12,8 +12,8 @@ export function ClipboardGroup() {
 	const { t } = useTranslation()
 	const dispatch = useAppDispatch()
 	const files = useFileCommands()
-	const open = useAppSelector((s) => s.ui.openMenu) === "paste"
-	const hasSelection = useAppSelector((s) => s.selection.kind) !== "none"
+	const open = useAppSelector(s => s.ui.openMenu) === "paste"
+	const hasSelection = useAppSelector(s => s.selection.kind) !== "none"
 
 	return (
 		<RibbonGroup label={t("ribbon.clipboard.label")}>

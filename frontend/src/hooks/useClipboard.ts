@@ -15,7 +15,7 @@ export function useClipboard(): void {
 
 			const items = Array.from(e.clipboardData?.items ?? [])
 			const image = items.find(
-				(item) => item.kind === "file" && item.type.startsWith("image/"),
+				item => item.kind === "file" && item.type.startsWith("image/"),
 			)
 			const file = image?.getAsFile()
 			if (!file) return

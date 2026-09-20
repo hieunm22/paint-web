@@ -61,7 +61,8 @@ export type StrokeStyle =
 
 export type BrushSize = 1 | 3 | 5 | 8
 
-export type RibbonTabId = "home" | "view"
+/** "text" is contextual: it exists only while a text box is open. */
+export type RibbonTabId = "home" | "view" | "text"
 
 export interface Rect {
 	x: number
@@ -174,6 +175,10 @@ export type PendingFileAction = "new" | "load" | "exit"
 /** pure UI shell state; not part of the document data model. */
 export interface UiState {
 	tab: RibbonTabId
+	/** true while the contextual Text tab is on the strip. */
+	textTab: boolean
+	/** the tab to go back to once the Text tab leaves again. */
+	priorTab: RibbonTabId
 	backstageOpen: boolean
 	openMenu: string | null
 	dialog: DialogId | null

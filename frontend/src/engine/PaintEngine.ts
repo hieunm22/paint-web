@@ -3,18 +3,24 @@ import { reportSelectionBox } from "engine/overlay"
 import { SelectionManager } from "engine/SelectionManager"
 import { Surface } from "engine/Surface"
 import { TOOLS } from "engine/tools/registry"
+import { TextTool } from "engine/tools/TextTool"
+import { flipImage, rotateImage, transformImage } from "engine/transform"
+import { visibleOrigin } from "engine/viewport"
 import { translate } from "locales/translate"
 import { store } from "store"
 import { historyChanged } from "store/actions"
-import { setDirty } from "store/slices/docSlice"
+import { setDirty, setDocSize } from "store/slices/docSlice"
 import { clearSelection, setSelection } from "store/slices/selectionSlice"
 import { setTool } from "store/slices/toolSlice"
 import type {
+	FlipAxis,
+	ImageRecipe,
 	Modifiers,
 	Size,
 	SurfaceLayers,
 	Tool,
 	ToolContext,
+	TransformSpec,
 } from "types/engine.types"
 import type { Point, Rect } from "types/store.types"
 
@@ -59,7 +65,11 @@ function sameRect(a: Rect | null, b: Rect | null): boolean {
 class PaintEngine {
 	readonly surface = new Surface()
 	readonly selection = new SelectionManager()
-	private history = new History(this.surface, () => this.publishHistory())
+	private history = new History(
+		this.surface,
+		() => this.publishHistory(),
+		size => this.adoptSize(size),
+	)
 	private active: Tool | null = null
 	/** a tool holding an object on preview between gestures. */
 	private held: Tool | null = null
@@ -135,9 +145,68 @@ class PaintEngine {
 		store.dispatch(setTool("select-rect"))
 		this.hold(tool)
 		this.heldLabel = translate("history.label.paste")
-		this.selection.adopt(ctx, bitmap)
+		this.selection.adopt(ctx, bitmap, pasteCorner(bitmap, ctx.doc))
 		reportSelectionBox(this.selection.bounds, this.selection.lasso)
 		this.syncSelection()
+	}
+
+	/** Crop: the picture becomes whatever the selection box holds. */
+	crop(): void {
+		const ctx = this.context()
+		if (!ctx || !this.selection.isActive) return
+
+		// read the pixels while the selection is still there to describe them
+		const cropped = this.selection.crop(ctx)
+		if (!cropped) return
+
+		this.commitHeld()
+		this.replaceDocument(cropped, translate("history.label.crop"))
+	}
+
+	/** quarter turns clockwise, on the selection when one is up. */
+	rotate(turns: number): void {
+		this.recompose(
+			source => rotateImage(source, turns),
+			translate("history.label.rotate"),
+		)
+	}
+
+	flip(axis: FlipAxis): void {
+		this.recompose(
+			source => flipImage(source, axis),
+			translate("history.label.flip"),
+		)
+	}
+
+	/** Resize and Skew, on the selection when one is up. */
+	transform(spec: TransformSpec): void {
+		this.recompose(
+			source => transformImage(source, spec),
+			translate("history.label.resize"),
+		)
+	}
+
+	/** what the textarea over the canvas is holding, ready to be baked. */
+	setTextValue(value: string): void {
+		this.textTool?.setValue(value)
+	}
+
+	/** the textarea outgrew its box and the box follows it down. */
+	growTextBox(height: number): void {
+		this.textTool?.growTo(height)
+	}
+
+	/** drags the open text box to a new corner, kept on the paper. */
+	moveTextBox(x: number, y: number): void {
+		const tool = this.textTool
+		const box = tool?.bounds
+		if (!tool || !box) return
+
+		const { width, height } = this.surface.documentSize
+		tool.moveTo(
+			Math.max(0, Math.min(Math.round(x), width - box.w)),
+			Math.max(0, Math.min(Math.round(y), height - box.h)),
+		)
 	}
 
 	/** the committed bitmap in full, which is what a save encodes. */
@@ -212,8 +281,16 @@ class PaintEngine {
 	hover(image: Point | null, screen: Point | null): void {
 		const tool = TOOLS[store.getState().tool.active]
 		const ctx = this.context()
-		if (!tool?.paintOverlay || !ctx || !image || !screen) {
-			if (this.overlayPainted) this.clearOverlay()
+		if (!tool || !ctx || !image || !screen) {
+			this.clearOverlay()
+			return
+		}
+
+		// a handle wants the arrow it drags along, which no drawn glyph shows
+		this.surface.setCursor(tool.cursorAt?.(image, ctx) ?? "")
+		if (!tool.paintOverlay) {
+			if (this.overlayPainted) this.surface.clearOverlay()
+			this.overlayPainted = false
 			return
 		}
 
@@ -224,6 +301,7 @@ class PaintEngine {
 
 	clearOverlay(): void {
 		this.surface.clearOverlay()
+		this.surface.setCursor("")
 		this.overlayPainted = false
 	}
 
@@ -370,6 +448,56 @@ class PaintEngine {
 		if (this.history.redo()) this.markUnsaved()
 	}
 
+	private get textTool(): TextTool | null {
+		const tool = TOOLS.text
+		return tool instanceof TextTool ? tool : null
+	}
+
+	/**
+	 * rotate, flip and resize all work the same way: over the floating pixels
+	 * when a selection is up, over the whole picture when none is.
+	 */
+	private recompose(make: ImageRecipe, label: string): void {
+		const ctx = this.context()
+		if (!ctx) return
+
+		if (this.selection.isActive) {
+			const tool = this.held ?? TOOLS["select-rect"]
+			if (!tool) return
+
+			this.hold(tool)
+			this.selection.reshape(ctx, make)
+			reportSelectionBox(this.selection.bounds, this.selection.lasso)
+			this.syncSelection()
+			return
+		}
+
+		this.commitHeld()
+		const source = this.surface.snapshot()
+		if (source) this.replaceDocument(make(source), label)
+	}
+
+	/**
+	 * swaps the whole picture for another one of any size. the old bitmap goes
+	 * on the stack whole: a tile id means nothing once the grid is recut.
+	 */
+	private replaceDocument(source: HTMLCanvasElement, label: string): void {
+		const { width, height } = this.surface.documentSize
+		const before = this.surface.readRegion({ x: 0, y: 0, w: width, h: height })
+
+		this.surface.replaceDocument(source)
+		this.surface.clearPreview()
+		this.docSize = this.surface.documentSize
+		if (before) this.history.pushFull(label, before)
+		store.dispatch(setDocSize(this.docSize))
+	}
+
+	/** an undone size change resized the surface; the store catches up to it. */
+	private adoptSize(size: Size): void {
+		this.docSize = size
+		store.dispatch(setDocSize(size))
+	}
+
 	/**
 	 * starts holding `tool`, opening an undo step unless one is already open
 	 * for it. everything a held object writes belongs to that one step.
@@ -483,12 +611,23 @@ class PaintEngine {
 			outline: state.tool.outline,
 			fill: state.tool.fill,
 			transparent: state.selection.transparent,
+			text: state.tool.text,
 			doc: surface.documentSize,
 			selection: this.selection,
 			dispatch: store.dispatch,
-			markDirty: (rect) => this.history.touch(rect),
+			markDirty: rect => this.history.touch(rect),
 			defer: (label, work) => this.deferStep(label, work),
 		}
+	}
+}
+
+/** a paste lands at the viewed corner, nudged back onto the paper if it hangs off. */
+function pasteCorner(bitmap: ImageBitmap, doc: Size): Point {
+	const at = visibleOrigin()
+
+	return {
+		x: Math.max(0, Math.min(at.x, doc.width - bitmap.width)),
+		y: Math.max(0, Math.min(at.y, doc.height - bitmap.height)),
 	}
 }
 

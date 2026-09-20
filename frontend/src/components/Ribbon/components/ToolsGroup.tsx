@@ -10,12 +10,12 @@ import { setTool } from "store/slices/toolSlice"
 export function ToolsGroup() {
 	const { t } = useTranslation()
 	const dispatch = useAppDispatch()
-	const active = useAppSelector((s) => s.tool.active)
+	const active = useAppSelector(s => s.tool.active)
 
 	return (
 		<RibbonGroup label={t("ribbon.tools.label")}>
 			<div className="tools-grid">
-				{TOOLS.map((tool) => (
+				{TOOLS.map(tool => (
 					<IconButton
 						key={tool.id}
 						label={t(tool.labelKey)}

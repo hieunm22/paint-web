@@ -5,7 +5,7 @@ import { closeMenu } from "store/slices/uiSlice"
 /** closes the open ribbon menu on an outside click or Escape. */
 export function useDismissMenus() {
 	const dispatch = useAppDispatch()
-	const openMenu = useAppSelector((s) => s.ui.openMenu)
+	const openMenu = useAppSelector(s => s.ui.openMenu)
 
 	useEffect(() => {
 		if (!openMenu) return

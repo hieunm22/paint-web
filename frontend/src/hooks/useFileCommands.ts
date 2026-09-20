@@ -272,7 +272,7 @@ export function useFileCommands(): FileCommands {
 				}
 				try {
 					for (const item of await navigator.clipboard.read()) {
-						const type = item.types.find((one) => one.startsWith("image/"))
+						const type = item.types.find(one => one.startsWith("image/"))
 						if (!type) continue
 
 						await pasteBlob(await item.getType(type))

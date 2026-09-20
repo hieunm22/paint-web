@@ -3,7 +3,7 @@ import { useAppSelector } from "store/hooks"
 
 /** the browser's own leave-site prompt, armed only while work is unsaved. */
 export function useBeforeUnload(): void {
-	const isDirty = useAppSelector((s) => s.doc.isDirty)
+	const isDirty = useAppSelector(s => s.doc.isDirty)
 
 	useEffect(() => {
 		if (!isDirty) return

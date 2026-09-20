@@ -13,8 +13,8 @@ export function SaveAsDialog() {
 	const { t } = useTranslation()
 	const dispatch = useAppDispatch()
 	const files = useFileCommands()
-	const fileName = useAppSelector((s) => s.doc.fileName)
-	const docFormat = useAppSelector((s) => s.doc.format)
+	const fileName = useAppSelector(s => s.doc.fileName)
+	const docFormat = useAppSelector(s => s.doc.format)
 	const form = useSaveAsForm(fileName, docFormat)
 	const lossy = form.format === "jpeg" || form.format === "webp"
 
@@ -55,7 +55,7 @@ export function SaveAsDialog() {
 					<input
 						className="dialog__num dialog__num--wide"
 						value={form.name}
-						onChange={(e) => form.setName(e.target.value)}
+						onChange={e => form.setName(e.target.value)}
 					/>
 				</div>
 				<div className="dialog__row dialog__row--flush">
@@ -63,9 +63,9 @@ export function SaveAsDialog() {
 					<select
 						className="dialog__select"
 						value={form.format}
-						onChange={(e) => form.setFormat(e.target.value as ImageFormat)}
+						onChange={e => form.setFormat(e.target.value as ImageFormat)}
 					>
-						{FORMATS.map((format) => (
+						{FORMATS.map(format => (
 							<option key={format} value={format}>
 								{t("dialog.save-as.format-option", {
 									0: format.toUpperCase(),
@@ -83,7 +83,7 @@ export function SaveAsDialog() {
 							min={10}
 							max={100}
 							value={form.quality}
-							onChange={(e) => form.setQuality(Number(e.target.value))}
+							onChange={e => form.setQuality(Number(e.target.value))}
 							className="dialog__range"
 						/>
 					</div>

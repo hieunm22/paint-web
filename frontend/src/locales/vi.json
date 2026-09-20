@@ -3,7 +3,8 @@
 		"tab": {
 			"file": "Tệp",
 			"home": "Trang chủ",
-			"view": "Xem"
+			"view": "Xem",
+			"text": "Văn bản"
 		},
 		"clipboard": {
 			"label": "Bảng tạm",
@@ -106,6 +107,20 @@
 			"custom-empty": "Ô màu tuỳ chỉnh trống",
 			"edit": "Sửa màu"
 		},
+		"font": {
+			"label": "Phông chữ",
+			"family": "Kiểu phông",
+			"size": "Cỡ phông",
+			"bold": "Đậm",
+			"italic": "Nghiêng",
+			"underline": "Gạch chân",
+			"strikethrough": "Gạch ngang"
+		},
+		"background": {
+			"label": "Nền",
+			"transparent": "Trong suốt",
+			"opaque": "Đục"
+		},
 		"extras": {
 			"label": "Khác",
 			"copy": "Chép ra bảng tạm",
@@ -195,6 +210,9 @@
 	"canvas": {
 		"thumbnail": {
 			"title": "Ảnh thu nhỏ"
+		},
+		"text": {
+			"label": "Hộp văn bản"
 		}
 	},
 	"filemenu": {
@@ -335,7 +353,12 @@
 			"shape": "Hình",
 			"selection": "Vùng chọn",
 			"delete": "Xoá vùng chọn",
-			"paste": "Dán"
+			"paste": "Dán",
+			"crop": "Cắt xén",
+			"rotate": "Xoay",
+			"flip": "Lật",
+			"resize": "Đổi cỡ",
+			"text": "Văn bản"
 		}
 	}
 }

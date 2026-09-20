@@ -12,8 +12,8 @@ import "./StatusBar.scss"
 export function StatusBar() {
 	const { t } = useTranslation()
 	const dispatch = useAppDispatch()
-	const doc = useAppSelector((s) => s.doc)
-	const zoom = useAppSelector((s) => s.view.zoom)
+	const doc = useAppSelector(s => s.doc)
+	const zoom = useAppSelector(s => s.view.zoom)
 	const cursor = useCursorPosition()
 	const bounds = useSelectionBox()
 	const bytes = useEncodedSize()
@@ -44,7 +44,7 @@ export function StatusBar() {
 				stepIndex={zoomStepIndex(zoom, ZOOM_STEPS)}
 				maxIndex={ZOOM_STEPS.length - 1}
 				label={formatZoomPercent(zoom)}
-				onStep={(i) => dispatch(setZoom(ZOOM_STEPS[i]))}
+				onStep={i => dispatch(setZoom(ZOOM_STEPS[i]))}
 				onZoomIn={() => dispatch(zoomIn())}
 				onZoomOut={() => dispatch(zoomOut())}
 			/>

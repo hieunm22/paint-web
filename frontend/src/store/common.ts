@@ -13,7 +13,7 @@ export function readQat(): QatItemId[] {
 		)
 		if (!Array.isArray(saved)) return QAT_DEFAULT
 
-		return QAT_DEFAULT.filter((id) => saved.includes(id))
+		return QAT_DEFAULT.filter(id => saved.includes(id))
 	} catch {
 		return QAT_DEFAULT
 	}

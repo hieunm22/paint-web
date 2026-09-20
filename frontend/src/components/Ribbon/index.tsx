@@ -7,6 +7,7 @@ import { ExtrasGroup } from "./components/ExtrasGroup"
 import { ImageGroup } from "./components/ImageGroup"
 import { ShapesGroup } from "./components/ShapesGroup"
 import { SizeGroup } from "./components/SizeGroup"
+import { TextTabGroups } from "./components/TextGroups"
 import { ToolsGroup } from "./components/ToolsGroup"
 import { ViewTabGroups } from "./components/ViewGroups"
 import { useAppDispatch, useAppSelector } from "store/hooks"
@@ -16,7 +17,8 @@ import "./Ribbon.scss"
 export function Ribbon() {
 	const { t } = useTranslation()
 	const dispatch = useAppDispatch()
-	const tab = useAppSelector((s) => s.ui.tab)
+	const tab = useAppSelector(s => s.ui.tab)
+	const textTab = useAppSelector(s => s.ui.textTab)
 
 	return (
 		<>
@@ -40,10 +42,22 @@ export function Ribbon() {
 						{t(labelKey)}
 					</button>
 				))}
+				{/* contextual: on the strip only while a text box is open. */}
+				{textTab && (
+					<button
+						type="button"
+						role="tab"
+						aria-selected={tab === "text"}
+						className={`ribbon__tab ribbon__tab--contextual${tab === "text" ? " ribbon__tab--active" : ""}`}
+						onClick={() => dispatch(setTab("text"))}
+					>
+						{t("ribbon.tab.text")}
+					</button>
+				)}
 			</div>
 
 			<div className="ribbon__content" role="tabpanel">
-				{tab === "home" ? (
+				{tab === "home" && (
 					<>
 						<ClipboardGroup />
 						<ImageGroup />
@@ -54,9 +68,9 @@ export function Ribbon() {
 						<ColorsGroup />
 						<ExtrasGroup />
 					</>
-				) : (
-					<ViewTabGroups />
 				)}
+				{tab === "view" && <ViewTabGroups />}
+				{tab === "text" && <TextTabGroups />}
 			</div>
 		</>
 	)
