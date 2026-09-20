@@ -1,11 +1,11 @@
-import { stampSegment } from "./common"
+import { hexToRgba } from "engine/color"
+import { clampRect, constrainToAxis, segmentBounds } from "engine/geometry"
+import { bresenham, stampReplace } from "engine/raster"
+import { stampSegment } from "engine/tools/common"
+import { drawSquareCursor } from "engine/tools/cursorArt"
 import { translate } from "locales/translate"
-import type { Point } from "store/types"
-import type { Modifiers, Tool, ToolContext } from "../types"
-import { hexToRgba } from "../color"
-import { clampRect, constrainToAxis, segmentBounds } from "../geometry"
-import { bresenham, stampReplace } from "../raster"
-import { drawSquareCursor } from "./cursorArt"
+import type { Modifiers, Tool, ToolContext } from "types/engine.types"
+import type { Point } from "types/store.types"
 
 const ORIGIN: Point = { x: 0, y: 0 }
 

@@ -1,10 +1,7 @@
-import { MIME_TYPES } from "common/format"
-import type { ImageFormat } from "store/types"
-import { encodeBmp24 } from "./bmp"
-import { encodeGifOffThread } from "./gifWorker"
-
-/** past this the memory cost stops being worth it, and Paint has no use for it. */
-export const MAX_DIMENSION = 8000
+import { MIME_TYPES } from "common/constant"
+import { encodeBmp24 } from "engine/bmp"
+import { encodeGifOffThread } from "engine/gifWorker"
+import type { ImageFormat } from "types/store.types"
 
 const PAPER = 255
 

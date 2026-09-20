@@ -1,4 +1,4 @@
-import type { Point } from "store/types"
+import type { Point } from "types/store.types"
 
 const PUBLISH_MS = 60
 

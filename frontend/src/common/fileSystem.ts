@@ -1,10 +1,14 @@
-import type { ImageFormat } from "store/types"
-import type { FilePickerWindow, HandlePermission, PickedFile } from "./types"
-import { acceptAnyImage, acceptFor, MIME_TYPES } from "./format"
+import { CAN_SAVE_IN_PLACE, MIME_TYPES } from "common/constant"
+import { acceptAnyImage, acceptFor } from "common/format"
+import type {
+	FilePickerWindow,
+	HandlePermission,
+	PickedFile,
+} from "types/common.types"
+import type { ImageFormat } from "types/store.types"
 
 /** Chrome and Edge have the pickers; Firefox and Safari take the fallbacks. */
 const CAN_PICK_FILES = "showOpenFilePicker" in window
-export const CAN_SAVE_IN_PLACE = "showSaveFilePicker" in window
 
 function picker(): FilePickerWindow {
 	return window as unknown as FilePickerWindow

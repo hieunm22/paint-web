@@ -1,5 +1,5 @@
 import i18next from "i18next"
-import type { TranslateParams } from "./types"
+import type { TranslateParams } from "types/locales.types"
 
 /**
  * translation helper for code that has no React to hand: the engine, history

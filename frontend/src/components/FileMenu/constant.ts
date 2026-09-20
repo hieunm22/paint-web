@@ -1,4 +1,4 @@
-import type { ImageFormat } from "store/types"
+import type { ImageFormat } from "types/store.types"
 import type { FileMenuRow } from "./types"
 
 /**

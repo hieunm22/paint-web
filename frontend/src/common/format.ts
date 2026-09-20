@@ -1,31 +1,11 @@
-import type { ImageFormat } from "store/types"
-
-/** the default when a file arrives with a type the app does not write. */
-const DEFAULT_FORMAT: ImageFormat = "png"
-
-export const MIME_TYPES: Record<ImageFormat, string> = {
-	png: "image/png",
-	jpeg: "image/jpeg",
-	bmp: "image/bmp",
-	gif: "image/gif",
-	webp: "image/webp",
-}
-
-export const EXTENSIONS: Record<ImageFormat, string> = {
-	png: ".png",
-	jpeg: ".jpg",
-	bmp: ".bmp",
-	gif: ".gif",
-	webp: ".webp",
-}
-
-/** the extra spellings a picker should still accept for a format. */
-const ALIASES: Partial<Record<ImageFormat, string[]>> = {
-	jpeg: [".jpeg"],
-	bmp: [".dib"],
-}
-
-export const FORMATS = Object.keys(MIME_TYPES) as ImageFormat[]
+import {
+	DEFAULT_FORMAT,
+	EXTENSIONS,
+	FORMAT_ALIASES,
+	FORMATS,
+	MIME_TYPES,
+} from "common/constant"
+import type { ImageFormat } from "types/store.types"
 
 /** which of the five a file claims to be; anything else opens as png. */
 export function formatOfMime(mime: string): ImageFormat {
@@ -47,7 +27,10 @@ export function stemOf(name: string): string {
 /** the accept map both file pickers take, mime to the extensions it covers. */
 export function acceptFor(format: ImageFormat): Record<string, string[]> {
 	return {
-		[MIME_TYPES[format]]: [EXTENSIONS[format], ...(ALIASES[format] ?? [])],
+		[MIME_TYPES[format]]: [
+			EXTENSIONS[format],
+			...(FORMAT_ALIASES[format] ?? []),
+		],
 	}
 }
 

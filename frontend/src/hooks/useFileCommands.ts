@@ -1,37 +1,34 @@
 import { useMemo } from "react"
 import {
+	CAN_SAVE_IN_PLACE,
+	DEFAULT_DOCUMENT,
+	MAX_DIMENSION,
+	MIME_TYPES,
+} from "common/constant"
+import {
 	activeHandle,
 	deferOpen,
 	setActiveHandle,
 	takeDeferredOpen,
 } from "common/fileSession"
 import {
-	CAN_SAVE_IN_PLACE,
 	downloadBlob,
 	ensurePermission,
 	pickImageFile,
 	pickSaveTarget,
 	writeFile,
 } from "common/fileSystem"
-import {
-	formatOfMime,
-	MIME_TYPES,
-	stemOf,
-	withExtension,
-} from "common/format"
+import { formatOfMime, stemOf, withExtension } from "common/format"
 import { rememberRecent } from "common/recents"
-import type { PickedFile, RecentEntry } from "common/types"
 import {
 	decodeImage,
 	encodeImage,
 	isAnimatedGif,
-	MAX_DIMENSION,
 	thumbnailDataUrl,
 } from "engine/codec"
 import { paint } from "engine/PaintEngine"
-import { translate } from "locales/translate"
-import { DEFAULT_DOCUMENT } from "store/constant"
 import { useAppDispatch, useAppStore } from "store/hooks"
+import { translate } from "locales/translate"
 import {
 	documentOpened,
 	documentSaved,
@@ -43,8 +40,9 @@ import {
 	confirmDiscard,
 	showToast,
 } from "store/slices/uiSlice"
-import type { ImageFormat } from "store/types"
-import type { FileCommands, SaveOptions } from "./types"
+import type { PickedFile, RecentEntry } from "types/common.types"
+import type { FileCommands, SaveOptions } from "types/hooks.types"
+import type { ImageFormat } from "types/store.types"
 
 const THUMBNAIL = 64
 
@@ -194,10 +192,24 @@ export function useFileCommands(): FileCommands {
 			}
 		}
 
+		/** one png on the clipboard, which is the only format Paint writes. */
+		const writeClipboard = async (image: ImageData) => {
+			try {
+				const item = new ClipboardItem({
+					// Safari wants the promise, not the blob: awaiting first
+					// spends the gesture the write needs
+					[MIME_TYPES.png]: encodeImage(image, "png"),
+				})
+				await navigator.clipboard.write([item])
+			} catch {
+				toast("toast.clipboard.copy-failed")
+			}
+		}
+
 		const pasteBlob = async (blob: Blob) => {
 			try {
 				const bitmap = await decodeImage(blob)
-				paint.drawImage(bitmap, translate("history.label.paste"))
+				paint.pasteBitmap(bitmap)
 				bitmap.close()
 			} catch {
 				toast("toast.clipboard.no-image")
@@ -241,17 +253,16 @@ export function useFileCommands(): FileCommands {
 			save,
 			saveAs,
 
-			copyImage: async () => {
-				try {
-					const item = new ClipboardItem({
-						// Safari wants the promise, not the blob: awaiting first
-						// spends the gesture the write needs
-						[MIME_TYPES.png]: encodeImage(snapshot(), "png"),
-					})
-					await navigator.clipboard.write([item])
-				} catch {
-					toast("toast.clipboard.copy-failed")
-				}
+			copyImage: () => writeClipboard(snapshot()),
+
+			copySelection: () => writeClipboard(paint.readSelection() ?? snapshot()),
+
+			cutSelection: async () => {
+				const image = paint.readSelection()
+				if (!image) return
+
+				await writeClipboard(image)
+				paint.deleteSelection()
 			},
 
 			pasteImage: async () => {

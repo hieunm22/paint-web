@@ -332,6 +332,9 @@
 			"fill": "Fill with colour",
 			"picker": "Pick colour",
 			"magnifier": "Magnifier",
+			"shape": "Shape",
+			"selection": "Selection",
+			"delete": "Delete selection",
 			"paste": "Paste"
 		}
 	}

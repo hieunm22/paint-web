@@ -234,4 +234,7 @@ history.label.eraser;Eraser;Tẩy
 history.label.fill;Fill with colour;Tô màu
 history.label.picker;Pick colour;Lấy màu
 history.label.magnifier;Magnifier;Kính lúp
+history.label.shape;Shape;Hình
+history.label.selection;Selection;Vùng chọn
+history.label.delete;Delete selection;Xoá vùng chọn
 history.label.paste;Paste;Dán

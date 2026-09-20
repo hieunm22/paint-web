@@ -1,12 +1,16 @@
 import { useEffect } from "react"
+import { NUDGE_KEYS } from "common/constant"
 import { isTypingTarget } from "common/dom"
 import { isPrimaryModifier } from "common/platform"
 import { paint } from "engine/PaintEngine"
+import { useFileCommands } from "hooks/useFileCommands"
 import { useAppDispatch, useAppSelector } from "store/hooks"
 import { stepSize } from "store/slices/toolSlice"
 import { openDialog } from "store/slices/uiSlice"
 import { toggleView, zoomIn, zoomOut } from "store/slices/viewSlice"
-import { useFileCommands } from "./useFileCommands"
+
+/** the two keys a text field never swallows, per the shortcut table. */
+const ALWAYS_KEYS = ["Escape", "Enter"]
 
 /**
  * Paint's keys. undo, redo, zoom, the file commands and the four brush sizes
@@ -19,7 +23,9 @@ export function useKeyboardShortcuts() {
 
 	useEffect(() => {
 		const onKeyDown = (e: KeyboardEvent) => {
-			if (isTypingTarget(e.target) || e.altKey) return
+			if (e.altKey) return
+			// Esc and Enter still belong to the canvas while a field has focus
+			if (isTypingTarget(e.target) && !ALWAYS_KEYS.includes(e.key)) return
 
 			if (isPrimaryModifier(e)) {
 				switch (e.key.toLowerCase()) {
@@ -55,6 +61,22 @@ export function useKeyboardShortcuts() {
 						e.preventDefault()
 						dispatch(stepSize(-1))
 						return
+					case "a":
+						e.preventDefault()
+						paint.selectAll()
+						return
+					case "i":
+						e.preventDefault()
+						paint.invertSelection()
+						return
+					case "x":
+						e.preventDefault()
+						void files.cutSelection()
+						return
+					case "c":
+						e.preventDefault()
+						void files.copySelection()
+						return
 				}
 
 				switch (e.key) {
@@ -67,6 +89,27 @@ export function useKeyboardShortcuts() {
 						dispatch(zoomOut())
 						return
 				}
+			}
+
+			const nudge = NUDGE_KEYS[e.key]
+			if (nudge) {
+				e.preventDefault()
+				paint.nudgeSelection(nudge.x, nudge.y)
+				return
+			}
+
+			switch (e.key) {
+				case "Delete":
+				case "Backspace":
+					e.preventDefault()
+					paint.deleteSelection()
+					return
+				case "Escape":
+					paint.discardHeld()
+					return
+				case "Enter":
+					paint.commitHeld()
+					return
 			}
 
 			// rulers need zoom >= 1 and gridlines zoom >= 4, as in the ribbon

@@ -1,15 +1,11 @@
 import { useTranslation } from "react-i18next"
+import { ZOOM_STEPS } from "common/constant"
 import { CELL_ICONS } from "./constant"
 import { StatusCell, ZoomControl } from "./components"
-import { estimateFileSize, formatZoomPercent, zoomStepIndex } from "./common"
-import { useCursorPosition } from "./hooks"
+import { formatFileSize, formatZoomPercent, zoomStepIndex } from "./common"
 import { useAppDispatch, useAppSelector } from "store/hooks"
-import {
-	setZoom,
-	ZOOM_STEPS,
-	zoomIn,
-	zoomOut,
-} from "store/slices/viewSlice"
+import { useCursorPosition, useEncodedSize, useSelectionBox } from "./hooks"
+import { setZoom, zoomIn, zoomOut } from "store/slices/viewSlice"
 import "./StatusBar.scss"
 
 /** four info cells plus the zoom slider on the right. */
@@ -17,9 +13,10 @@ export function StatusBar() {
 	const { t } = useTranslation()
 	const dispatch = useAppDispatch()
 	const doc = useAppSelector((s) => s.doc)
-	const bounds = useAppSelector((s) => s.selection.bounds)
 	const zoom = useAppSelector((s) => s.view.zoom)
 	const cursor = useCursorPosition()
+	const bounds = useSelectionBox()
+	const bytes = useEncodedSize()
 
 	return (
 		<div className="status-bar">
@@ -37,7 +34,7 @@ export function StatusBar() {
 				{t("statusbar.cell.document-size", { 0: doc.width, 1: doc.height })}
 			</StatusCell>
 			<StatusCell icon={CELL_ICONS.fileSize}>
-				{estimateFileSize(doc.width, doc.height)}
+				{bytes === null ? "" : formatFileSize(bytes)}
 			</StatusCell>
 
 			<span className="status-bar__spacer" />

@@ -29,7 +29,9 @@
 			"locales": ["./src/locales"],
 			"locales/*": ["./src/locales/*"],
 			"store": ["./src/store"],
-			"store/*": ["./src/store/*"]
+			"store/*": ["./src/store/*"],
+			"types": ["./src/types"],
+			"types/*": ["./src/types/*"]
 		}
 	},
 	"include": ["src"]

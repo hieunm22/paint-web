@@ -1,19 +1,56 @@
+import { History } from "engine/History"
+import { reportSelectionBox } from "engine/overlay"
+import { SelectionManager } from "engine/SelectionManager"
+import { Surface } from "engine/Surface"
+import { TOOLS } from "engine/tools/registry"
+import { translate } from "locales/translate"
 import { store } from "store"
 import { historyChanged } from "store/actions"
 import { setDirty } from "store/slices/docSlice"
-import type { Point } from "store/types"
+import { clearSelection, setSelection } from "store/slices/selectionSlice"
+import { setTool } from "store/slices/toolSlice"
 import type {
 	Modifiers,
 	Size,
 	SurfaceLayers,
 	Tool,
 	ToolContext,
-} from "./types"
-import { History } from "./History"
-import { Surface } from "./Surface"
-import { TOOLS } from "./tools/registry"
+} from "types/engine.types"
+import type { Point, Rect } from "types/store.types"
 
 const EMPTY: Size = { width: 0, height: 0 }
+
+/** the settings a held shape or selection is redrawn from. */
+interface Watched {
+	tool: string
+	shape: string
+	color1: string
+	color2: string
+	size: number
+	outline: string
+	fill: string
+	transparent: boolean
+}
+
+function watched(): Watched {
+	const state = store.getState()
+	return {
+		tool: state.tool.active,
+		shape: state.tool.shape,
+		color1: state.colors.color1,
+		color2: state.colors.color2,
+		size: state.tool.size,
+		outline: state.tool.outline,
+		fill: state.tool.fill,
+		transparent: state.selection.transparent,
+	}
+}
+
+function sameRect(a: Rect | null, b: Rect | null): boolean {
+	if (!a || !b) return a === b
+
+	return a.x === b.x && a.y === b.y && a.w === b.w && a.h === b.h
+}
 
 /**
  * the one object the pointer talks to. it reads the store for tool, colour and
@@ -21,15 +58,25 @@ const EMPTY: Size = { width: 0, height: 0 }
  */
 class PaintEngine {
 	readonly surface = new Surface()
+	readonly selection = new SelectionManager()
 	private history = new History(this.surface, () => this.publishHistory())
-	private tool: Tool | null = null
+	private active: Tool | null = null
+	/** a tool holding an object on preview between gestures. */
+	private held: Tool | null = null
+	/** names the step a held object will push, where the tool's name is wrong. */
+	private heldLabel: string | null = null
 	private docSize: Size = EMPTY
 	private secondary = false
 	private overlayPainted = false
 	private busy = false
+	private settings = watched()
+
+	constructor() {
+		store.subscribe(() => this.onStoreChanged())
+	}
 
 	get isDrawing(): boolean {
-		return this.tool !== null
+		return this.active !== null
 	}
 
 	attach(layers: SurfaceLayers): void {
@@ -38,6 +85,7 @@ class PaintEngine {
 
 	detach(): void {
 		this.cancel()
+		this.discardHeld()
 		this.surface.detach()
 	}
 
@@ -49,6 +97,7 @@ class PaintEngine {
 		if (same) return
 
 		this.docSize = size
+		this.discardHeld()
 		this.history.clear()
 	}
 
@@ -59,6 +108,7 @@ class PaintEngine {
 	loadImage(bitmap: ImageBitmap): void {
 		const size = { width: bitmap.width, height: bitmap.height }
 		this.cancel()
+		this.discardHeld()
 		this.surface.resizeDocument(size)
 		this.docSize = size
 		this.surface.clearDocument()
@@ -69,27 +119,30 @@ class PaintEngine {
 	/** blank paper at the given size, which is what New leaves behind. */
 	newDocument(size: Size): void {
 		this.cancel()
+		this.discardHeld()
 		this.surface.resizeDocument(size)
 		this.docSize = size
 		this.surface.clearDocument()
 		this.history.clear()
 	}
 
-	/** stamps a decoded image at the origin as one undo step; this is Paste. */
-	drawImage(bitmap: ImageBitmap, label: string): void {
-		const base = this.surface.baseContext
-		if (!base) return
+	/** a pasted picture arrives as a floating selection, ready to be moved. */
+	pasteBitmap(bitmap: ImageBitmap): void {
+		const tool = TOOLS["select-rect"]
+		const ctx = this.context()
+		if (!tool || !ctx) return
 
-		const w = Math.min(bitmap.width, this.docSize.width)
-		const h = Math.min(bitmap.height, this.docSize.height)
-		this.history.beginStroke()
-		this.history.touch({ x: 0, y: 0, w, h })
-		base.drawImage(bitmap, 0, 0)
-		if (this.history.commitStroke(label)) this.markUnsaved()
+		store.dispatch(setTool("select-rect"))
+		this.hold(tool)
+		this.heldLabel = translate("history.label.paste")
+		this.selection.adopt(ctx, bitmap)
+		reportSelectionBox(this.selection.bounds, this.selection.lasso)
+		this.syncSelection()
 	}
 
 	/** the committed bitmap in full, which is what a save encodes. */
 	readDocument(): ImageData | null {
+		this.commitHeld()
 		const { width, height } = this.surface.documentSize
 		if (!width || !height) return null
 
@@ -106,34 +159,50 @@ class PaintEngine {
 		const ctx = this.context()
 		if (!tool || !ctx) return
 
-		this.tool = tool
+		// a click away from what a tool is holding bakes it before anything else
+		if (this.held && (this.held !== tool || !this.held.hitTest?.(pt, ctx))) {
+			this.commitHeld()
+		}
+		if (!this.held) this.history.beginStroke()
+
+		this.active = tool
 		this.secondary = mods.secondary
-		this.history.beginStroke()
 		tool.begin(pt, mods, ctx)
 	}
 
 	update(pts: Point[], mods: Modifiers): void {
 		const ctx = this.context()
-		if (!this.tool || !ctx || !pts.length) return
+		if (!this.active || !ctx || !pts.length) return
 
-		this.tool.update?.(pts, this.held(mods), ctx)
+		this.active.update?.(pts, this.withButton(mods), ctx)
 	}
 
 	end(pt: Point, mods: Modifiers): void {
-		const tool = this.tool
+		const tool = this.active
 		const ctx = this.context()
 		if (!tool || !ctx) return
 
-		this.tool = null
-		tool.end?.(pt, this.held(mods), ctx)
+		this.active = null
+		tool.end?.(pt, this.withButton(mods), ctx)
+
+		// a shape or a selection stays on preview until something bakes it
+		if (tool.isPending?.(ctx)) {
+			this.held = tool
+			this.syncSelection()
+			return
+		}
+
+		this.held = null
 		// a tool that painted nothing, such as the picker, leaves no step behind
 		if (!this.history.hasPending) {
 			this.surface.clearPreview()
+			this.syncSelection()
 			return
 		}
 
 		this.surface.commitPreview()
 		if (this.history.commitStroke(tool.label)) this.markUnsaved()
+		this.syncSelection()
 	}
 
 	/**
@@ -163,19 +232,137 @@ class PaintEngine {
 		return this.busy
 	}
 
+	/** true while a shape or a selection is waiting to be baked. */
+	get hasHeld(): boolean {
+		return this.held !== null
+	}
+
 	/** drops a gesture in progress, for a tool change or a lost pointer. */
 	cancel(): void {
-		const tool = this.tool
+		const tool = this.active
 		if (!tool) return
 
-		this.tool = null
+		this.active = null
 		const ctx = this.context()
-		if (ctx) tool.cancel?.(ctx)
+		if (!ctx) return
+
+		// what the tool holds survives a lost pointer; only the gesture ends
+		if (this.held === tool) {
+			tool.repaint?.(ctx)
+			return
+		}
+
+		tool.cancel?.(ctx)
 		this.surface.clearPreview()
 		this.history.cancelStroke()
 	}
 
+	/** bakes the held shape or selection, which Enter and a click away do. */
+	commitHeld(): void {
+		const tool = this.held
+		if (!tool) return
+
+		this.held = null
+		const label = this.heldLabel ?? tool.label
+		this.heldLabel = null
+		const ctx = this.context()
+		if (!ctx) return
+
+		tool.commit?.(ctx)
+		this.surface.commitPreview()
+		if (this.history.commitStroke(label)) this.markUnsaved()
+		this.syncSelection()
+	}
+
+	/** Escape: the held object goes away and the pixels it lifted come back. */
+	discardHeld(): void {
+		const tool = this.held
+		if (!tool) return
+
+		this.held = null
+		this.heldLabel = null
+		this.history.rollbackStroke()
+		const ctx = this.context()
+		if (ctx) tool.cancel?.(ctx)
+		this.surface.clearPreview()
+		reportSelectionBox(null)
+		this.syncSelection()
+	}
+
+	selectAll(): void {
+		const tool = TOOLS["select-rect"]
+		const { width, height } = this.surface.documentSize
+		if (!tool || !width || !height) return
+
+		store.dispatch(setTool("select-rect"))
+		this.hold(tool)
+		this.selection.define("rect", { x: 0, y: 0, w: width, h: height }, null)
+		reportSelectionBox(this.selection.bounds, this.selection.lasso)
+		this.syncSelection()
+	}
+
+	/** swaps what is picked for what is not, which needs a free-form mask. */
+	invertSelection(): void {
+		const ctx = this.context()
+		if (!ctx || !this.selection.isActive) return
+		if (this.selection.isFloating) this.commitHeld()
+
+		// the held tool keeps holding: handing over to another one would drop
+		// the very region being inverted
+		const tool = this.held ?? TOOLS["select-rect"]
+		if (!this.selection.isActive || !tool) {
+			this.selectAll()
+			return
+		}
+
+		this.hold(tool)
+		this.selection.invert(ctx)
+		reportSelectionBox(this.selection.bounds, this.selection.lasso)
+		this.syncSelection()
+	}
+
+	/** the selected pixels, for a copy. floating ones are read off the buffer. */
+	readSelection(): ImageData | null {
+		const ctx = this.context()
+		return ctx && this.selection.isActive ? this.selection.read(ctx) : null
+	}
+
+	/** Delete and the second half of Cut: the region goes back to colour 2. */
+	deleteSelection(): void {
+		const ctx = this.context()
+		if (!ctx || !this.selection.isActive) return
+
+		// pixels already lifted left their hole behind when they came up
+		if (!this.selection.isFloating) this.selection.erase(ctx)
+		this.held = null
+		this.selection.clear()
+		this.surface.clearPreview()
+		reportSelectionBox(null)
+		if (this.history.commitStroke(translate("history.label.delete"))) {
+			this.markUnsaved()
+		}
+		this.syncSelection()
+	}
+
+	/** arrow keys: the pixels come up on the first nudge, as in Paint. */
+	nudgeSelection(dx: number, dy: number): void {
+		const tool = this.held ?? TOOLS["select-rect"]
+		const ctx = this.context()
+		if (!tool || !ctx || !this.selection.isActive) return
+
+		this.hold(tool)
+		if (!this.selection.isFloating) this.selection.lift(ctx, true)
+		this.selection.moveBy(ctx, dx, dy)
+		reportSelectionBox(this.selection.bounds, this.selection.lasso)
+		this.syncSelection()
+	}
+
 	undo(): void {
+		// the held object is the newest thing on screen; Ctrl+Z drops that first
+		if (this.held) {
+			this.discardHeld()
+			return
+		}
 		if (this.history.undo()) this.markUnsaved()
 	}
 
@@ -184,10 +371,66 @@ class PaintEngine {
 	}
 
 	/**
+	 * starts holding `tool`, opening an undo step unless one is already open
+	 * for it. everything a held object writes belongs to that one step.
+	 */
+	private hold(tool: Tool): void {
+		if (this.held !== tool) {
+			this.commitHeld()
+			this.history.beginStroke()
+			this.heldLabel = null
+		}
+		this.held = tool
+	}
+
+	/**
+	 * a tool change bakes what is held; a colour, size or style change redraws
+	 * it, which is what makes a dropped shape still editable.
+	 */
+	private onStoreChanged(): void {
+		const next = watched()
+		const prev = this.settings
+		this.settings = next
+		if (!this.held) return
+
+		if (next.tool !== prev.tool || next.shape !== prev.shape) {
+			this.commitHeld()
+			return
+		}
+		if (
+			next.color1 === prev.color1 &&
+			next.color2 === prev.color2 &&
+			next.size === prev.size &&
+			next.outline === prev.outline &&
+			next.fill === prev.fill &&
+			next.transparent === prev.transparent
+		) {
+			return
+		}
+
+		const ctx = this.context()
+		if (ctx) this.held.repaint?.(ctx)
+	}
+
+	/** the store learns about the selection at rest; the ants do not wait. */
+	private syncSelection(): void {
+		const { kind, bounds } = this.selection
+		const current = store.getState().selection
+
+		if (kind === "none" || !bounds) {
+			if (current.kind !== "none") store.dispatch(clearSelection())
+			return
+		}
+		if (current.kind === kind && sameRect(current.bounds, bounds)) return
+
+		store.dispatch(setSelection({ kind, bounds }))
+	}
+
+	/**
 	 * which button started the gesture: a move event reports no button at all,
 	 * and a drag that began on the right one keeps painting colour 2.
 	 */
-	private held(mods: Modifiers): Modifiers {
+	private withButton(mods: Modifiers): Modifiers {
 		return { ...mods, secondary: this.secondary }
 	}
 
@@ -236,7 +479,12 @@ class PaintEngine {
 			color2: state.colors.color2,
 			size: state.tool.size,
 			zoom: state.view.zoom,
+			shape: state.tool.shape,
+			outline: state.tool.outline,
+			fill: state.tool.fill,
+			transparent: state.selection.transparent,
 			doc: surface.documentSize,
+			selection: this.selection,
 			dispatch: store.dispatch,
 			markDirty: (rect) => this.history.touch(rect),
 			defer: (label, work) => this.deferStep(label, work),

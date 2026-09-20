@@ -1,5 +1,5 @@
 import type { ReactNode } from "react"
-import type { ImageFormat } from "store/types"
+import type { ImageFormat } from "types/store.types"
 
 export interface Point {
 	x: number

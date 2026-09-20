@@ -1,4 +1,4 @@
-import type { ToolId } from "store/types"
+import type { ToolId } from "types/store.types"
 import type { HandlePosition } from "./types"
 
 /** eight document resize handles. */

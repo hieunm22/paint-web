@@ -1,10 +1,13 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit"
+import { QAT_DEFAULT } from "common/constant"
+import { readQat } from "store/common"
 import type {
 	DialogId,
 	PendingFileAction,
+	QatItemId,
 	RibbonTabId,
 	UiState,
-} from "../types"
+} from "types/store.types"
 
 const initialState: UiState = {
 	tab: "home",
@@ -13,6 +16,7 @@ const initialState: UiState = {
 	dialog: null,
 	pending: null,
 	toast: null,
+	qat: readQat(),
 }
 
 const uiSlice = createSlice({
@@ -36,6 +40,14 @@ const uiSlice = createSlice({
 		},
 		closeMenu(state) {
 			state.openMenu = null
+		},
+		/** the default carries the order, so a re-added button lands back in place. */
+		toggleQat(state, action: PayloadAction<QatItemId>) {
+			const id = action.payload
+			const shown = state.qat.includes(id)
+			state.qat = QAT_DEFAULT.filter((one) =>
+				one === id ? !shown : state.qat.includes(one),
+			)
 		},
 		openDialog(state, action: PayloadAction<DialogId>) {
 			state.dialog = action.payload
@@ -69,6 +81,7 @@ export const {
 	closeBackstage,
 	toggleMenu,
 	closeMenu,
+	toggleQat,
 	openDialog,
 	closeDialog,
 	confirmDiscard,

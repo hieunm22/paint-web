@@ -1,6 +1,5 @@
+import type { QatItemId } from "types/store.types"
 import type { IconName } from "components/Icon/types"
-
-export type QatItemId = "save" | "undo" | "redo"
 
 export interface QatItemDef {
 	id: QatItemId
@@ -15,8 +14,10 @@ export interface QatItem extends QatItemDef {
 	onClick?: () => void
 }
 
+export type WindowButtonId = "minimize" | "maximize" | "close"
+
 export interface WindowButton {
-	id: "minimize" | "maximize" | "close"
+	id: WindowButtonId
 	icon: IconName
 	titleKey: string
 	size: number

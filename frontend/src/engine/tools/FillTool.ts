@@ -1,16 +1,17 @@
+import { FILL_CURSOR } from "common/constant"
+import { hexToRgba } from "engine/color"
+import { floodFillOffThread } from "engine/fillWorker"
+import { contains } from "engine/geometry"
+import { floodFill } from "engine/raster"
+import { drawCursor } from "engine/tools/cursorArt"
 import { translate } from "locales/translate"
-import type { Point, Rect } from "store/types"
 import type {
 	Modifiers,
 	RGBA,
 	Tool,
 	ToolContext,
-} from "../types"
-import { hexToRgba } from "../color"
-import { floodFillOffThread } from "../fillWorker"
-import { contains } from "../geometry"
-import { floodFill } from "../raster"
-import { drawCursor, FILL_CURSOR } from "./cursorArt"
+} from "types/engine.types"
+import type { Point, Rect } from "types/store.types"
 
 /**
  * above this the fill goes to a worker. four megapixels is about 200 ms of

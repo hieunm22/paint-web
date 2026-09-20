@@ -2,8 +2,8 @@ import { useTranslation } from "react-i18next"
 import { Menu, MenuItem } from "components/Menu"
 import { SmallButton, SplitButton } from "components/RibbonButton"
 import { ButtonStack, RibbonGroup } from "components/RibbonGroup"
-import { useFileCommands } from "hooks/useFileCommands"
 import { tooltipWithShortcut } from "locales/common"
+import { useFileCommands } from "hooks/useFileCommands"
 import { useAppDispatch, useAppSelector } from "store/hooks"
 import { toggleMenu } from "store/slices/uiSlice"
 
@@ -52,6 +52,7 @@ export function ClipboardGroup() {
 						"shortcut.edit.cut",
 					)}
 					disabled={!hasSelection}
+					onClick={() => void files.cutSelection()}
 				/>
 				<SmallButton
 					label={t("ribbon.clipboard.copy")}
@@ -61,6 +62,7 @@ export function ClipboardGroup() {
 						"shortcut.edit.copy",
 					)}
 					disabled={!hasSelection}
+					onClick={() => void files.copySelection()}
 				/>
 			</ButtonStack>
 		</RibbonGroup>

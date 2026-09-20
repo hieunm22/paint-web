@@ -1,4 +1,4 @@
-import type { ImageFormat } from "store/types"
+import type { ImageFormat } from "types/store.types"
 
 /** the quality slider runs on whole percent and only jpeg and webp read it. */
 export const DEFAULT_QUALITY = 92

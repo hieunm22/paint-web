@@ -1,11 +1,11 @@
 import { useTranslation } from "react-i18next"
+import { EXTENSIONS, FORMATS } from "common/constant"
 import { FORMAT_HINT_KEYS } from "../constant"
-import { EXTENSIONS, FORMATS } from "common/format"
 import { useFileCommands } from "hooks/useFileCommands"
-import { useSaveAsForm } from "../hooks"
 import { useAppDispatch, useAppSelector } from "store/hooks"
+import { useSaveAsForm } from "../hooks"
 import { closeDialog } from "store/slices/uiSlice"
-import type { ImageFormat } from "store/types"
+import type { ImageFormat } from "types/store.types"
 import { Dialog } from "./Dialog"
 
 /** name, format and quality in one place, then straight on to the save picker. */

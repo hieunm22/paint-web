@@ -1,6 +1,6 @@
 import { useEffect } from "react"
-import type { DroppedItem } from "common/types"
-import { useFileCommands } from "./useFileCommands"
+import { useFileCommands } from "hooks/useFileCommands"
+import type { DroppedItem } from "types/common.types"
 
 /** Chrome alone resolves a dropped item to a handle, which makes Save overwrite. */
 async function handleOf(

@@ -8,8 +8,9 @@ import {
 } from "components/Menu"
 import { SmallButton, SplitButton } from "components/RibbonButton"
 import { ButtonStack, RibbonGroup } from "components/RibbonGroup"
-import { TOOLS as IMPLEMENTED } from "engine/tools/registry"
 import { tooltipWithShortcut } from "locales/common"
+import { paint } from "engine/PaintEngine"
+import { TOOLS as IMPLEMENTED } from "engine/tools/registry"
 import { useAppDispatch, useAppSelector } from "store/hooks"
 import { toggleTransparent } from "store/slices/selectionSlice"
 import { setTool } from "store/slices/toolSlice"
@@ -57,16 +58,20 @@ export function ImageGroup() {
 						<MenuItem
 							label={t("ribbon.image.select-all")}
 							shortcut={t("shortcut.image.select-all")}
+							disabled={!canSelect}
+							onClick={() => paint.selectAll()}
 						/>
 						<MenuItem
 							label={t("ribbon.image.invert-selection")}
 							shortcut={t("shortcut.image.invert-selection")}
 							disabled={!hasSelection}
+							onClick={() => paint.invertSelection()}
 						/>
 						<MenuItem
 							label={t("ribbon.image.delete")}
 							shortcut={t("shortcut.image.delete")}
 							disabled={!hasSelection}
+							onClick={() => paint.deleteSelection()}
 						/>
 						<MenuItem
 							label={t("ribbon.image.transparent-selection")}

@@ -5,9 +5,9 @@ import {
 	it,
 	vi,
 } from "vitest"
-import type { Rect } from "store/types"
-import { History } from "./History"
-import type { Surface } from "./Surface"
+import { History } from "engine/History"
+import type { Surface } from "engine/Surface"
+import type { Rect } from "types/store.types"
 
 /**
  * stand-in for the canvas surface: History only ever asks for the document

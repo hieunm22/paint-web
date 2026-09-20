@@ -1,42 +1,6 @@
-import {
-	faEyeDropper,
-	faFillDrip,
-	faMagnifyingGlass,
-	faPencil,
-	type IconDefinition,
-} from "@fortawesome/pro-solid-svg-icons"
-import type { Point } from "store/types"
-import type { CursorArt } from "../types"
-
-/**
- * the cursors are the ribbon's own glyphs, taken from the icon package: a
- * hand-drawn lookalike drifts from the toolbar the moment either side is
- * touched. hotspots come from where each glyph's working end sits.
- */
-export const PENCIL_CURSOR: CursorArt = {
-	icon: faPencil,
-	size: 20,
-	hotX: 0.04,
-	hotY: 0.95,
-}
-export const PICKER_CURSOR: CursorArt = {
-	icon: faEyeDropper,
-	size: 20,
-	hotX: 0.04,
-	hotY: 0.95,
-}
-export const FILL_CURSOR: CursorArt = {
-	icon: faFillDrip,
-	size: 22,
-	hotX: 0.72,
-	hotY: 0.62,
-}
-export const MAGNIFIER_CURSOR: CursorArt = {
-	icon: faMagnifyingGlass,
-	size: 20,
-	hotX: 0.34,
-	hotY: 0.34,
-}
+import type { IconDefinition } from "@fortawesome/pro-solid-svg-icons"
+import type { CursorArt } from "types/engine.types"
+import type { Point } from "types/store.types"
 
 interface Glyph {
 	path: Path2D

@@ -1,7 +1,6 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit"
-import type { Point, ViewState } from "../types"
-
-export const ZOOM_STEPS = [0.125, 0.25, 0.5, 1, 2, 3, 4, 5, 6, 7, 8]
+import { ZOOM_STEPS } from "common/constant"
+import type { Point, ViewState } from "types/store.types"
 
 const initialState: ViewState = {
 	zoom: 1,

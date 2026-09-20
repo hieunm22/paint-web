@@ -1,4 +1,6 @@
+import type { ShapeKind } from "types/store.types"
+
 export interface ShapeIconProps {
-	kind: import("../../store/types").ShapeKind
+	kind: ShapeKind
 	size?: number
 }

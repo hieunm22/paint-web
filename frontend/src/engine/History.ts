@@ -1,6 +1,6 @@
-import type { Rect } from "store/types"
-import type { HistoryEntry } from "./types"
-import type { Surface } from "./Surface"
+import type { Surface } from "engine/Surface"
+import type { HistoryEntry } from "types/engine.types"
+import type { Rect } from "types/store.types"
 
 /** a stroke usually dirties four of these, so a step costs about 1 MB. */
 const TILE = 256
@@ -61,6 +61,15 @@ export class History {
 	}
 
 	cancelStroke(): void {
+		this.backup.clear()
+	}
+
+	/**
+	 * puts the snapshotted pixels back and drops the stroke. this is Escape on
+	 * a floating selection, which never becomes a step of its own.
+	 */
+	rollbackStroke(): void {
+		for (const [id, data] of this.backup) this.writeTile(id, data)
 		this.backup.clear()
 	}
 

@@ -21,24 +21,58 @@ stay at the root because that is where a reader looks for them; nothing else joi
 
 ---
 
-## 1. The seven root imports
+## 1. The eight root imports
 
 ```
-components/  hooks/  engine/  locales/  store/  common/  assets/
+assets/	components/  common/  engine/  hooks/  locales/  store/  types/
 ```
 
 Declared in **both** `tsconfig.json` and `vite.config.ts`. `vite.config.ts` derives
-them from one `ROOT_DIRS` array. Adding an eighth root means editing both files **and**
-adding an `importOrder` entry to `.prettierrc`: an unlisted root is a bare specifier
-like any other, and Prettier sorts it in among the npm packages. `src/types/` does not
-exist yet - its import-order group is reserved.
+them from one `ROOT_DIRS` array. Adding a ninth root means editing both files **and** giving it
+its `importOrder` entries in `.prettierrc`: an unlisted root is a bare specifier like
+any other, and Prettier sorts it in among the npm packages. Which entries, and why a
+root needs more than one, is `TypeScript.md` - import order is a global rule and is
+written down once, there.
 
 The two-entry `paths` trap is documented globally and as a comment inside
 `tsconfig.json`. Do not "tidy up" those pairs.
 
+`types/` holds the type definitions of every non-component root, one file each:
+`common.types.ts`, `engine.types.ts`, `hooks.types.ts`, `locales.types.ts`,
+`store.types.ts`. There is **no** `types.ts` left in those folders and no re-export
+standing in for one: a folder imports its own types back by root specifier
+(`types/engine.types`), so each type has exactly one import path. A component keeps
+its own `types.ts` file alongside its code; only non-component types are lifted to
+the root.
+
 `common/` holds what several folders need and no single one owns - platform
 quirks such as "is this a Mac", "was that the right mouse button". It stays
 free of React, of the store and of the engine.
+
+### Every constant outside a component is in `common/constant.ts`
+
+One file, not one per root. The zoom ladder, the palette, the mime and extension
+tables, the default document, the nudge keys, the 23 shape outlines (`SHAPE_DEFS` and
+the builders that compute it) and the four `CursorArt` tables: whichever folder uses
+them, they are declared there and imported back. `engine/`, `hooks/` and `store/` have
+no constants file of their own, and a function file next door - `format.ts`,
+`color.ts`, `shapes.ts`, `viewSlice.ts` - exports functions and nothing else.
+
+Three things follow. `common/constant.ts` may import a *type* from any root, which is
+how `DEFAULT_DOCUMENT` is a `Size`; it still imports no value from one, which is what
+keeps the layering intact. The file is reached by node tests through the slices, so
+the two browser probes in it are written `typeof window !== "undefined" && ...`;
+dropping that guard fails `tools.test.ts` with `window is not defined`.
+
+And the rule stops at values. `TOOLS` in `engine/tools/registry.ts` is a table of live
+tool **instances**, so moving it here would make this file import the seven tool
+classes while those same classes import their cursor tables back from it. The cycle
+closes on a class that is still being defined, and `new FillTool()` throws
+`FillTool is not a constructor` - measured, not assumed. A registry of instances is
+not a constant and stays with the things it builds.
+
+A component keeps its own `constant.ts` as before. Its tables are interface, owned by
+one folder, and belong beside it.
 
 ---
 
@@ -85,9 +119,9 @@ DESIGN.md §4 and §11; this section only covers where code goes and what it may
   call is what copies the old pixels onto the undo stack.
 - **Live pointer values go through `engine/cursor.ts`**, the external store the status
   bar subscribes to - not through a slice.
-- **Engine types live in `engine/types.ts`**, tool interfaces included. DESIGN.md's tree
-  sketches a `tools/Tool.ts`; one types file per non-component folder wins, and
-  `engine/tools/` holds implementations only.
+- **Engine types live in `types/engine.types.ts`**, tool interfaces included, and
+  `engine/tools/` holds implementations only. A file inside `engine/` imports them as
+  `types/engine.types`, never as `./types` or `../types` - those files are gone.
 
 ---
 
@@ -247,7 +281,7 @@ A command that has to ask before it destroys the document parks its payload with
 ### Untyped browser APIs
 
 `showOpenFilePicker`, `showSaveFilePicker` and `FileSystemHandle.queryPermission` are
-not in `lib.dom`. They are declared as ordinary interfaces in `common/types.ts` and
+not in `lib.dom`. They are declared as ordinary interfaces in `types/common.types.ts` and
 reached with one cast at the call site - **not** with an ambient `.d.ts` that widens
 `Window` globally. That keeps the declarations in a types file where the rest of the
 repo's types are, and keeps a missing feature a runtime check rather than a silent

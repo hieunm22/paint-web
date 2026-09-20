@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { listRecents } from "common/recents"
-import type { RecentEntry } from "common/types"
 import { useAppSelector } from "store/hooks"
+import type { RecentEntry } from "types/common.types"
 
 /**
  * the recents list out of IndexedDB. the document name is the trigger: it

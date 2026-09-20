@@ -1,7 +1,7 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit"
-import { CUSTOM_SLOTS, PAINT_PALETTE } from "engine/color"
-import type { ColorSlotId, ColorState, PickedColor } from "../types"
-import { pickerPicked } from "../actions"
+import { CUSTOM_SLOTS, PAINT_PALETTE } from "common/constant"
+import { pickerPicked } from "store/actions"
+import type { ColorSlotId, ColorState, PickedColor } from "types/store.types"
 
 const initialState: ColorState = {
 	color1: "#000000",

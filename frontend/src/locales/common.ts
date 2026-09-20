@@ -1,4 +1,4 @@
-import { translate } from "./translate"
+import { translate } from "locales/translate"
 
 /**
  * tooltip that repeats a label with its shortcut, as "Paste (Ctrl+V)".

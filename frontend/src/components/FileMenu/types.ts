@@ -1,5 +1,5 @@
+import type { DialogId, ImageFormat } from "types/store.types"
 import type { IconName } from "components/Icon/types"
-import type { DialogId, ImageFormat } from "store/types"
 
 /** what a backstage row does when it is not simply opening a dialog. */
 export type FileMenuAction =

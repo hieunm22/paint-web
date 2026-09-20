@@ -159,6 +159,18 @@
 		}
 	}
 
+	// the expand button opens the whole gallery at once, below the strip.
+	&__expand {
+		display: flex;
+	}
+
+	&__panel {
+		display: grid;
+		grid-template-columns: repeat(8, 26px);
+		gap: 1px;
+		padding: 3px;
+	}
+
 	&__options {
 		display: flex;
 		flex-direction: column;

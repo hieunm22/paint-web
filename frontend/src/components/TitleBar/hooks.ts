@@ -1,11 +1,18 @@
-import { useMemo } from "react"
+import { useEffect, useMemo } from "react"
 import { useTranslation } from "react-i18next"
 import { QAT_ITEMS } from "./constant"
+import { tooltipWithShortcut } from "locales/common"
+import { writeQat } from "store/common"
 import { paint } from "engine/PaintEngine"
 import { useFileCommands } from "hooks/useFileCommands"
-import { tooltipWithShortcut } from "locales/common"
 import { useAppSelector } from "store/hooks"
-import type { QatItem, QatItemId } from "./types"
+import type { QatItemId } from "types/store.types"
+import type { QatItem } from "./types"
+
+/** the customisation outlives the session, which is what localStorage is for. */
+export function useQatPersistence(items: QatItemId[]): void {
+	useEffect(() => writeQat(items), [items])
+}
 
 /** Undo and Redo follow the engine's stacks; Save is always available. */
 export function useQatItems(): QatItem[] {

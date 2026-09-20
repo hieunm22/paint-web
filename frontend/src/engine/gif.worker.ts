@@ -1,5 +1,5 @@
 import { applyPalette, GIFEncoder, quantize } from "gifenc"
-import type { GifRequest, GifResponse } from "./types"
+import type { GifRequest, GifResponse } from "types/engine.types"
 
 /**
  * GIF encoding off the main thread: quantising a megapixel down to 256 colours

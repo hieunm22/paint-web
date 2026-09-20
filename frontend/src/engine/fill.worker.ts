@@ -1,5 +1,5 @@
-import type { FillRequest, FillResponse } from "./types"
-import { floodFill } from "./raster"
+import { floodFill } from "engine/raster"
+import type { FillRequest, FillResponse } from "types/engine.types"
 
 /**
  * flood fill for pictures too large to do between two frames. the client is

@@ -1,5 +1,5 @@
-import type { Point, Rect } from "store/types"
-import type { FillRequest, FillResponse, RGBA } from "./types"
+import type { FillRequest, FillResponse, RGBA } from "types/engine.types"
+import type { Point, Rect } from "types/store.types"
 
 /** the worker outlives one fill: spinning a module worker up costs ~10 ms. */
 let worker: Worker | null = null

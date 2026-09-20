@@ -1,11 +1,11 @@
-import type { Rect } from "store/types"
+import { readPixel } from "engine/raster"
 import type {
 	RGBA,
 	Size,
 	SurfaceContexts,
 	SurfaceLayers,
-} from "./types"
-import { readPixel } from "./raster"
+} from "types/engine.types"
+import type { Rect } from "types/store.types"
 
 const PAPER = "#ffffff"
 const EMPTY: Size = { width: 0, height: 0 }

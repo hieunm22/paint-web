@@ -1,10 +1,11 @@
+import { PICKER_CURSOR } from "common/constant"
+import { rgbaToHex } from "engine/color"
+import { contains } from "engine/geometry"
+import { drawCursor } from "engine/tools/cursorArt"
 import { translate } from "locales/translate"
 import { pickerPicked } from "store/actions"
-import type { Point } from "store/types"
-import type { Modifiers, Tool, ToolContext } from "../types"
-import { rgbaToHex } from "../color"
-import { contains } from "../geometry"
-import { drawCursor, PICKER_CURSOR } from "./cursorArt"
+import type { Modifiers, Tool, ToolContext } from "types/engine.types"
+import type { Point } from "types/store.types"
 
 /**
  * reads one committed pixel into a swatch and hands the previous tool back.

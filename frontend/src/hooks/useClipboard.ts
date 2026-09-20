@@ -1,6 +1,6 @@
 import { useEffect } from "react"
 import { isTypingTarget } from "common/dom"
-import { useFileCommands } from "./useFileCommands"
+import { useFileCommands } from "hooks/useFileCommands"
 
 /**
  * the paste keystroke, which is the only route Firefox leaves open: reading the

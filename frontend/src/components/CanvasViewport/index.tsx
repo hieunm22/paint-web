@@ -1,17 +1,23 @@
 import { TOOL_CURSORS } from "./constant"
 import { ResizeHandles, Ruler, Thumbnail } from "./components"
-import { zoomedSize } from "./common"
+import {
+	lassoPoints,
+	overlayBox,
+	overlayGrip,
+	zoomedSize,
+} from "./common"
+import { useAppSelector } from "store/hooks"
 import {
 	useOverlayReset,
+	useOverlayState,
 	usePointerTools,
 	useSurface,
 	useZoomFocus,
 } from "./hooks"
-import { useAppSelector } from "store/hooks"
 import "./CanvasViewport.scss"
 
 export function CanvasViewport() {
-	const { width, height } = useAppSelector((s) => s.doc)
+	const { width, height } = useAppSelector(s => s.doc)
 	const {
 		zoom,
 		showRuler,
@@ -22,7 +28,7 @@ export function CanvasViewport() {
 	)
 	const focus = useAppSelector((s) => s.view.focus)
 	const activeTool = useAppSelector((s) => s.tool.active)
-	const bounds = useAppSelector((s) => s.selection.bounds)
+	const overlay = useOverlayState()
 	const {
 		baseRef,
 		previewRef,
@@ -74,17 +80,45 @@ export function CanvasViewport() {
 								/>
 							)}
 
-							{bounds && (
+							{overlay.lasso ? (
+								<svg
+									className="canvas__lasso"
+									width={layerSize.width}
+									height={layerSize.height}
+								>
+									<polygon
+										className="canvas__lasso-base"
+										points={lassoPoints(overlay.lasso, zoom)}
+									/>
+									<polygon
+										className="canvas__lasso-ants"
+										points={lassoPoints(overlay.lasso, zoom)}
+									/>
+								</svg>
+							) : (
+								overlay.selection && (
+									<div
+										className="canvas__ants"
+										style={overlayBox(overlay.selection, zoom)}
+									/>
+								)
+							)}
+
+							{overlay.draft?.bounds && (
 								<div
-									className="canvas__ants"
-									style={{
-										left: bounds.x * zoom,
-										top: bounds.y * zoom,
-										width: bounds.w * zoom,
-										height: bounds.h * zoom,
-									}}
+									className="canvas__draft"
+									style={overlayBox(overlay.draft.bounds, zoom)}
 								/>
 							)}
+
+							{overlay.draft?.handles.map((handle, i) => (
+								<span
+									// the position repeats while a shape is still a point
+									key={i}
+									className="canvas__grip"
+									style={overlayGrip(handle, zoom)}
+								/>
+							))}
 
 							<ResizeHandles />
 						</div>

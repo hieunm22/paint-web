@@ -3,6 +3,7 @@ import {
 	useLayoutEffect,
 	useMemo,
 	useRef,
+	useSyncExternalStore,
 	type PointerEvent,
 	type RefObject,
 } from "react"
@@ -10,9 +11,10 @@ import { CANVAS_MARGIN } from "./constant"
 import { isSecondaryButton } from "common/platform"
 import { screenToImage } from "./common"
 import { reportCursor } from "engine/cursor"
+import { getOverlayState, subscribeOverlay } from "engine/overlay"
 import { paint } from "engine/PaintEngine"
-import type { Modifiers } from "engine/types"
-import type { Point, ToolId, ZoomFocus } from "store/types"
+import type { Modifiers, OverlayState } from "types/engine.types"
+import type { Point, ToolId, ZoomFocus } from "types/store.types"
 import type { PointerBatch } from "./types"
 
 type CanvasPointerEvent = PointerEvent<HTMLCanvasElement>
@@ -69,7 +71,7 @@ export function usePointerTools(
 ) {
 	const batch = useRef<PointerBatch>({
 		points: [],
-		mods: { secondary: false, shift: false, alt: false },
+		mods: { secondary: false, shift: false, alt: false, ctrl: false },
 		frame: null,
 	})
 
@@ -190,5 +192,14 @@ function modifiersOf(e: CanvasPointerEvent): Modifiers {
 		secondary: isSecondaryButton(e.button, e.ctrlKey),
 		shift: e.shiftKey,
 		alt: e.altKey,
+		ctrl: e.ctrlKey,
 	}
+}
+
+/**
+ * marching ants and the handles of an unfinished shape, live from the engine:
+ * a drag has to redraw them without dispatching on every pointer move.
+ */
+export function useOverlayState(): OverlayState {
+	return useSyncExternalStore(subscribeOverlay, getOverlayState)
 }

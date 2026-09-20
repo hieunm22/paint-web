@@ -1,7 +1,7 @@
-import type { Point } from "store/types"
-import type { ToolContext } from "../types"
-import { clampRect, segmentBounds } from "../geometry"
-import { bresenham } from "../raster"
+import { clampRect, segmentBounds } from "engine/geometry"
+import { bresenham } from "engine/raster"
+import type { ToolContext } from "types/engine.types"
+import type { Point } from "types/store.types"
 
 /**
  * hard-edged segment painted into preview with a square brush. fillRect on

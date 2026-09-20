@@ -1,11 +1,11 @@
 import { describe, expect, it } from "vitest"
-import type { RGBA } from "./types"
 import {
 	bresenham,
 	floodFill,
 	readPixel,
 	stampReplace,
-} from "./raster"
+} from "engine/raster"
+import type { RGBA } from "types/engine.types"
 
 const WHITE: RGBA = { r: 255, g: 255, b: 255, a: 255 }
 const BLACK: RGBA = { r: 0, g: 0, b: 0, a: 255 }

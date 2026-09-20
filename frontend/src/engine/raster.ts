@@ -1,6 +1,6 @@
-import type { Point, Rect } from "store/types"
-import type { RGBA } from "./types"
-import { sameColor } from "./color"
+import { sameColor } from "engine/color"
+import type { RGBA } from "types/engine.types"
+import type { Point, Rect } from "types/store.types"
 
 export function readPixel(img: ImageData, x: number, y: number): RGBA {
 	const i = (y * img.width + x) << 2

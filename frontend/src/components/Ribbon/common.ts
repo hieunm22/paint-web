@@ -1,5 +1,6 @@
+import { SHAPE_DEFS } from "common/constant"
 import { NO_FILL_KEY } from "./constant"
-import type { ShapeKind, StrokeStyle } from "store/types"
+import type { ShapeKind, StrokeStyle } from "types/store.types"
 
 /** maximum scroll row for a grid gallery. */
 export function maxGalleryRow(
@@ -11,10 +12,11 @@ export function maxGalleryRow(
 }
 
 /**
- * Outline and Fill are disabled for Line and Curve because neither has an interior.
+ * Fill is disabled for a shape with no interior, Line and Curve today. Outline
+ * stays live: it is the style of the stroke itself.
  */
 export function shapeHasInterior(shape: ShapeKind): boolean {
-	return shape !== "line" && shape !== "curve"
+	return SHAPE_DEFS[shape].fillable
 }
 
 /**

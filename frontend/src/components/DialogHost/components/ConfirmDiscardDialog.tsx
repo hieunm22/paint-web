@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next"
-import { useFileCommands } from "hooks/useFileCommands"
 import { documentName } from "store/common"
+import { useFileCommands } from "hooks/useFileCommands"
 import { useAppSelector } from "store/hooks"
 import { Dialog } from "./Dialog"
 

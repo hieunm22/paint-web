@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest"
-import { hexToRgba, rgbaToHex, sameColor } from "./color"
+import { hexToRgba, rgbaToHex, sameColor } from "engine/color"
 
 describe("hexToRgba", () => {
 	it("reads a palette colour", () => {

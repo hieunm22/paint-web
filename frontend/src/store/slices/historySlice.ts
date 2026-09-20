@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit"
-import type { HistoryState } from "../types"
-import { historyChanged } from "../actions"
+import { historyChanged } from "store/actions"
+import type { HistoryState } from "types/store.types"
 
 /**
  * two booleans mirroring the engine's stacks. the tiles themselves never enter
@@ -9,6 +9,7 @@ import { historyChanged } from "../actions"
 const initialState: HistoryState = {
 	canUndo: false,
 	canRedo: false,
+	revision: 0,
 }
 
 const historySlice = createSlice({
@@ -19,6 +20,7 @@ const historySlice = createSlice({
 		builder.addCase(historyChanged, (state, action) => {
 			state.canUndo = action.payload.canUndo
 			state.canRedo = action.payload.canRedo
+			state.revision += 1
 		})
 	},
 })

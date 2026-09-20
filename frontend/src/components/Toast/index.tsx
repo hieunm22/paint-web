@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next"
 import { Icon } from "components/Icon"
-import { useToastTimeout } from "./hooks"
 import { useAppDispatch, useAppSelector } from "store/hooks"
+import { useToastTimeout } from "./hooks"
 import { dismissToast } from "store/slices/uiSlice"
 import "./Toast.scss"
 

@@ -1,5 +1,5 @@
-import type { Modifiers } from "engine/types"
-import type { Point } from "store/types"
+import type { Modifiers } from "types/engine.types"
+import type { Point } from "types/store.types"
 
 export type HandlePosition = "nw" | "n" | "ne" | "w" | "e" | "sw" | "s" | "se"
 

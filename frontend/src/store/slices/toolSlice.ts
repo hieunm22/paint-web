@@ -1,4 +1,5 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit"
+import { pickerPicked } from "store/actions"
 import type {
 	BrushKind,
 	BrushSize,
@@ -7,8 +8,7 @@ import type {
 	TextOptions,
 	ToolId,
 	ToolState,
-} from "../types"
-import { pickerPicked } from "../actions"
+} from "types/store.types"
 
 const initialState: ToolState = {
 	active: "pencil",

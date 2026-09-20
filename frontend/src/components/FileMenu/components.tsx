@@ -1,4 +1,5 @@
 import { useTranslation } from "react-i18next"
+import { CAN_SAVE_IN_PLACE, EXTENSIONS, LANGUAGES } from "common/constant"
 import { FILE_MENU_ROWS, QUICK_SAVE_FORMATS, SAVE_AS_MENU } from "./constant"
 import { Icon } from "components/Icon"
 import {
@@ -7,15 +8,12 @@ import {
 	MenuItem,
 	MenuSeparator,
 } from "components/Menu"
-import { LANGUAGES } from "common/constant"
-import { CAN_SAVE_IN_PLACE } from "common/fileSystem"
-import { EXTENSIONS } from "common/format"
 import { useFileCommands } from "hooks/useFileCommands"
+import { useAppDispatch, useAppSelector } from "store/hooks"
 import { useRecents } from "./hooks"
 import { currentLanguage, setLanguage } from "locales/i18n"
-import { useAppDispatch, useAppSelector } from "store/hooks"
 import { openDialog, toggleMenu } from "store/slices/uiSlice"
-import type { ImageFormat } from "store/types"
+import type { ImageFormat } from "types/store.types"
 import type { FileMenuEntry, FileMenuRowProps, SaveAsMenuProps } from "./types"
 
 function FileMenuRow({ row, title, onClick }: FileMenuRowProps) {

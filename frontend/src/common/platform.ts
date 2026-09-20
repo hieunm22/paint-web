@@ -1,5 +1,4 @@
-/** Ctrl+click is the right button on macOS, and Cmd carries the shortcuts. */
-export const IS_MAC = /Mac|iPhone|iPad/.test(navigator.userAgent)
+import { IS_MAC } from "common/constant"
 
 /** the button that paints with colour 2 instead of colour 1. */
 export function isSecondaryButton(button: number, ctrlKey: boolean): boolean {

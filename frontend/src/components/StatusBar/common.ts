@@ -1,11 +1,8 @@
 import { translate } from "locales/translate"
 
-/**
- * estimated saved file size for the fourth status cell.
- * Placeholder; the real one is lazy and debounced over actual image data.
- */
-export function estimateFileSize(width: number, height: number): string {
-	const kb = Math.round((width * height * 3) / 1024)
+/** the measured size of the encoded picture, for the fourth status cell. */
+export function formatFileSize(bytes: number): string {
+	const kb = Math.round(bytes / 1024)
 
 	return kb >= 1024
 		? translate("statusbar.cell.file-size-mb", { 0: (kb / 1024).toFixed(1) })

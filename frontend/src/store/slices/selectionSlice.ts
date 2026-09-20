@@ -1,5 +1,5 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit"
-import type { Rect, SelectionState } from "../types"
+import type { Rect, SelectionState } from "types/store.types"
 
 const initialState: SelectionState = {
 	kind: "none",

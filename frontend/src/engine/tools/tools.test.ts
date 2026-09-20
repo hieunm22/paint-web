@@ -4,14 +4,14 @@ import {
 	expect,
 	it,
 } from "vitest"
+import { EraserTool } from "engine/tools/EraserTool"
+import { FillTool } from "engine/tools/FillTool"
+import { MagnifierTool } from "engine/tools/MagnifierTool"
+import { PencilTool } from "engine/tools/PencilTool"
+import { PickerTool } from "engine/tools/PickerTool"
 import type { AppDispatch } from "store"
-import type { Rect } from "store/types"
-import type { Modifiers, ToolContext } from "../types"
-import { EraserTool } from "./EraserTool"
-import { FillTool } from "./FillTool"
-import { MagnifierTool } from "./MagnifierTool"
-import { PencilTool } from "./PencilTool"
-import { PickerTool } from "./PickerTool"
+import type { Modifiers, ToolContext } from "types/engine.types"
+import type { Rect } from "types/store.types"
 
 const BLACK = "#000000"
 const WHITE = "#ffffff"
@@ -35,9 +35,14 @@ interface Harness {
 	pixels: Uint8ClampedArray
 }
 
-const LEFT: Modifiers = { secondary: false, shift: false, alt: false }
-const RIGHT: Modifiers = { secondary: true, shift: false, alt: false }
-const SHIFT: Modifiers = { secondary: false, shift: true, alt: false }
+const LEFT: Modifiers = {
+	secondary: false,
+	shift: false,
+	alt: false,
+	ctrl: false,
+}
+const RIGHT: Modifiers = { ...LEFT, secondary: true }
+const SHIFT: Modifiers = { ...LEFT, shift: true }
 
 /**
  * a tool only ever touches its context, so the whole of one can be stood up

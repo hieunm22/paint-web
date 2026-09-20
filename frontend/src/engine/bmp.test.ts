@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest"
-import { encodeBmp24 } from "./bmp"
+import { encodeBmp24 } from "engine/bmp"
 
 /** node has no ImageData; the encoder only reads data, width and height. */
 function sheet(width: number, height: number, rgb: number[][]): ImageData {

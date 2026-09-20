@@ -145,13 +145,69 @@
 		}
 	}
 
-	// marching ants around the selection.
+	// marching ants: one gradient per edge, black over white to read on any ink.
 	&__ants {
 		position: absolute;
 		pointer-events: none;
-		border: 1px dashed #000;
-		background: rgba(255, 255, 255, 0.06);
+		background-image:
+			repeating-linear-gradient(to right, #000 0 4px, #fff 4px 8px),
+			repeating-linear-gradient(to bottom, #000 0 4px, #fff 4px 8px),
+			repeating-linear-gradient(to right, #000 0 4px, #fff 4px 8px),
+			repeating-linear-gradient(to bottom, #000 0 4px, #fff 4px 8px);
+		background-size:
+			100% 1px,
+			1px 100%,
+			100% 1px,
+			1px 100%;
+		background-position:
+			0 0,
+			100% 0,
+			0 100%,
+			0 0;
+		background-repeat: no-repeat;
 		animation: canvas-march 600ms linear infinite;
+	}
+
+	// the same ants along a traced lasso: white underneath, black dashes over.
+	&__lasso {
+		position: absolute;
+		top: 0;
+		left: 0;
+		pointer-events: none;
+		overflow: visible;
+
+		polygon {
+			fill: none;
+			stroke-width: 1;
+		}
+	}
+
+	&__lasso-base {
+		stroke: #fff;
+	}
+
+	&__lasso-ants {
+		stroke: #000;
+		stroke-dasharray: 4 4;
+		animation: canvas-lasso-march 600ms linear infinite;
+	}
+
+	// box around a shape that has been dropped but not yet baked.
+	&__draft {
+		position: absolute;
+		pointer-events: none;
+		border: 1px dashed var(--cv-handle-bd);
+	}
+
+	// one resize handle of that shape, centred on its corner.
+	&__grip {
+		position: absolute;
+		width: 5px;
+		height: 5px;
+		margin: -3px 0 0 -3px;
+		background: var(--cv-handle-bg);
+		border: 1px solid var(--cv-handle-bd);
+		pointer-events: none;
 	}
 
 	&__thumbnail {
@@ -181,6 +237,16 @@
 
 @keyframes canvas-march {
 	to {
-		background-position: 8px 0;
+		background-position:
+			8px 0,
+			100% 8px,
+			-8px 100%,
+			0 -8px;
+	}
+}
+
+@keyframes canvas-lasso-march {
+	to {
+		stroke-dashoffset: -8;
 	}
 }

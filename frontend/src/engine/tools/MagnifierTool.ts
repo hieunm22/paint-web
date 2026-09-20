@@ -1,8 +1,9 @@
+import { MAGNIFIER_CURSOR } from "common/constant"
+import { drawCursor } from "engine/tools/cursorArt"
 import { translate } from "locales/translate"
 import { zoomAt } from "store/slices/viewSlice"
-import type { Point } from "store/types"
-import type { Modifiers, Tool, ToolContext } from "../types"
-import { drawCursor, MAGNIFIER_CURSOR } from "./cursorArt"
+import type { Modifiers, Tool, ToolContext } from "types/engine.types"
+import type { Point } from "types/store.types"
 
 /** the magnifier steps through its own four levels, not the zoom slider's. */
 const LEVELS = [1, 2, 4, 8]

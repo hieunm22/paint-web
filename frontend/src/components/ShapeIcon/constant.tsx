@@ -1,4 +1,4 @@
-import type { ShapeKind } from "store/types"
+import type { ShapeKind } from "types/store.types"
 
 /**
  * the 23 gallery shapes, drawn in a 0 0 24 24 viewBox.

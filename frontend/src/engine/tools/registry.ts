@@ -1,14 +1,17 @@
-import type { ToolId } from "store/types"
-import type { Tool } from "../types"
-import { EraserTool } from "./EraserTool"
-import { FillTool } from "./FillTool"
-import { MagnifierTool } from "./MagnifierTool"
-import { PencilTool } from "./PencilTool"
-import { PickerTool } from "./PickerTool"
+import { EraserTool } from "engine/tools/EraserTool"
+import { FillTool } from "engine/tools/FillTool"
+import { MagnifierTool } from "engine/tools/MagnifierTool"
+import { PencilTool } from "engine/tools/PencilTool"
+import { PickerTool } from "engine/tools/PickerTool"
+import { SelectTool } from "engine/tools/SelectTool"
+import { ShapeTool } from "engine/tools/ShapeTool"
+import type { Tool } from "types/engine.types"
+import type { ToolId } from "types/store.types"
 
 /**
- * the tools that draw today. brushes, shapes, selection and text are later
- * phases: picking one of those leaves the canvas untouched.
+ * live tool instances rather than constant values, which is why they are not
+ * in `common/constant.ts`: that file is imported by the tools themselves, and
+ * building them there closes a module cycle onto a class still being defined.
  */
 export const TOOLS: Partial<Record<ToolId, Tool>> = {
 	pencil: new PencilTool(),
@@ -16,4 +19,7 @@ export const TOOLS: Partial<Record<ToolId, Tool>> = {
 	fill: new FillTool(),
 	picker: new PickerTool(),
 	magnifier: new MagnifierTool(),
+	shape: new ShapeTool(),
+	"select-rect": new SelectTool("select-rect"),
+	"select-free": new SelectTool("select-free"),
 }

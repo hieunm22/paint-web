@@ -1,4 +1,4 @@
-import type { PickedFile } from "./types"
+import type { PickedFile } from "types/common.types"
 
 /**
  * the file state the store cannot hold. a FileSystemFileHandle and a File are

@@ -1,4 +1,4 @@
-import type { GifRequest, GifResponse } from "./types"
+import type { GifRequest, GifResponse } from "types/engine.types"
 
 /** one worker serves every save: starting a module worker costs about 10 ms. */
 let worker: Worker | null = null

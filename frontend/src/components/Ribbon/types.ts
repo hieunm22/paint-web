@@ -1,11 +1,12 @@
-import type { IconName } from "components/Icon/types"
 import type {
 	BrushKind,
 	BrushSize,
 	RibbonTabId,
+	ShapeKind,
 	StrokeStyle,
 	ToolId,
-} from "store/types"
+} from "types/store.types"
+import type { IconName } from "components/Icon/types"
 
 export interface RibbonTabDef {
 	id: RibbonTabId
@@ -32,6 +33,13 @@ export interface StrokeStyleDef {
 }
 
 export type SizeDef = BrushSize
+
+export interface ShapeCellProps {
+	kind: ShapeKind
+	selected: boolean
+	disabled: boolean
+	onPick: (kind: ShapeKind) => void
+}
 
 export interface StrokeMenuButtonProps {
 	menuId: "outline" | "fill"

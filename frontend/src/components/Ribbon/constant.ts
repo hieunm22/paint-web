@@ -81,3 +81,6 @@ export const SIZES: SizeDef[] = [1, 3, 5, 8]
 export const SHAPE_GALLERY_COLS = 8
 export const SHAPE_GALLERY_VISIBLE_ROWS = 3
 export const SHAPE_GALLERY_ROW_HEIGHT = 23
+
+/** the panel behind the expand button holds the same eight columns. */
+export const SHAPE_PANEL_WIDTH = 8 * 27 + 10

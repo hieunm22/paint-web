@@ -156,10 +156,14 @@ export interface ViewState {
 export interface HistoryState {
 	canUndo: boolean
 	canRedo: boolean
+	/** bumped on every committed step, which is what the size estimate watches. */
+	revision: number
 }
 
+export type SelectionKind = "none" | "rect" | "free"
+
 export interface SelectionState {
-	kind: "none" | "rect" | "free"
+	kind: SelectionKind
 	bounds: Rect | null
 	transparent: boolean
 }
@@ -176,7 +180,11 @@ export interface UiState {
 	pending: PendingFileAction | null
 	/** translation key of the transient notice, never the text itself. */
 	toast: string | null
+	/** which Quick Access Toolbar buttons are on show, in their fixed order. */
+	qat: QatItemId[]
 }
+
+export type QatItemId = "save" | "undo" | "redo"
 
 export type DialogId =
 	| "resize-skew"

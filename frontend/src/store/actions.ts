@@ -1,5 +1,5 @@
 import { createAction } from "@reduxjs/toolkit"
-import type { PickedColor } from "./types"
+import type { PickedColor } from "types/store.types"
 
 /**
  * the colour picker writes one swatch and hands the previous tool back, which

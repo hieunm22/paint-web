@@ -6,9 +6,9 @@ import {
 } from "react"
 import { DEFAULT_QUALITY } from "./constant"
 import { stemOf } from "common/format"
-import { clampDragOffset } from "./common"
 import { documentName } from "store/common"
-import type { ImageFormat } from "store/types"
+import { clampDragOffset } from "./common"
+import type { ImageFormat } from "types/store.types"
 import type { DragSession, Point, SaveAsForm } from "./types"
 
 const NO_OFFSET: Point = { x: 0, y: 0 }

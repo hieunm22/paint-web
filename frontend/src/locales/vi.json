@@ -332,6 +332,9 @@
 			"fill": "Tô màu",
 			"picker": "Lấy màu",
 			"magnifier": "Kính lúp",
+			"shape": "Hình",
+			"selection": "Vùng chọn",
+			"delete": "Xoá vùng chọn",
 			"paste": "Dán"
 		}
 	}

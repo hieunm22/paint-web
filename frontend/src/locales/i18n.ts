@@ -5,9 +5,9 @@ import {
 	LANGUAGE_STORAGE_KEY,
 	LANGUAGES,
 } from "common/constant"
-import type { Language } from "./types"
-import en from "./en.json"
-import vi from "./vi.json"
+import en from "locales/en.json"
+import vi from "locales/vi.json"
+import type { Language } from "types/locales.types"
 
 function isLanguage(value: unknown): value is Language {
 	return LANGUAGES.some((lang) => lang.id === value)

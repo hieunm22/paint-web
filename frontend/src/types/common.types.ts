@@ -1,4 +1,4 @@
-import type { ImageFormat } from "store/types"
+import type { ImageFormat } from "types/store.types"
 
 /** mime type to the extensions that spell it, as both pickers want it. */
 export interface FilePickerType {

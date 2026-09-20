@@ -1,9 +1,10 @@
-import { stampSegment } from "./common"
+import { PENCIL_CURSOR } from "common/constant"
+import { constrainToAxis } from "engine/geometry"
+import { stampSegment } from "engine/tools/common"
+import { drawCursor } from "engine/tools/cursorArt"
 import { translate } from "locales/translate"
-import type { Point } from "store/types"
-import type { Modifiers, Tool, ToolContext } from "../types"
-import { constrainToAxis } from "../geometry"
-import { drawCursor, PENCIL_CURSOR } from "./cursorArt"
+import type { Modifiers, Tool, ToolContext } from "types/engine.types"
+import type { Point } from "types/store.types"
 
 const ORIGIN: Point = { x: 0, y: 0 }
 

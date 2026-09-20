@@ -1,6 +1,10 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit"
-import { DEFAULT_DOCUMENT } from "../constant"
-import type { DocumentState, ImageFormat, OpenedPayload } from "../types"
+import { DEFAULT_DOCUMENT } from "common/constant"
+import type {
+	DocumentState,
+	ImageFormat,
+	OpenedPayload,
+} from "types/store.types"
 
 const initialState: DocumentState = {
 	width: DEFAULT_DOCUMENT.width,
