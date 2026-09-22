@@ -27,31 +27,32 @@ paint-web/
 ├─ README.md
 ├─ docs/
 │  └─ Conventions.md      # repo-specific code conventions
-├─ tools/                 # language.csv and the json generator
-└─ frontend/              # the web app
+├─ deploy/                # nginx config for the image
+├─ public/                # served verbatim: manifest, service worker, icons
+├─ scripts/               # the format and i18n checks, the worker precache list
+├─ src/                   # the app
+└─ tests/                 # the specs that need a real browser
 ```
 
-The repo root holds documentation plus the translation pipeline. Anything runnable
-lives in `frontend/`, which leaves room for a sibling service later without moving the
-app again.
+The app is the repo root. `docs/` and `README.md` are the only parts a build never
+looks at.
 
 ## Running it
 
 ```sh
-cd frontend
 yarn install
 yarn dev                  # http://localhost:3004
 ```
 
-Font Awesome Pro is a dependency, so `yarn install` needs the registry token in
-`~/.npmrc`. The visual tests need a browser of their own:
-`npx playwright install chromium`.
+The visual tests need a browser of their own: `npx playwright install chromium`.
 
 | Script                   | Does                                            |
 | ------------------------ | ----------------------------------------------- |
 | `yarn dev`               | dev server with HMR                             |
 | `yarn build`             | typecheck, then production build into `dist`    |
 | `yarn preview`           | serve the built output                          |
+| `yarn storybook`         | every component in isolation, port 6006         |
+| `yarn build-storybook`   | the static storybook into `storybook-static`    |
 | `yarn test`              | vitest, one pass                                |
 | `yarn test:watch`        | vitest, watching                                |
 | `yarn test:visual`       | playwright screenshots of the ribbon, en and vi |
@@ -59,13 +60,14 @@ Font Awesome Pro is a dependency, so `yarn install` needs the registry token in
 | `yarn test:e2e`          | playwright, the editing flow and the windowing  |
 | `yarn test:perf`         | playwright, the frame budget under a long stroke|
 | `yarn test:browser`      | every playwright spec, the frame budget last    |
+| `yarn test:offline`      | builds, then opens the app with the network off |
 | `yarn typecheck`         | `tsc --noEmit`, must print nothing              |
 | `yarn format`            | Prettier over `src`, then the member wrapper    |
 | `yarn check:format`      | the same check without writing                  |
-| `yarn check:i18n`        | no hard-coded user-visible strings              |
-| `yarn i18n`              | `tools/language.csv` to `src/locales/*.json`    |
+| `yarn check:lang`        | no hard-coded user-visible strings              |
+| `yarn lang`              | `language.csv` to `src/locales/*.json`          |
 
-## Inside `frontend/src`
+## Inside `src/`
 
 | Folder        | Holds                                                        |
 | ------------- | ------------------------------------------------------------ |
@@ -104,7 +106,7 @@ picture at 800% would otherwise ask the compositor for a layer no browser will b
 and the rest of the app never learns which mode it is in.
 
 One `PaintEngine` instance (`paint`) owns the surface, the history and the selection.
-Components talk to it; it reads the store for colour, size and tool, and writes pixels
+Components talk to it; it reads the store for color, size and tool, and writes pixels
 without going back through React.
 
 ### Files, printing and the camera
@@ -163,21 +165,18 @@ menu layer hid it completely.
 
 ### Locales
 
-`en` and `vi`, CSV to JSON. The pipeline sits at the repo root rather than inside
-`src/`, because the CSV and its generator are tooling and the app only consumes the
-JSON.
+`en` and `vi`, CSV to JSON. Source, generator and output all sit in one folder, which
+is what keeps the three from drifting apart.
 
 ```
-tools/                        # repo root, outside the app
+src/locales/
 ├─ language.csv               # SOURCE OF TRUTH - edit only this
 ├─ convert-to-json.py         # python3 stdlib only, no venv
-└─ generate-language.sh       # run: ./tools/generate-language.sh, or yarn i18n
-
-frontend/src/locales/
+├─ generate-language.sh       # run: yarn i18n
 ├─ en.json  vi.json           # GENERATED - never edit by hand
 ├─ i18n.ts                    # init, fallback locale, localStorage key "language"
 ├─ translate.ts               # non-hook helper for code outside React
-├─ common.ts  constant.ts  types.ts
+├─ common.ts
 ```
 
 Placeholders are written `{0}`, `{1}`, which is why `i18n.ts` overrides i18next's
@@ -192,11 +191,14 @@ character outside printable ASCII apart from `°`, and a key-shaped literal that
 exemption list lives in the script, each entry with a reason. `convert-to-json.py`
 enforces the same character rule on the CSV, where the text actually lives.
 
+Story files are skipped: a `stories.tsx` title names a sidebar entry in a developer
+tool, and the labels a story hands a component still come from `t()`.
+
 ### Icons
 
-UI icons are Font Awesome Pro (license held, token in `~/.npmrc`) as a **webfont**,
-registered in `src/components/Icon/constant.ts`. Anything drawn onto a canvas - the
-tool cursors - takes path data from `@fortawesome/pro-solid-svg-icons` instead.
+UI icons are Font Awesome Free as a **webfont**, registered in
+`src/components/Icon/constant.ts`. Anything drawn onto a canvas - the tool cursors -
+takes path data from `@fortawesome/free-solid-svg-icons` instead.
 
 The 23 shapes in the Shapes gallery are hand-written SVG geometry in
 `src/components/ShapeIcon/constant.tsx`: they are the outlines the user actually draws
@@ -206,7 +208,7 @@ six-point star, or the three callout shapes.
 ### Published as a static site
 
 ```
-frontend/
+paint-web/
 ├─ Dockerfile               # nginx:alpine over the dist/ built on the host
 └─ deploy/
    ├─ nginx.conf            # cache rules, the /about alias, the spa fallback
@@ -214,9 +216,15 @@ frontend/
 ```
 
 `public/about.html` is the public introduction, served at `/about` as well: plain HTML
-in both languages so it reads without the app, carrying the same disclaimer the About
-dialog shows and the promise that pictures never leave the machine. `yarn check:i18n`
-compares the two, so neither can drift.
+that reads without the app, carrying the same disclaimer the About dialog shows and the
+promise that pictures never leave the machine. `yarn check:i18n` compares the two, so
+neither can drift.
+
+Both languages sit in the markup and one of them is shown. `public/about.js` reads the
+same `language` key the editor writes to localStorage and marks the page `lang="vi"`;
+the stylesheet hides whatever does not match, and a visitor who has never opened the
+editor reads English. It is a file rather than an inline block because the CSP allows
+`script-src 'self'` only.
 
 The container listens on port 80 and expects TLS at an edge proxy. That matters more
 than it looks: the File System Access, `getUserMedia` and Clipboard APIs only work on a
@@ -225,7 +233,7 @@ secure origin, and over plain HTTP Save quietly turns into a download instead.
 ### The installable app
 
 ```
-frontend/public/
+public/
 ├─ manifest.webmanifest   # name, icons, file_handlers for the five formats
 ├─ sw.js                  # hand written service worker, plain js
 ├─ icon.svg               # tab icon and app icon
@@ -239,6 +247,15 @@ nothing. Hashed assets are served cache-first and everything else network-first;
 `Cache-Control: no-cache` for both. `common/pwa.ts` registers the worker in a built app
 only - in dev it would answer with yesterday's bundle.
 
+The precache list is generated: the worker registers after `window.load`, by which time
+the bundle has already been fetched around it, and the hashed file names cannot be typed
+by hand anyway. `scripts/build-sw.mjs` runs at the end of `yarn build` and rewrites the
+block between the `precache` markers in `dist/sw.js` with every built file plus a cache
+name taken from the list, which is what lets `activate` drop the previous build. Lookups
+pass `ignoreVary`: the assets answer with `Vary: Origin` and Vite tags the bundle
+`crossorigin`, and without it every subresource misses the cache and the first offline
+visit is a blank page. `yarn test:offline` is the guard.
+
 A file opened through `file_handlers` arrives as a handle rather than through a picker:
 `hooks/useLaunchFiles.ts` reads the launch queue and hands it to `openPicked`.
 
@@ -247,7 +264,7 @@ A file opened through `file_handlers` arrives as a handle rather than through a 
 Six layers, two runners.
 
 ```
-frontend/
+paint-web/
 ├─ src/**/<name>.test.ts     # vitest, node environment, beside what it tests
 │  ├─ engine/tools/render.test.ts   # real pixels through @napi-rs/canvas
 │  └─ components/Ribbon/Ribbon.test.tsx  # RTL, jsdom asked for in the docblock
@@ -273,6 +290,40 @@ catch, neither of which a native dialog allows.
 rest. Frame gaps measured while three other browsers are drawing say nothing about this
 app, and a test that fails for that reason is worse than no test.
 
+### Storybook
+
+One story file per component folder, beside the component as a unit test is:
+
+```
+paint-web/
+├─ .storybook/
+│  ├─ main.ts               # loads vite.config.ts, so stories resolve the root specifiers
+│  ├─ preview.tsx           # store, language toolbar, reset/tokens/Font Awesome
+│  └─ preview.scss          # the `.sb` block the stories lay themselves out with
+└─ src/components/<Name>/stories.tsx
+```
+
+Every story renders inside the app's own store, which is what keeps the one engine
+instance and the interface in step. A story that needs a different state names it, and
+gets an isolated store built from the slice map `store/index.ts` exports:
+
+```tsx
+export const About: Story = {
+	parameters: { state: { ui: { dialog: "about" } } satisfies StoryState },
+}
+```
+
+`StoryState` (`types/storybook.types.ts`) is every slice made partial: what a story
+leaves out keeps the app's default. What the engine dispatches back reaches the app's
+store rather than that isolated one, so a story with its own state is for looking at,
+not for drawing in.
+
+The globe in the toolbar switches language through the app's own `setLanguage`, so any
+screen can be read in en and in vi - the same reason the visual specs capture both.
+
+A play function runs in the Interactions panel; there is no headless runner, because
+`@storybook/addon-vitest` wants Vitest 3 and this repo is pinned to 2.x with Vite 5.
+
 ---
 
 ## Before you change code
@@ -285,6 +336,6 @@ formatter entry point.
 ## Not affiliated with Microsoft
 
 The interface imitates Microsoft Paint. No Microsoft code or artwork is used; the shape
-outlines are hand-drawn SVG and the remaining icons come from Font Awesome Pro under
+outlines are hand-drawn SVG and the remaining icons come from Font Awesome Free under
 its own license. "Paint Web" is the name of this project, which has no connection to
 Microsoft or to its products.

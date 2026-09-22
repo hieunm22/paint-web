@@ -1,0 +1,455 @@
+{
+	"ribbon": {
+		"tab": {
+			"file": "File",
+			"home": "Home",
+			"view": "View",
+			"text": "Text",
+			"strip": "Ribbon tabs"
+		},
+		"toolbar": {
+			"label": "Drawing tools"
+		},
+		"clipboard": {
+			"label": "Clipboard",
+			"paste": "Paste",
+			"paste-from": "Paste from...",
+			"cut": "Cut",
+			"copy": "Copy"
+		},
+		"image": {
+			"label": "Image",
+			"select": "Select",
+			"selection-shapes": "Selection shapes",
+			"select-rect": "Rectangular selection",
+			"select-free": "Free-form selection",
+			"selection-options": "Selection options",
+			"select-all": "Select all",
+			"invert-selection": "Invert selection",
+			"delete": "Delete",
+			"transparent-selection": "Transparent selection",
+			"crop": "Crop",
+			"resize": "Resize",
+			"rotate": "Rotate",
+			"rotate-right": "Rotate right 90°",
+			"rotate-left": "Rotate left 90°",
+			"rotate-180": "Rotate 180°",
+			"flip-vertical": "Flip vertical",
+			"flip-horizontal": "Flip horizontal"
+		},
+		"tools": {
+			"label": "Tools",
+			"pencil": "Pencil",
+			"fill": "Fill with color",
+			"text": "Text",
+			"eraser": "Eraser",
+			"picker": "Color picker",
+			"magnifier": "Magnifier"
+		},
+		"brushes": {
+			"label": "Brushes",
+			"brush": "Brush",
+			"calligraphy1": "Calligraphy brush 1",
+			"calligraphy2": "Calligraphy brush 2",
+			"airbrush": "Airbrush",
+			"oil": "Oil brush",
+			"crayon": "Crayon",
+			"marker": "Marker",
+			"natural-pencil": "Natural pencil",
+			"watercolor": "Watercolor"
+		},
+		"shapes": {
+			"label": "Shapes",
+			"line": "Line",
+			"curve": "Curve",
+			"oval": "Oval",
+			"rect": "Rectangle",
+			"rounded-rect": "Rounded rectangle",
+			"polygon": "Polygon",
+			"right-triangle": "Right triangle",
+			"triangle": "Triangle",
+			"diamond": "Diamond",
+			"pentagon": "Pentagon",
+			"hexagon": "Hexagon",
+			"arrow-right": "Right arrow",
+			"arrow-left": "Left arrow",
+			"arrow-up": "Up arrow",
+			"arrow-down": "Down arrow",
+			"star-4": "Four-point star",
+			"star-5": "Five-point star",
+			"star-6": "Six-point star",
+			"callout-rounded": "Rounded rectangular callout",
+			"callout-oval": "Oval callout",
+			"callout-cloud": "Cloud callout",
+			"heart": "Heart",
+			"lightning": "Lightning",
+			"scroll-up": "Scroll up",
+			"scroll-down": "Scroll down",
+			"show-all": "Show all shapes",
+			"outline": "Outline",
+			"fill": "Fill"
+		},
+		"stroke": {
+			"none": "No outline",
+			"none-fill": "No fill",
+			"solid": "Solid color",
+			"crayon": "Crayon",
+			"marker": "Marker",
+			"oil": "Oil",
+			"natural-pencil": "Natural pencil",
+			"watercolor": "Watercolor"
+		},
+		"size": {
+			"label": "Size",
+			"value": "{0}px",
+			"tooltip": "Size ({0}px) - {1} / {2}"
+		},
+		"colors": {
+			"label": "Colors",
+			"color1": "Color 1",
+			"color2": "Color 2",
+			"custom-empty": "Custom color slot",
+			"edit": "Edit colors"
+		},
+		"font": {
+			"label": "Font",
+			"family": "Font family",
+			"size": "Font size",
+			"bold": "Bold",
+			"italic": "Italic",
+			"underline": "Underline",
+			"strikethrough": "Strikethrough"
+		},
+		"background": {
+			"label": "Background",
+			"transparent": "Transparent",
+			"opaque": "Opaque"
+		},
+		"extras": {
+			"label": "Extras",
+			"copy": "Copy to clipboard",
+			"copy-tooltip": "Copy the whole image or the selection to the system clipboard"
+		},
+		"zoom": {
+			"label": "Zoom",
+			"in": "Zoom in",
+			"out": "Zoom out",
+			"actual": "100%"
+		},
+		"show-hide": {
+			"label": "Show or hide",
+			"rulers": "Rulers",
+			"gridlines": "Gridlines",
+			"gridlines-tooltip": "Gridlines ({0}) - needs zoom >= 400%",
+			"status-bar": "Status bar"
+		},
+		"display": {
+			"label": "Display",
+			"full-screen": "Full screen",
+			"thumbnail": "Thumbnail"
+		}
+	},
+	"shortcut": {
+		"file": {
+			"new": "Mod+N",
+			"open": "Mod+O",
+			"save": "Mod+S",
+			"save-as": "Mod+Shift+S",
+			"print": "Mod+P",
+			"properties": "Ctrl+E"
+		},
+		"edit": {
+			"undo": "Mod+Z",
+			"redo": "Mod+Y",
+			"cut": "Mod+X",
+			"copy": "Mod+C",
+			"paste": "Mod+V"
+		},
+		"image": {
+			"select-all": "Mod+A",
+			"invert-selection": "Mod+I",
+			"delete": "Del",
+			"resize": "Ctrl+W"
+		},
+		"tool": {
+			"size-up": "Mod+=",
+			"size-down": "Mod+-"
+		},
+		"view": {
+			"zoom-in": "Mod+PgUp",
+			"zoom-out": "Mod+PgDn",
+			"rulers": "Ctrl+R",
+			"gridlines": "Ctrl+G",
+			"full-screen": "F11"
+		}
+	},
+	"common": {
+		"tooltip": {
+			"with-shortcut": "{0} ({1})"
+		}
+	},
+	"titlebar": {
+		"qat": {
+			"new": "New",
+			"open": "Open",
+			"save": "Save",
+			"undo": "Undo",
+			"redo": "Redo",
+			"print-preview": "Print preview",
+			"customize": "Customize Quick Access Toolbar"
+		},
+		"window": {
+			"title": "{0} - Paint Web",
+			"maximize": "Maximize (full screen)",
+			"close": "Close"
+		}
+	},
+	"statusbar": {
+		"cell": {
+			"cursor-position": "{0}, {1}px",
+			"selection-size": "{0} x {1}px",
+			"document-size": "{0} x {1}px",
+			"file-size-kb": "{0}KB",
+			"file-size-mb": "{0}MB"
+		},
+		"zoom": {
+			"label": "Zoom",
+			"in": "Zoom in",
+			"out": "Zoom out",
+			"percent": "{0}%"
+		}
+	},
+	"canvas": {
+		"surface": {
+			"label": "Picture, {0} x {1} pixels"
+		},
+		"thumbnail": {
+			"title": "Thumbnail"
+		},
+		"text": {
+			"label": "Text box"
+		},
+		"full-screen": {
+			"exit": "Click the picture to leave full screen"
+		}
+	},
+	"filemenu": {
+		"item": {
+			"new": "New",
+			"open": "Open",
+			"save": "Save",
+			"save-note": "This browser downloads the file to your Downloads folder",
+			"save-as": "Save as",
+			"print": "Print",
+			"from-camera": "From camera",
+			"from-camera-note": "Uses getUserMedia - about 4K at most",
+			"copy-image": "Copy image",
+			"properties": "Properties",
+			"about": "About Paint Web",
+			"exit": "Exit"
+		},
+		"save-as": {
+			"option": "{0} ({1})",
+			"other": "Other formats..."
+		},
+		"print": {
+			"print": "Print",
+			"page-setup": "Page setup",
+			"preview": "Print preview"
+		},
+		"recent": {
+			"title": "Recent pictures",
+			"meta": "{0} - {1}",
+			"empty": "Nothing here yet - pictures you open appear in this list",
+			"forget": "Remove from this list"
+		},
+		"language": {
+			"label": "Language",
+			"en": "English",
+			"vi": "Tiếng Việt"
+		}
+	},
+	"dialog": {
+		"common": {
+			"ok": "OK",
+			"cancel": "Cancel",
+			"close": "Close"
+		},
+		"about": {
+			"title": "About Paint Web",
+			"app-name": "Paint Web 0.1.0",
+			"body": "A web rebuild of the Microsoft Paint (Windows 10) Ribbon interface, running entirely client-side.",
+			"disclaimer": "Not affiliated with Microsoft. The interface is inspired by Microsoft Paint. Icons come from Font Awesome Pro under a separate license; no original Paint asset is used.",
+			"intro-link": "Read the public introduction"
+		},
+		"confirm-discard": {
+			"title": "Paint Web",
+			"message": "Do you want to save changes to {0}?",
+			"save": "Save",
+			"dont-save": "Don't Save"
+		},
+		"edit-colors": {
+			"title": "Edit Colors",
+			"basic": "Basic colors:",
+			"add-custom": "Add to Custom Colors",
+			"color-solid": "Color|Solid:",
+			"hue": "Hue:",
+			"sat": "Sat:",
+			"lum": "Lum:",
+			"red": "Red:",
+			"green": "Green:",
+			"blue": "Blue:"
+		},
+		"from-camera": {
+			"title": "From Camera",
+			"capture": "Capture",
+			"starting": "Starting the camera...",
+			"denied": "Permission to use the camera was refused",
+			"unavailable": "This browser offers no camera",
+			"insecure": "The camera needs an https connection",
+			"hint": "The captured picture replaces the one you have open",
+			"preview": "Camera preview"
+		},
+		"image-properties": {
+			"title": "Image Properties",
+			"file-attributes": "File Attributes",
+			"last-saved": "Last saved:",
+			"not-available": "Not available",
+			"size-on-disk": "Size on disk:",
+			"size-estimate": "{0} KB (estimated)",
+			"resolution": "Resolution:",
+			"dpi": "{0} DPI",
+			"units": "Units",
+			"inches": "Inches",
+			"centimeters": "Centimeters",
+			"pixels": "Pixels",
+			"colors": "Colors",
+			"black-and-white": "Black and white",
+			"color": "Color",
+			"width": "Width:",
+			"height": "Height:"
+		},
+		"page-setup": {
+			"title": "Page Setup",
+			"paper": "Paper",
+			"size": "Size:",
+			"a4": "A4",
+			"letter": "Letter",
+			"orientation": "Orientation",
+			"portrait": "Portrait",
+			"landscape": "Landscape",
+			"margins": "Margins (millimetres)",
+			"left": "Left:",
+			"right": "Right:",
+			"top": "Top:",
+			"bottom": "Bottom:",
+			"centering": "Centering",
+			"horizontal": "Horizontal",
+			"vertical": "Vertical",
+			"scaling": "Scaling",
+			"fit": "Fit to page",
+			"adjust": "Adjust to:",
+			"percent": "%",
+			"hint": "The browser still shows its own print dialog - this only sets the page."
+		},
+		"print-preview": {
+			"title": "Print Preview",
+			"print": "Print",
+			"page-setup": "Page setup",
+			"measure": "{0} x {1} mm of {2} x {3} mm",
+			"page": "Page"
+		},
+		"resize-skew": {
+			"title": "Resize and Skew",
+			"resize": "Resize",
+			"by": "By:",
+			"percentage": "Percentage",
+			"pixels": "Pixels",
+			"horizontal": "Horizontal:",
+			"vertical": "Vertical:",
+			"maintain-ratio": "Maintain aspect ratio",
+			"skew": "Skew (Degrees)",
+			"hint": "Limited to 89° either way - a wider angle makes the matrix degenerate."
+		},
+		"save-as": {
+			"title": "Save As",
+			"file-name": "File name:",
+			"type": "Save as type:",
+			"quality": "Quality:",
+			"format-option": "{0} ({1})",
+			"hint-png": "PNG keeps alpha - the default format.",
+			"hint-jpeg": "JPEG has no alpha: a transparent background turns white.",
+			"hint-bmp": "BMP is written by a hand-rolled encoder, 24-bit uncompressed - alpha is flattened onto white.",
+			"hint-gif": "GIF is quantised to 256 colors with 1-bit alpha.",
+			"hint-webp": "WEBP keeps alpha; Safari 16 and later."
+		}
+	},
+	"document": {
+		"name": {
+			"untitled": "Untitled",
+			"camera": "Camera"
+		}
+	},
+	"drop": {
+		"overlay": {
+			"label": "Drop a picture here to open it"
+		}
+	},
+	"live": {
+		"region": {
+			"label": "Announcements"
+		},
+		"image": {
+			"size": "The picture is now {0} x {1} pixels"
+		},
+		"selection": {
+			"size": "Selection {0} x {1} pixels",
+			"none": "Selection cleared"
+		}
+	},
+	"toast": {
+		"file": {
+			"gif-flattened": "An animated GIF opens as its first frame only",
+			"too-large": "That picture is larger than 8000 pixels on a side",
+			"open-failed": "That file could not be opened as a picture",
+			"not-a-picture": "That file is not a picture",
+			"one-at-a-time": "Only the first picture was opened - Paint holds one at a time",
+			"save-failed": "The file could not be written",
+			"downloaded": "Saved to your Downloads folder",
+			"permission-denied": "Permission to use that file was refused",
+			"close-blocked": "A tab can only be closed from the browser itself",
+			"over-canvas-limit": "This browser cannot hold a picture that large"
+		},
+		"print": {
+			"failed": "The picture could not be printed"
+		},
+		"camera": {
+			"failed": "The camera handed back no picture"
+		},
+		"clipboard": {
+			"no-image": "The clipboard holds no picture",
+			"copy-failed": "The picture could not be copied",
+			"paste-shortcut": "This browser only pastes with the keyboard shortcut"
+		}
+	},
+	"history": {
+		"label": {
+			"pencil": "Pencil",
+			"brush": "Brush",
+			"eraser": "Eraser",
+			"fill": "Fill with color",
+			"picker": "Pick color",
+			"magnifier": "Magnifier",
+			"shape": "Shape",
+			"selection": "Selection",
+			"delete": "Delete selection",
+			"paste": "Paste",
+			"crop": "Crop",
+			"rotate": "Rotate",
+			"flip": "Flip",
+			"resize": "Resize",
+			"canvas": "Canvas size",
+			"text": "Text"
+		}
+	}
+}

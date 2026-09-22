@@ -12,3 +12,4 @@ dist
 # playwright run output; the baselines under tests/snapshots are committed
 test-results
 playwright-report
+storybook-static

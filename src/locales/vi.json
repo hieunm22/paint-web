@@ -1,0 +1,455 @@
+{
+	"ribbon": {
+		"tab": {
+			"file": "Tệp",
+			"home": "Trang chủ",
+			"view": "Xem",
+			"text": "Văn bản",
+			"strip": "Các thẻ ribbon"
+		},
+		"toolbar": {
+			"label": "Công cụ vẽ"
+		},
+		"clipboard": {
+			"label": "Bảng tạm",
+			"paste": "Dán",
+			"paste-from": "Dán từ...",
+			"cut": "Cắt",
+			"copy": "Sao chép"
+		},
+		"image": {
+			"label": "Ảnh",
+			"select": "Chọn",
+			"selection-shapes": "Kiểu vùng chọn",
+			"select-rect": "Chọn hình chữ nhật",
+			"select-free": "Chọn tự do",
+			"selection-options": "Tuỳ chọn vùng chọn",
+			"select-all": "Chọn tất cả",
+			"invert-selection": "Đảo vùng chọn",
+			"delete": "Xoá",
+			"transparent-selection": "Vùng chọn trong suốt",
+			"crop": "Cắt xén",
+			"resize": "Đổi cỡ",
+			"rotate": "Xoay",
+			"rotate-right": "Xoay phải 90°",
+			"rotate-left": "Xoay trái 90°",
+			"rotate-180": "Xoay 180°",
+			"flip-vertical": "Lật dọc",
+			"flip-horizontal": "Lật ngang"
+		},
+		"tools": {
+			"label": "Công cụ",
+			"pencil": "Bút chì",
+			"fill": "Tô màu",
+			"text": "Chữ",
+			"eraser": "Tẩy",
+			"picker": "Lấy màu",
+			"magnifier": "Kính lúp"
+		},
+		"brushes": {
+			"label": "Cọ vẽ",
+			"brush": "Cọ",
+			"calligraphy1": "Cọ thư pháp 1",
+			"calligraphy2": "Cọ thư pháp 2",
+			"airbrush": "Bình xịt",
+			"oil": "Cọ sơn dầu",
+			"crayon": "Bút sáp",
+			"marker": "Bút dạ",
+			"natural-pencil": "Bút chì tự nhiên",
+			"watercolor": "Màu nước"
+		},
+		"shapes": {
+			"label": "Hình",
+			"line": "Đường thẳng",
+			"curve": "Đường cong",
+			"oval": "Hình bầu dục",
+			"rect": "Hình chữ nhật",
+			"rounded-rect": "Chữ nhật bo góc",
+			"polygon": "Đa giác",
+			"right-triangle": "Tam giác vuông",
+			"triangle": "Tam giác",
+			"diamond": "Hình thoi",
+			"pentagon": "Ngũ giác",
+			"hexagon": "Lục giác",
+			"arrow-right": "Mũi tên phải",
+			"arrow-left": "Mũi tên trái",
+			"arrow-up": "Mũi tên lên",
+			"arrow-down": "Mũi tên xuống",
+			"star-4": "Sao bốn cánh",
+			"star-5": "Sao năm cánh",
+			"star-6": "Sao sáu cánh",
+			"callout-rounded": "Chú thích chữ nhật bo góc",
+			"callout-oval": "Chú thích bầu dục",
+			"callout-cloud": "Chú thích đám mây",
+			"heart": "Trái tim",
+			"lightning": "Tia chớp",
+			"scroll-up": "Cuộn lên",
+			"scroll-down": "Cuộn xuống",
+			"show-all": "Hiện tất cả hình",
+			"outline": "Viền",
+			"fill": "Tô"
+		},
+		"stroke": {
+			"none": "Không viền",
+			"none-fill": "Không tô",
+			"solid": "Màu đặc",
+			"crayon": "Bút sáp",
+			"marker": "Bút dạ",
+			"oil": "Sơn dầu",
+			"natural-pencil": "Bút chì tự nhiên",
+			"watercolor": "Màu nước"
+		},
+		"size": {
+			"label": "Cỡ nét",
+			"value": "{0}px",
+			"tooltip": "Cỡ nét ({0}px) - {1} / {2}"
+		},
+		"colors": {
+			"label": "Màu",
+			"color1": "Màu 1",
+			"color2": "Màu 2",
+			"custom-empty": "Ô màu tuỳ chỉnh trống",
+			"edit": "Sửa màu"
+		},
+		"font": {
+			"label": "Phông chữ",
+			"family": "Kiểu phông",
+			"size": "Cỡ phông",
+			"bold": "Đậm",
+			"italic": "Nghiêng",
+			"underline": "Gạch chân",
+			"strikethrough": "Gạch ngang"
+		},
+		"background": {
+			"label": "Nền",
+			"transparent": "Trong suốt",
+			"opaque": "Đục"
+		},
+		"extras": {
+			"label": "Khác",
+			"copy": "Chép ra bảng tạm",
+			"copy-tooltip": "Chép toàn ảnh hoặc vùng chọn ra bảng tạm của hệ thống"
+		},
+		"zoom": {
+			"label": "Thu phóng",
+			"in": "Phóng to",
+			"out": "Thu nhỏ",
+			"actual": "100%"
+		},
+		"show-hide": {
+			"label": "Hiện hoặc ẩn",
+			"rulers": "Thước",
+			"gridlines": "Lưới",
+			"gridlines-tooltip": "Lưới ({0}) - cần thu phóng >= 400%",
+			"status-bar": "Thanh trạng thái"
+		},
+		"display": {
+			"label": "Hiển thị",
+			"full-screen": "Toàn màn hình",
+			"thumbnail": "Ảnh thu nhỏ"
+		}
+	},
+	"shortcut": {
+		"file": {
+			"new": "Mod+N",
+			"open": "Mod+O",
+			"save": "Mod+S",
+			"save-as": "Mod+Shift+S",
+			"print": "Mod+P",
+			"properties": "Ctrl+E"
+		},
+		"edit": {
+			"undo": "Mod+Z",
+			"redo": "Mod+Y",
+			"cut": "Mod+X",
+			"copy": "Mod+C",
+			"paste": "Mod+V"
+		},
+		"image": {
+			"select-all": "Mod+A",
+			"invert-selection": "Mod+I",
+			"delete": "Del",
+			"resize": "Ctrl+W"
+		},
+		"tool": {
+			"size-up": "Mod+=",
+			"size-down": "Mod+-"
+		},
+		"view": {
+			"zoom-in": "Mod+PgUp",
+			"zoom-out": "Mod+PgDn",
+			"rulers": "Ctrl+R",
+			"gridlines": "Ctrl+G",
+			"full-screen": "F11"
+		}
+	},
+	"common": {
+		"tooltip": {
+			"with-shortcut": "{0} ({1})"
+		}
+	},
+	"titlebar": {
+		"qat": {
+			"new": "Mới",
+			"open": "Mở",
+			"save": "Lưu",
+			"undo": "Hoàn tác",
+			"redo": "Làm lại",
+			"print-preview": "Xem trước khi in",
+			"customize": "Tuỳ chỉnh thanh truy cập nhanh"
+		},
+		"window": {
+			"title": "{0} - Paint Web",
+			"maximize": "Phóng to (toàn màn hình)",
+			"close": "Đóng"
+		}
+	},
+	"statusbar": {
+		"cell": {
+			"cursor-position": "{0}, {1}px",
+			"selection-size": "{0} x {1}px",
+			"document-size": "{0} x {1}px",
+			"file-size-kb": "{0}KB",
+			"file-size-mb": "{0}MB"
+		},
+		"zoom": {
+			"label": "Thu phóng",
+			"in": "Phóng to",
+			"out": "Thu nhỏ",
+			"percent": "{0}%"
+		}
+	},
+	"canvas": {
+		"surface": {
+			"label": "Ảnh, {0} x {1} điểm ảnh"
+		},
+		"thumbnail": {
+			"title": "Ảnh thu nhỏ"
+		},
+		"text": {
+			"label": "Hộp văn bản"
+		},
+		"full-screen": {
+			"exit": "Bấm vào ảnh để thoát toàn màn hình"
+		}
+	},
+	"filemenu": {
+		"item": {
+			"new": "Mới",
+			"open": "Mở",
+			"save": "Lưu",
+			"save-note": "Trình duyệt này sẽ tải tệp về thư mục Downloads",
+			"save-as": "Lưu thành",
+			"print": "In",
+			"from-camera": "Từ máy ảnh",
+			"from-camera-note": "Dùng getUserMedia - tối đa khoảng 4K",
+			"copy-image": "Chép ảnh",
+			"properties": "Thuộc tính",
+			"about": "Giới thiệu Paint Web",
+			"exit": "Thoát"
+		},
+		"save-as": {
+			"option": "{0} ({1})",
+			"other": "Định dạng khác..."
+		},
+		"print": {
+			"print": "In",
+			"page-setup": "Thiết lập trang",
+			"preview": "Xem trước khi in"
+		},
+		"recent": {
+			"title": "Ảnh gần đây",
+			"meta": "{0} - {1}",
+			"empty": "Chưa có gì - ảnh bạn mở sẽ hiện trong danh sách này",
+			"forget": "Xoá khỏi danh sách này"
+		},
+		"language": {
+			"label": "Ngôn ngữ",
+			"en": "English",
+			"vi": "Tiếng Việt"
+		}
+	},
+	"dialog": {
+		"common": {
+			"ok": "OK",
+			"cancel": "Huỷ",
+			"close": "Đóng"
+		},
+		"about": {
+			"title": "Giới thiệu Paint Web",
+			"app-name": "Paint Web 0.1.0",
+			"body": "Bản dựng lại giao diện Ribbon của Microsoft Paint (Windows 10) trên nền web, chạy hoàn toàn client-side.",
+			"disclaimer": "Không liên kết với Microsoft. Giao diện lấy cảm hứng từ Microsoft Paint. Icon dùng Font Awesome Pro theo license riêng; không sử dụng asset gốc của Paint.",
+			"intro-link": "Đọc trang giới thiệu công khai"
+		},
+		"confirm-discard": {
+			"title": "Paint Web",
+			"message": "Bạn có muốn lưu thay đổi cho {0} không?",
+			"save": "Lưu",
+			"dont-save": "Không lưu"
+		},
+		"edit-colors": {
+			"title": "Sửa màu",
+			"basic": "Màu cơ bản:",
+			"add-custom": "Thêm vào màu tuỳ chỉnh",
+			"color-solid": "Màu|Đặc:",
+			"hue": "Tông:",
+			"sat": "Bão hoà:",
+			"lum": "Độ sáng:",
+			"red": "Đỏ:",
+			"green": "Lục:",
+			"blue": "Lam:"
+		},
+		"from-camera": {
+			"title": "Từ máy ảnh",
+			"capture": "Chụp",
+			"starting": "Đang khởi động máy ảnh...",
+			"denied": "Quyền dùng máy ảnh đã bị từ chối",
+			"unavailable": "Trình duyệt này không có máy ảnh",
+			"insecure": "Máy ảnh cần kết nối https",
+			"hint": "Ảnh chụp sẽ thay ảnh đang mở",
+			"preview": "Xem trước máy ảnh"
+		},
+		"image-properties": {
+			"title": "Thuộc tính ảnh",
+			"file-attributes": "Thuộc tính tệp",
+			"last-saved": "Lưu lần cuối:",
+			"not-available": "Không có",
+			"size-on-disk": "Dung lượng trên đĩa:",
+			"size-estimate": "{0} KB (ước tính)",
+			"resolution": "Độ phân giải:",
+			"dpi": "{0} DPI",
+			"units": "Đơn vị",
+			"inches": "Inch",
+			"centimeters": "Xentimét",
+			"pixels": "Điểm ảnh",
+			"colors": "Màu",
+			"black-and-white": "Đen trắng",
+			"color": "Màu",
+			"width": "Rộng:",
+			"height": "Cao:"
+		},
+		"page-setup": {
+			"title": "Thiết lập trang",
+			"paper": "Giấy",
+			"size": "Khổ:",
+			"a4": "A4",
+			"letter": "Letter",
+			"orientation": "Hướng giấy",
+			"portrait": "Dọc",
+			"landscape": "Ngang",
+			"margins": "Lề (milimét)",
+			"left": "Trái:",
+			"right": "Phải:",
+			"top": "Trên:",
+			"bottom": "Dưới:",
+			"centering": "Canh giữa",
+			"horizontal": "Ngang",
+			"vertical": "Dọc",
+			"scaling": "Tỉ lệ",
+			"fit": "Vừa trang",
+			"adjust": "Chỉnh về:",
+			"percent": "%",
+			"hint": "Trình duyệt vẫn hiện hộp thoại in của nó - phần này chỉ đặt trang."
+		},
+		"print-preview": {
+			"title": "Xem trước khi in",
+			"print": "In",
+			"page-setup": "Thiết lập trang",
+			"measure": "{0} x {1} mm trên {2} x {3} mm",
+			"page": "Trang"
+		},
+		"resize-skew": {
+			"title": "Đổi cỡ và nghiêng",
+			"resize": "Đổi cỡ",
+			"by": "Theo:",
+			"percentage": "Phần trăm",
+			"pixels": "Điểm ảnh",
+			"horizontal": "Ngang:",
+			"vertical": "Dọc:",
+			"maintain-ratio": "Giữ tỉ lệ khung hình",
+			"skew": "Nghiêng (độ)",
+			"hint": "Giới hạn 89° mỗi chiều - tránh ma trận suy biến."
+		},
+		"save-as": {
+			"title": "Lưu thành",
+			"file-name": "Tên tệp:",
+			"type": "Lưu kiểu:",
+			"quality": "Chất lượng:",
+			"format-option": "{0} ({1})",
+			"hint-png": "PNG giữ nguyên alpha - định dạng mặc định.",
+			"hint-jpeg": "JPEG không có alpha: nền trong suốt sẽ thành trắng.",
+			"hint-bmp": "BMP ghi bằng encoder tự viết, 24-bit không nén - alpha hợp nhất với nền trắng.",
+			"hint-gif": "GIF lượng tử hoá về 256 màu, alpha 1-bit.",
+			"hint-webp": "WEBP giữ alpha; Safari 16 trở lên."
+		}
+	},
+	"document": {
+		"name": {
+			"untitled": "Chưa đặt tên",
+			"camera": "Máy ảnh"
+		}
+	},
+	"drop": {
+		"overlay": {
+			"label": "Thả ảnh vào đây để mở"
+		}
+	},
+	"live": {
+		"region": {
+			"label": "Thông báo"
+		},
+		"image": {
+			"size": "Ảnh hiện là {0} x {1} điểm ảnh"
+		},
+		"selection": {
+			"size": "Vùng chọn {0} x {1} điểm ảnh",
+			"none": "Đã bỏ vùng chọn"
+		}
+	},
+	"toast": {
+		"file": {
+			"gif-flattened": "Ảnh GIF động chỉ mở được khung hình đầu tiên",
+			"too-large": "Ảnh đó có cạnh lớn hơn 8000 điểm ảnh",
+			"open-failed": "Không mở được tệp đó như một ảnh",
+			"not-a-picture": "Tệp đó không phải là ảnh",
+			"one-at-a-time": "Chỉ mở ảnh đầu tiên - Paint chỉ giữ một ảnh mỗi lần",
+			"save-failed": "Không ghi được tệp",
+			"downloaded": "Đã lưu vào thư mục Tải xuống",
+			"permission-denied": "Quyền dùng tệp đó đã bị từ chối",
+			"close-blocked": "Chỉ có thể đóng thẻ từ chính trình duyệt",
+			"over-canvas-limit": "Trình duyệt này không chứa nổi ảnh lớn đến vậy"
+		},
+		"print": {
+			"failed": "Không in được ảnh"
+		},
+		"camera": {
+			"failed": "Máy ảnh không trả về ảnh nào"
+		},
+		"clipboard": {
+			"no-image": "Bảng tạm không có ảnh nào",
+			"copy-failed": "Không sao chép được ảnh",
+			"paste-shortcut": "Trình duyệt này chỉ dán được bằng phím tắt"
+		}
+	},
+	"history": {
+		"label": {
+			"pencil": "Bút chì",
+			"brush": "Cọ vẽ",
+			"eraser": "Tẩy",
+			"fill": "Tô màu",
+			"picker": "Lấy màu",
+			"magnifier": "Kính lúp",
+			"shape": "Hình",
+			"selection": "Vùng chọn",
+			"delete": "Xoá vùng chọn",
+			"paste": "Dán",
+			"crop": "Cắt xén",
+			"rotate": "Xoay",
+			"flip": "Lật",
+			"resize": "Đổi cỡ",
+			"canvas": "Cỡ trang vẽ",
+			"text": "Văn bản"
+		}
+	}
+}

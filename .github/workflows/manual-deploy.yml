@@ -75,7 +75,7 @@ jobs:
 
           deploy_frontend() {
             echo "==> deploying frontend..."
-            cd "$BASE/frontend"
+            cd "$BASE"
             source /root/.nvm/nvm.sh
             if [ "$INSTALL_DEPENDENCY" = "true" ]; then
               echo "install_dependency is on - running make install..."

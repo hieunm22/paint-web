@@ -36,8 +36,16 @@ jobs:
           need_build=false
           build_type=""
 
-          # the app lives under frontend/, the repo root holds documentation only
-          FE_FOLDER="frontend"
+          # the app is the repo root now, so the question is inverted: everything
+          # builds except the paths that only a reader ever opens
+          DOC_PATHS="README.md DESIGN.md docs/ .github/"
+
+          is_doc() {
+            for path in $DOC_PATHS; do
+              case "$1" in "$path"*) return 0 ;; esac
+            done
+            return 1
+          }
 
           echo "Changed files:"
           echo "$CHANGED_FILES"
@@ -45,14 +53,14 @@ jobs:
           # check each file
           while IFS= read -r file; do
             if [ -n "$file" ]; then
-              if [[ "$file" == "$FE_FOLDER/"* ]]; then
-                if [[ "$file" == "$FE_FOLDER/package.json" ]]; then
-                  package_json_changed=true
-                  echo "package.json changed"
-                else
-                  frontend_changed=true
-                  echo "frontend file changed: $file"
-                fi
+              if is_doc "$file"; then
+                echo "documentation only, no build: $file"
+              elif [ "$file" = "package.json" ]; then
+                package_json_changed=true
+                echo "package.json changed"
+              else
+                frontend_changed=true
+                echo "frontend file changed: $file"
               fi
             fi
           done <<< "$CHANGED_FILES"
@@ -142,7 +150,6 @@ jobs:
           git checkout "$DEPLOY_BRANCH"
           git reset --hard "origin/$DEPLOY_BRANCH"
 
-          cd "$BASE/frontend"
           source /root/.nvm/nvm.sh
 
           if [ "$INSTALL_DEPENDENCY" = "true" ]; then

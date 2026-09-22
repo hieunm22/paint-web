@@ -1,0 +1,23 @@
+.drop-overlay {
+	position: fixed;
+	inset: 0;
+	z-index: var(--z-drop);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	// the drop belongs to the window listener, never to this layer
+	pointer-events: none;
+	background: rgb(43 119 184 / 12%);
+
+	&__frame {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+		padding: 14px 20px;
+		border: 2px dashed var(--bs-bg);
+		border-radius: 3px;
+		background: var(--menu-bg);
+		box-shadow: 0 2px 8px rgb(0 0 0 / 28%);
+		font-size: var(--font-ui-size);
+	}
+}

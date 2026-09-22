@@ -1,0 +1,249 @@
+.file-menu {
+	position: absolute;
+	top: calc(var(--title-height) + var(--tab-height));
+	left: 0;
+	display: flex;
+	overflow: hidden;
+	width: 700px;
+	max-width: 100%;
+	max-height: calc(100% - var(--title-height) - var(--tab-height));
+	background: #fff;
+	border: 1px solid #c8c8c8;
+	box-shadow: 2px 3px 8px rgb(0 0 0 / 25%);
+	z-index: var(--z-backstage);
+
+	&__left {
+		width: 232px;
+		flex: 0 0 auto;
+		background: var(--bs-bg);
+		color: var(--bs-text);
+		padding: 6px 0;
+		display: flex;
+		flex-direction: column;
+	}
+
+	&__item {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+		width: 100%;
+		min-height: 38px;
+		padding: 0 14px;
+		color: var(--bs-text);
+		font-size: 13px;
+		text-align: left;
+
+		&:hover:not(:disabled) {
+			background: var(--bs-item-hover);
+		}
+		&:disabled {
+			color: #b9d3e9;
+		}
+
+		// the row whose choices stand in the panel stays lit while they are up
+		&--open {
+			background: var(--bs-item-hover);
+		}
+	}
+
+	&__item-icon {
+		width: 22px;
+		display: flex;
+		justify-content: center;
+		opacity: 0.95;
+	}
+
+	&__item-label {
+		flex: 1;
+	}
+
+	&__item-shortcut {
+		font-size: 11px;
+		opacity: 0.8;
+	}
+
+	&__caret {
+		display: flex;
+	}
+
+	&__sep {
+		height: 1px;
+		background: rgba(255, 255, 255, 0.25);
+		margin: 5px 12px;
+	}
+
+	&__language {
+		display: flex;
+		align-items: center;
+		gap: 6px;
+		margin-top: auto;
+		padding: 10px 14px 4px;
+		font-size: 12px;
+	}
+
+	&__language-label {
+		flex: 1;
+		color: var(--bs-text);
+		opacity: 0.8;
+	}
+
+	&__language-btn {
+		padding: 3px 8px;
+		border: 1px solid rgba(255, 255, 255, 0.35);
+		border-radius: 2px;
+		color: var(--bs-text);
+		font-size: 12px;
+
+		&:hover {
+			background: var(--bs-item-hover);
+		}
+
+		&--active {
+			background: #fff;
+			border-color: #fff;
+			color: var(--bs-bg);
+		}
+	}
+
+	&__right {
+		flex: 1;
+		padding: 18px 24px;
+		overflow: auto;
+	}
+
+	&__right-title {
+		font-size: 15px;
+		color: var(--bs-bg);
+		margin-bottom: 12px;
+	}
+
+	&__choice-list {
+		display: flex;
+		flex-direction: column;
+		max-width: 420px;
+	}
+
+	&__choice {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+		width: 100%;
+		min-height: 34px;
+		padding: 0 8px;
+		font-size: 13px;
+		text-align: left;
+
+		&:hover {
+			background: #eaf3fb;
+		}
+	}
+
+	&__choice-icon {
+		width: 22px;
+		display: flex;
+		justify-content: center;
+		color: var(--bs-bg);
+	}
+
+	&__choice-label {
+		flex: 1;
+	}
+
+	&__choice-shortcut {
+		font-size: 11px;
+		color: #707070;
+	}
+
+	&__choice-sep {
+		height: 1px;
+		background: #e0e0e0;
+		margin: 5px 8px;
+	}
+
+	&__recent-list {
+		display: flex;
+		flex-direction: column;
+		gap: 2px;
+		max-width: 420px;
+	}
+
+	&__recent-item {
+		--recent-forget: 0;
+		display: flex;
+		align-items: center;
+		border: 1px solid transparent;
+		width: 100%;
+		cursor: pointer;
+
+		&:hover,
+		&:focus-within {
+			--recent-forget: 1;
+			background: #eaf3fb;
+			border-color: #cfe3f5;
+		}
+	}
+
+	&__recent-open {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+		padding: 5px 8px;
+		text-align: left;
+		flex: 1;
+		min-width: 0;
+	}
+
+	// opacity rather than visibility: a hidden button leaves the tab order and
+	// the keyboard could never reach it
+	&__recent-forget {
+		opacity: var(--recent-forget);
+		flex: 0 0 auto;
+		padding: 6px 8px;
+		color: #707070;
+
+		&:hover {
+			color: #c42b1c;
+		}
+
+		&:focus-visible {
+			opacity: 1;
+		}
+	}
+
+	// border-box: the 1px frame comes out of the 56, leaving a 54 px picture
+	&__thumb {
+		width: 56px;
+		height: 56px;
+		border: 1px solid #c8c8c8;
+		background: repeating-conic-gradient(#f4f4f4 0 25%, #fff 0 50%) 0 0 / 12px
+			12px;
+		object-fit: contain;
+		flex: 0 0 auto;
+	}
+
+	&__recent-empty {
+		max-width: 420px;
+		color: #707070;
+		font-size: 12px;
+	}
+
+	&__recent-text {
+		flex: 1;
+		min-width: 0;
+	}
+
+	&__recent-name {
+		font-size: 12px;
+		overflow: hidden;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+	}
+
+	&__recent-meta {
+		font-size: 11px;
+		color: #707070;
+		overflow: hidden;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+	}
+}

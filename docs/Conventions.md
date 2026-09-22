@@ -12,9 +12,9 @@ Read those first. **This file holds only rules, and only the ones specific to
 paint-web** - each one either refines a global rule or exists nowhere else. How the
 repo is put together and where each piece lives is `README.md`.
 
-All paths below are relative to `frontend/`. New markdown documents go in `docs/`,
-named in PascalCase; `README.md` stays at the root because that is where a reader
-looks for it.
+All paths below are relative to the repo root, which is where the app lives. New
+markdown documents go in `docs/`, named in PascalCase; `README.md` stays at the root
+because that is where a reader looks for it.
 
 ---
 
@@ -89,13 +89,13 @@ src/components/ rendering.
 
 - **No user-visible string is written in a `.ts` or `.tsx` file.** Not in English, not
   in Vietnamese, and `constant.ts` is not an exception - a label table is interface,
-  whatever it looks like. `tools/language.csv` is the only source; the JSON is
+  whatever it looks like. `src/locales/language.csv` is the only source; the JSON is
   generated and committed with it.
-- Ids and enum values (`'pencil'`), css class names, hex colours, font names, format
+- Ids and enum values (`'pencil'`), css class names, hex colors, font names, format
   names such as `PNG` and developer-only log text stay as they are.
-- **Keys read `<area>.<group>.<element>` - exactly three levels, never two or four** -
-  and follow the interface rather than the folder tree. A group's own caption is
-  `<area>.<group>.label`. The generator refuses any other shape.
+- **Prose follows the spelling the interface uses: `color`, not `colour`.** Identifiers
+  and user-facing strings already do; a comment that spells it differently makes the
+  same word ungreppable.
 - **Rows sharing a prefix stay contiguous in the CSV**, label first, so a group reads
   as one block.
 - **A constant table holds the key, not the text**: `labelKey`, `titleKey`,
@@ -119,11 +119,13 @@ src/components/ rendering.
 - **Class names are generated from the packages, never hand-typed.** `faVectorSquare`
   resolves to `fa-draw-square`, and aliases like that are why.
 - **`main.tsx` imports only the styles in use** (`solid`, `regular`). `all.css` pulls
-  every Pro family, and each extra style is another ~300 kB font file - check whether a
+  every family, and each extra style is another ~300 kB font file - check whether a
   `solid` glyph will do first.
 - **`Icon` sets `font-size` and nothing else.** A fixed `width` does not scale a
   webfont glyph; it just lets wide glyphs spill over the label.
-- **A canvas cursor takes path data** from `@fortawesome/pro-solid-svg-icons`, and only
+- **Every glyph must exist in Font Awesome Free.** The Pro packages were dropped, and a
+  Pro-only name renders as a blank box - check the free metadata before registering one.
+- **A canvas cursor takes path data** from `@fortawesome/free-solid-svg-icons`, and only
   the solid style of that package is installed.
 - **Hand-written SVG is for outlines that must be exact** - the 23 gallery shapes, the
   app icons. Everything else comes from the registry.
@@ -143,7 +145,7 @@ src/components/ rendering.
 
 ---
 
-## 7. A control with no behaviour is disabled
+## 7. A control with no behavior is disabled
 
 The ribbon and the backstage are built from the full Paint design long before the
 features behind them exist. Every control that does nothing yet carries `disabled`, so
@@ -161,18 +163,18 @@ Only a feature with nothing to derive from gets a literal `disabled` or a `pendi
 flag in its constant table.
 
 **Disabled has to look disabled, and that is easy to get wrong.** `reset.scss` sets
-`button:disabled { color: #a0a0a0 }`, which only reaches what inherits colour. Two
+`button:disabled { color: #a0a0a0 }`, which only reaches what inherits color. Two
 habits break it:
 
-- an icon with a hard-coded colour. `ShapeIcon` uses `stroke="currentColor"`, and an
-  icon wrapper takes `color: var(--rb-ink)` rather than a literal grey.
+- an icon with a hard-coded color. `ShapeIcon` uses `stroke="currentColor"`, and an
+  icon wrapper takes `color: var(--rb-ink)` rather than a literal gray.
 - a `&:hover` without `:not(:disabled)`, which keeps lighting a dead button up.
 
 A block redefines `--rb-ink` on its own `&:disabled` and the glyph inherits it, which
 is how the rule stays flat instead of needing a descendant selector. `.ribbon-split__top`
 and `.ribbon-split__bottom` are not `.ribbon-btn` and carry their own copy.
 
-**Do not paint a selected state on a disabled control.** A greyed-out gallery with one
+**Do not paint a selected state on a disabled control.** A grayed-out gallery with one
 cell still highlighted reads as a live choice.
 
 ---
@@ -194,7 +196,7 @@ cell still highlighted reads as a live choice.
 - **Every screen is captured in both languages.** Vietnamese runs longer than English,
   and a clipped label is exactly what a screenshot catches and a unit test cannot.
 - **The allowance is 40 pixels, not a percentage.** A tenth of a percent of a
-  1280x688 panel is some 900 pixels of licence: renaming a menu row from "About Paint"
+  1280x688 panel is some 900 pixels of license: renaming a menu row from "About Paint"
   to "About Paint Web" moved 53 and passed. The ratio stays as a second bound for a
   bigger capture; the absolute count is what holds.
 - **Baselines are committed, and re-blessed only after looking at the diff.**

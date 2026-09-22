@@ -1,0 +1,32 @@
+import classnames from "classnames"
+import { useTranslation } from "react-i18next"
+import { SHAPE_LABEL_KEYS } from "components/ShapeIcon/constant"
+import { ShapeIcon } from "components/ShapeIcon"
+import type { ShapeCellProps } from "../types"
+
+/** one shape of the gallery, shown both in the ribbon strip and the panel. */
+export function ShapeCell({
+	kind,
+	selected,
+	disabled,
+	onPick,
+}: ShapeCellProps) {
+	const { t } = useTranslation()
+	const label = t(SHAPE_LABEL_KEYS[kind])
+	const cls = classnames("shape-gallery__cell", {
+		"shape-gallery__cell--selected": selected,
+	})
+
+	return (
+		<button
+			type="button"
+			className={cls}
+			title={label}
+			aria-label={label}
+			disabled={disabled}
+			onClick={() => onPick(kind)}
+		>
+			<ShapeIcon kind={kind} size={18} />
+		</button>
+	)
+}

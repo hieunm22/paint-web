@@ -1,0 +1,310 @@
+.canvas {
+	flex: 1;
+	display: grid;
+	grid-template-columns: auto 1fr;
+	grid-template-rows: auto 1fr;
+	min-height: 0;
+	background: var(--cv-backdrop);
+
+	&__corner {
+		background: #eef0f4;
+		border-right: 1px solid #9aa3b2;
+		border-bottom: 1px solid #9aa3b2;
+	}
+
+	&__ruler {
+		background: #eef0f4;
+		overflow: hidden;
+		position: relative;
+		color: #4a4a4a;
+
+		&--h {
+			height: var(--ruler-size);
+			border-bottom: 1px solid #9aa3b2;
+		}
+
+		&--v {
+			width: var(--ruler-size);
+			border-right: 1px solid #9aa3b2;
+		}
+	}
+
+	&__ruler-marker {
+		position: absolute;
+		left: 0;
+		top: 0;
+		display: none;
+		background: var(--cv-ruler-marker);
+		pointer-events: none;
+
+		&--h {
+			width: 1px;
+			height: 100%;
+		}
+
+		&--v {
+			width: 100%;
+			height: 1px;
+		}
+	}
+
+	// wraps the scrolling viewport to keep the overlay pinned to what is visible.
+	&__pane {
+		position: relative;
+		min-width: 0;
+		min-height: 0;
+	}
+
+	&__viewport {
+		position: relative;
+		width: 100%;
+		height: 100%;
+		overflow: auto;
+		background: var(--cv-backdrop);
+	}
+
+	// screen-space layer for marching ants and handles; never scrolls with content.
+	&__overlay {
+		position: absolute;
+		top: 0;
+		left: 0;
+		// a canvas is a replaced element: inset alone leaves it at its bitmap
+		// size, which is devicePixelRatio times too wide. state the css size.
+		width: 100%;
+		height: 100%;
+		pointer-events: none;
+	}
+
+	// canvas sits top-left with a 6px margin, never centered.
+	&__stage {
+		position: relative;
+		padding: 6px;
+		width: max-content;
+	}
+
+	&__frame {
+		position: relative;
+		border: 1px solid var(--cv-border);
+		box-shadow: 1px 1px 0 rgba(0, 0, 0, 0.15);
+		background: #fff;
+	}
+
+	// both picture layers are windows the engine places: on a large document
+	// or a deep zoom they hold the visible part rather than the whole paper.
+	&__surface {
+		position: absolute;
+		left: 0;
+		top: 0;
+		display: block;
+		background: none;
+		// keep pixels crisp and square when zoomed instead of bilinear smoothing.
+		image-rendering: pixelated;
+
+		&--preview {
+			// without this the browser pans and zooms instead of letting us draw
+			touch-action: none;
+		}
+	}
+
+	&__grid {
+		position: absolute;
+		inset: 0;
+		pointer-events: none;
+		background-image:
+			linear-gradient(to right, rgba(0, 0, 0, 0.18) 1px, transparent 1px),
+			linear-gradient(to bottom, rgba(0, 0, 0, 0.18) 1px, transparent 1px);
+	}
+
+	// 5x5 handles on the two edges that move, black border on white.
+	&__handle {
+		position: absolute;
+		width: 5px;
+		height: 5px;
+		background: var(--cv-handle-bg);
+		border: 1px solid var(--cv-handle-bd);
+		touch-action: none;
+
+		&--e {
+			right: -3px;
+			top: calc(50% - 3px);
+			cursor: ew-resize;
+		}
+		&--s {
+			left: calc(50% - 3px);
+			bottom: -3px;
+			cursor: ns-resize;
+		}
+		&--se {
+			right: -3px;
+			bottom: -3px;
+			cursor: nwse-resize;
+		}
+	}
+
+	// the paper a drag has reached, drawn while the handle is held
+	&__resize-preview {
+		position: absolute;
+		left: 0;
+		top: 0;
+		display: none;
+		pointer-events: none;
+		border: 1px dotted var(--cv-handle-bd);
+	}
+
+	// marching ants: one gradient per edge, black over white to read on any ink.
+	&__ants {
+		position: absolute;
+		pointer-events: none;
+		background-image:
+			repeating-linear-gradient(to right, #000 0 4px, #fff 4px 8px),
+			repeating-linear-gradient(to bottom, #000 0 4px, #fff 4px 8px),
+			repeating-linear-gradient(to right, #000 0 4px, #fff 4px 8px),
+			repeating-linear-gradient(to bottom, #000 0 4px, #fff 4px 8px);
+		background-size:
+			100% 1px,
+			1px 100%,
+			100% 1px,
+			1px 100%;
+		background-position:
+			0 0,
+			100% 0,
+			0 100%,
+			0 0;
+		background-repeat: no-repeat;
+		animation: canvas-march 600ms linear infinite;
+	}
+
+	// the same ants along a traced lasso: white underneath, black dashes over.
+	&__lasso {
+		position: absolute;
+		top: 0;
+		left: 0;
+		pointer-events: none;
+		overflow: visible;
+
+		polygon {
+			fill: none;
+			stroke-width: 1;
+		}
+	}
+
+	&__lasso-base {
+		stroke: #fff;
+	}
+
+	&__lasso-ants {
+		stroke: #000;
+		stroke-dasharray: 4 4;
+		animation: canvas-lasso-march 600ms linear infinite;
+	}
+
+	// box around a shape that has been dropped but not yet baked.
+	&__draft {
+		position: absolute;
+		pointer-events: none;
+		border: 1px dashed var(--cv-handle-bd);
+	}
+
+	// one resize handle of that shape, centered on its corner.
+	&__grip {
+		position: absolute;
+		width: 5px;
+		height: 5px;
+		margin: -3px 0 0 -3px;
+		background: var(--cv-handle-bg);
+		border: 1px solid var(--cv-handle-bd);
+		pointer-events: none;
+	}
+
+	// the text box: a band that drags it, dashed like Paint's, around the field.
+	&__text-frame {
+		position: absolute;
+		box-sizing: border-box;
+		border: 1px dashed var(--cv-handle-bd);
+		cursor: move;
+		touch-action: none;
+	}
+
+	// transparent over the picture: only the glyphs and the caret show.
+	&__text {
+		display: block;
+		width: 100%;
+		height: 100%;
+		margin: 0;
+		border: none;
+		box-sizing: border-box;
+		resize: none;
+		overflow: hidden;
+		white-space: pre;
+		outline: none;
+		cursor: text;
+
+		&::selection {
+			background: #b5d5ff;
+		}
+	}
+
+	&__thumbnail {
+		position: absolute;
+		right: 12px;
+		bottom: 12px;
+		background: var(--rb-bg);
+		border: 1px solid #8f8f8f;
+		box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.25);
+	}
+
+	&__thumbnail-grip {
+		position: absolute;
+		width: 14px;
+		height: 14px;
+		cursor: nwse-resize;
+		touch-action: none;
+
+		&--nw {
+			left: 0;
+			top: 0;
+			background: linear-gradient(315deg, transparent 50%, #9aa3b2 50%);
+		}
+
+		&--se {
+			right: 0;
+			bottom: 0;
+			background: linear-gradient(135deg, transparent 50%, #9aa3b2 50%);
+		}
+	}
+
+	&__thumbnail-title {
+		font-size: 11px;
+		padding: 2px 5px 2px 16px;
+		cursor: move;
+		user-select: none;
+		touch-action: none;
+		background: linear-gradient(#fdfdfd, #ececec);
+		border-bottom: 1px solid #d5d5d5;
+	}
+
+	&__thumbnail-body {
+		display: block;
+		margin: 5px;
+		background: #fff;
+		border: 1px solid #b5b5b5;
+		cursor: crosshair;
+		touch-action: none;
+	}
+}
+
+@keyframes canvas-march {
+	to {
+		background-position:
+			8px 0,
+			100% 8px,
+			-8px 100%,
+			0 -8px;
+	}
+}
+
+@keyframes canvas-lasso-march {
+	to {
+		stroke-dashoffset: -8;
+	}
+}
