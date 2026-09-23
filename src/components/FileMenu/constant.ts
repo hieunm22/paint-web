@@ -91,6 +91,9 @@ export const MENU_IDS: Record<string, string> = {
 	print: PRINT_MENU,
 }
 
+/** how long a pointer rests on a row before the row answers, in ms. */
+export const SUBMENU_HOVER_DELAY = 500
+
 /** what the right panel is headed while a row's choices stand in it. */
 export const PANEL_TITLE_KEYS: Record<string, string> = {
 	[SAVE_AS_MENU]: "filemenu.item.save-as",

@@ -9,7 +9,7 @@ export function ColorSlot({
 	onClick,
 }: ColorSlotProps) {
 	const cls = classnames("colors__slot", {
-		"colors__slot--editing": editing
+		"colors__slot--editing": editing,
 	})
 
 	return (

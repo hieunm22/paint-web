@@ -45,6 +45,13 @@ export interface ChoiceRowProps {
 	onClick: EmptyVoid
 }
 
+/** what a backstage row listens with to answer a pointer resting on it. */
+export interface SubmenuHover {
+	onClick: EmptyVoid
+	onMouseEnter: EmptyVoid
+	onMouseLeave: EmptyVoid
+}
+
 /** the backstage recents list, and the way a row leaves it. */
 export interface RecentsState {
 	entries: RecentEntry[]
