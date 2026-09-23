@@ -15,8 +15,14 @@ const colorsSlice = createSlice({
 	name: "colors",
 	initialState,
 	reducers: {
-		setEditingSwatch(state, action: PayloadAction<ColorSlotId>) {
-			state.editing = action.payload
+		/** fills the first empty custom slot, overwriting FIFO when full. */
+		addCustomColor(state, action: PayloadAction<string>) {
+			const free = state.custom.indexOf(null)
+			if (free >= 0) state.custom[free] = action.payload
+			else {
+				state.custom.shift()
+				state.custom.push(action.payload)
+			}
 		},
 		/** assigns a color to whichever slot is currently being edited. */
 		applyColor(state, action: PayloadAction<string>) {
@@ -30,14 +36,8 @@ const colorsSlice = createSlice({
 		setColor(state, action: PayloadAction<PickedColor>) {
 			state[action.payload.which] = action.payload.hex
 		},
-		/** fills the first empty custom slot, overwriting FIFO when full. */
-		addCustomColor(state, action: PayloadAction<string>) {
-			const free = state.custom.indexOf(null)
-			if (free >= 0) state.custom[free] = action.payload
-			else {
-				state.custom.shift()
-				state.custom.push(action.payload)
-			}
+		setEditingSwatch(state, action: PayloadAction<ColorSlotId>) {
+			state.editing = action.payload
 		},
 	},
 	extraReducers: builder => {
@@ -48,10 +48,10 @@ const colorsSlice = createSlice({
 })
 
 export const {
-	setEditingSwatch,
+	addCustomColor,
 	applyColor,
 	applySecondaryColor,
 	setColor,
-	addCustomColor,
+	setEditingSwatch,
 } = colorsSlice.actions
 export default colorsSlice.reducer

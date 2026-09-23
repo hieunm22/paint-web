@@ -23,17 +23,6 @@ const docSlice = createSlice({
 	name: "doc",
 	initialState,
 	reducers: {
-		setDocSize(
-			state,
-			action: PayloadAction<{ width: number; height: number }>,
-		) {
-			state.width = action.payload.width
-			state.height = action.payload.height
-			state.isDirty = true
-		},
-		setDirty(state, action: PayloadAction<boolean>) {
-			state.isDirty = action.payload
-		},
 		/** a file replaced the document: name, size and format all come with it. */
 		documentOpened(state, action: PayloadAction<OpenedPayload>) {
 			const {
@@ -68,14 +57,25 @@ const docSlice = createSlice({
 				height: action.payload.height,
 			}
 		},
+		setDirty(state, action: PayloadAction<boolean>) {
+			state.isDirty = action.payload
+		},
+		setDocSize(
+			state,
+			action: PayloadAction<{ width: number; height: number }>,
+		) {
+			state.width = action.payload.width
+			state.height = action.payload.height
+			state.isDirty = true
+		},
 	},
 })
 
 export const {
-	setDocSize,
-	setDirty,
 	documentOpened,
 	documentSaved,
 	resetDocument,
+	setDirty,
+	setDocSize,
 } = docSlice.actions
 export default docSlice.reducer

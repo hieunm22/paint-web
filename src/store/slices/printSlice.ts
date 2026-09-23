@@ -30,21 +30,21 @@ const printSlice = createSlice({
 	name: "print",
 	initialState,
 	reducers: {
-		setPaper(state, action: PayloadAction<PaperSize>) {
-			state.paper = action.payload
-		},
-		setOrientation(state, action: PayloadAction<PageOrientation>) {
-			state.orientation = action.payload
-		},
-		setMargin(state, action: PayloadAction<MarginEdit>) {
-			const { edge, value } = action.payload
-			state.margins[edge] = whole(value, MAX_MARGIN)
-		},
 		setCentering(state, action: PayloadAction<CenteringEdit>) {
 			state[action.payload.axis] = action.payload.on
 		},
 		setFit(state, action: PayloadAction<boolean>) {
 			state.fit = action.payload
+		},
+		setMargin(state, action: PayloadAction<MarginEdit>) {
+			const { edge, value } = action.payload
+			state.margins[edge] = whole(value, MAX_MARGIN)
+		},
+		setOrientation(state, action: PayloadAction<PageOrientation>) {
+			state.orientation = action.payload
+		},
+		setPaper(state, action: PayloadAction<PaperSize>) {
+			state.paper = action.payload
 		},
 		setScale(state, action: PayloadAction<number>) {
 			state.scale = whole(action.payload, MAX_PRINT_SCALE)
@@ -53,11 +53,11 @@ const printSlice = createSlice({
 })
 
 export const {
-	setPaper,
-	setOrientation,
-	setMargin,
 	setCentering,
 	setFit,
+	setMargin,
+	setOrientation,
+	setPaper,
 	setScale,
 } = printSlice.actions
 export default printSlice.reducer

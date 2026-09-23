@@ -23,6 +23,9 @@ const viewSlice = createSlice({
 		setZoom(state, action: PayloadAction<number>) {
 			state.zoom = action.payload
 		},
+		toggleView(state, action: PayloadAction<ToggleKey>) {
+			state[action.payload] = !state[action.payload]
+		},
 		/** the magnifier zooms about the pixel that was clicked, as Paint does. */
 		zoomAt(state, action: PayloadAction<{ zoom: number; at: Point }>) {
 			const { zoom, at } = action.payload
@@ -36,18 +39,15 @@ const viewSlice = createSlice({
 			state.zoom =
 				[...ZOOM_STEPS].reverse().find(z => z < state.zoom) ?? state.zoom
 		},
-		toggleView(state, action: PayloadAction<ToggleKey>) {
-			state[action.payload] = !state[action.payload]
-		},
 	},
 })
 
 export const {
 	setZoom,
+	toggleView,
 	zoomAt,
 	zoomIn,
 	zoomOut,
-	toggleView,
 } =
 	viewSlice.actions
 export default viewSlice.reducer
