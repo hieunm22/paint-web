@@ -113,15 +113,20 @@ export const WINDOWS_KEY_LABELS: Record<string, string> = {
 export const MAC_MODIFIER_ORDER = ["Ctrl", "Alt", "Shift", "Mod"]
 
 /**
- * a browser keeps Ctrl+N and Cmd+N for its own new window and never hands the
- * key to the page, so Paint answers a different one on each platform.
+ * a browser keeps some keys for its own window, tab and reload. Paint answers
+ * a different combination on each platform where it cannot have the key.
  */
 export const WINDOWS_SHORTCUT_OVERRIDES: Record<string, string> = {
 	"Mod+N": "Mod+Alt+N",
+	"Ctrl+R": "Ctrl+Alt+R",
+	"Ctrl+W": "Ctrl+Alt+W",
+	"Mod+PgUp": "Mod+Alt+PgUp",
+	"Mod+PgDn": "Mod+Alt+PgDn",
 }
 
 export const MAC_SHORTCUT_OVERRIDES: Record<string, string> = {
 	"Mod+N": "Ctrl+N",
+	F11: "Mod+Shift+F",
 }
 
 /**

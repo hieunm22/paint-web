@@ -1,7 +1,12 @@
 import { useEffect } from "react"
 import { NUDGE_KEYS } from "common/constant"
 import { isTypingTarget, reachesCanvas } from "common/dom"
-import { isNewDocumentKey, isPrimaryModifier } from "common/platform"
+import {
+	isFullScreenKey,
+	isPrimaryModifier,
+	isReservedCtrlKey,
+	isZoomKey,
+} from "common/platform"
 import { paint } from "engine/PaintEngine"
 import { useFileCommands } from "hooks/useFileCommands"
 import { useAppDispatch, useAppSelector } from "store/hooks"
@@ -24,10 +29,36 @@ export function useKeyboardShortcuts() {
 			if (e.defaultPrevented) return
 			if (isTypingTarget(e.target) && !reachesCanvas(e)) return
 
-			// new is the exception, on a key of its own that no browser reserves.
-			if (isNewDocumentKey(e)) {
+			// windows browsers keep Ctrl+N, Ctrl+W, Ctrl+R and Ctrl+PageUp, so
+			// Paint answers all four with Alt held as well
+			if (isReservedCtrlKey(e, "n")) {
 				e.preventDefault()
 				files.newDocument()
+				return
+			}
+
+			if (isReservedCtrlKey(e, "w")) {
+				e.preventDefault()
+				dispatch(openDialog("resize-skew"))
+				return
+			}
+
+			// rulers need zoom >= 1, as in the ribbon
+			if (isReservedCtrlKey(e, "r") && zoom >= 1) {
+				e.preventDefault()
+				dispatch(toggleView("showRuler"))
+				return
+			}
+
+			if (isZoomKey(e)) {
+				e.preventDefault()
+				dispatch(e.key === "PageUp" ? zoomIn() : zoomOut())
+				return
+			}
+
+			if (isFullScreenKey(e)) {
+				e.preventDefault()
+				dispatch(toggleView("fullScreen"))
 				return
 			}
 
@@ -85,17 +116,6 @@ export function useKeyboardShortcuts() {
 						void files.copySelection()
 						return
 				}
-
-				switch (e.key) {
-					case "PageUp":
-						e.preventDefault()
-						dispatch(zoomIn())
-						return
-					case "PageDown":
-						e.preventDefault()
-						dispatch(zoomOut())
-						return
-				}
 			}
 
 			const nudge = NUDGE_KEYS[e.key]
@@ -106,10 +126,6 @@ export function useKeyboardShortcuts() {
 			}
 
 			switch (e.key) {
-				case "F11":
-					e.preventDefault()
-					dispatch(toggleView("fullScreen"))
-					return
 				case "Delete":
 				case "Backspace":
 					e.preventDefault()
@@ -127,17 +143,11 @@ export function useKeyboardShortcuts() {
 					return
 			}
 
-			// rulers need zoom >= 1 and gridlines zoom >= 4, as in the ribbon
+			// gridlines need zoom >= 4, as in the ribbon
 			if (e.ctrlKey && !e.metaKey && !e.shiftKey) {
 				if (e.key === "e") {
 					e.preventDefault()
 					dispatch(openDialog("image-properties"))
-				} else if (e.key === "w") {
-					e.preventDefault()
-					dispatch(openDialog("resize-skew"))
-				} else if (e.key === "r" && zoom >= 1) {
-					e.preventDefault()
-					dispatch(toggleView("showRuler"))
 				} else if (e.key === "g" && zoom >= 4) {
 					e.preventDefault()
 					dispatch(toggleView("showGrid"))
