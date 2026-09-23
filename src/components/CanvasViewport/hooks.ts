@@ -15,6 +15,7 @@ import {
 	CANVAS_MARGIN,
 	THUMBNAIL_FRAME,
 	THUMBNAIL_INTERVAL_MS,
+	THUMBNAIL_PULL,
 } from "./constant"
 import { isSecondaryButton } from "common/platform"
 import { writeSettings } from "common/settings"
@@ -570,11 +571,11 @@ export function useThumbnailResize({
 			const drag = session.current
 			if (!drag || drag.pointerId !== e.pointerId) return
 
-			// the panel is anchored bottom right, so the corners grow opposite ways
-			const pull = corner === "nw" ? -1 : 1
-			const byX = (e.clientX - drag.start.x) * pull
+			// each grip enlarges the panel when dragged away from its own corner
+			const pull = THUMBNAIL_PULL[corner]
+			const byX = (e.clientX - drag.start.x) * pull.x
 			const byY = doc.height
-				? ((e.clientY - drag.start.y) * pull * doc.width) / doc.height
+				? ((e.clientY - drag.start.y) * pull.y * doc.width) / doc.height
 				: 0
 
 			drag.next = thumbnailBox(

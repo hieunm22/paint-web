@@ -266,16 +266,30 @@
 			background: linear-gradient(315deg, transparent 50%, #9aa3b2 50%);
 		}
 
+		&--ne {
+			right: 0;
+			top: 0;
+			cursor: nesw-resize;
+			background: linear-gradient(45deg, transparent 50%, #9aa3b2 50%);
+		}
+
 		&--se {
 			right: 0;
 			bottom: 0;
 			background: linear-gradient(135deg, transparent 50%, #9aa3b2 50%);
 		}
+
+		&--sw {
+			left: 0;
+			bottom: 0;
+			cursor: nesw-resize;
+			background: linear-gradient(225deg, transparent 50%, #9aa3b2 50%);
+		}
 	}
 
 	&__thumbnail-title {
 		font-size: 11px;
-		padding: 2px 5px 2px 16px;
+		padding: 2px 16px;
 		cursor: move;
 		user-select: none;
 		touch-action: none;

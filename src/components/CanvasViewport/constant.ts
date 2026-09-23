@@ -1,5 +1,5 @@
-import type { ToolId } from "types/store.types"
-import type { HandlePosition } from "./types"
+import type { Point, ToolId } from "types/store.types"
+import type { HandlePosition, ThumbnailCorner } from "./types"
 
 /**
  * the document resize handles, on the two edges that can move: the picture is
@@ -41,6 +41,16 @@ export const THUMBNAIL_CHROME_Y = 32
 
 /** clear space kept between the panel and the edges of the drawing area. */
 export const THUMBNAIL_GAP = 12
+
+/** the corners a grip sits on, clockwise from the top left. */
+export const THUMBNAIL_CORNERS: ThumbnailCorner[] = ["nw", "ne", "se", "sw"]
+
+export const THUMBNAIL_PULL: Record<ThumbnailCorner, Point> = {
+	nw: { x: -1, y: -1 },
+	ne: { x: 1, y: -1 },
+	se: { x: 1, y: 1 },
+	sw: { x: -1, y: 1 },
+}
 
 /** the frame around the viewed part of the picture. */
 export const THUMBNAIL_FRAME = "#d00000"
