@@ -97,11 +97,12 @@ jobs:
       - name: send telegram message
         run: |
           STATUS="${{ needs.manual-deploy.result }}"
+          APP_NAME="Paint Web"
           BRANCH="${{ inputs.use_current_branch && 'current branch' || github.ref_name }}"
           TIMESTAMP=$(TZ='Asia/Ho_Chi_Minh' date '+%Y-%m-%d %H:%M:%S')
           RUN_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
           if [ "$STATUS" = "success" ]; then EMOJI="✅"; else EMOJI="❌"; fi
-          printf -v MESSAGE '%s Manual Deploy (%s) finished at %s: %s\n%s' "$EMOJI" "$BRANCH" "$TIMESTAMP" "$STATUS" "$RUN_URL"
+          printf -v MESSAGE '%s %s Manual Deploy (%s) finished at %s: %s\n%s' "$EMOJI" "$APP_NAME" "$BRANCH" "$TIMESTAMP" "$STATUS" "$RUN_URL"
           curl -s -X POST \
             https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage \
             -d chat_id=${{ vars.TELEGRAM_CHAT_ID }} \
