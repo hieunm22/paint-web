@@ -69,6 +69,13 @@ export interface TextRibbonState {
 
 export type SizeDef = BrushSize
 
+/** where the expanded gallery stands, taken from the strip it grows out of. */
+export interface GalleryBox {
+	top: number
+	left: number
+	width: number
+}
+
 export interface ShapeCellProps {
 	kind: ShapeKind
 	selected: boolean

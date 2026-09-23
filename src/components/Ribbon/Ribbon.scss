@@ -160,6 +160,8 @@
 
 	&__viewport {
 		overflow: hidden;
+		border: 1px solid #d2d2d2;
+    border-radius: 1px;
 	}
 
 	&__grid {
@@ -217,16 +219,20 @@
 		}
 	}
 
-	// the expand button opens the whole gallery at once, below the strip.
 	&__expand {
 		display: flex;
 	}
 
-	// the column count comes with the element: the strip is laid out from it too
-	&__panel {
+	&__expanded {
+		position: fixed;
+		z-index: var(--z-menu);
 		display: grid;
 		gap: 1px;
-		padding: 3px;
+		padding: 1px;
+		background: var(--rb-tab-active);
+		border: 1px solid #d2d2d2;
+		border-radius: 1px;
+		box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 	}
 
 	&__options {

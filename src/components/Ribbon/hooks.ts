@@ -1,10 +1,12 @@
 import {
 	useCallback,
 	useEffect,
+	useLayoutEffect,
 	useMemo,
 	useRef,
 	useState,
 	type KeyboardEvent,
+	type RefObject,
 } from "react"
 import {
 	ARROW_STEPS,
@@ -24,6 +26,7 @@ import type { TextOptions } from "types/store.types"
 import type {
 	FontFamilyList,
 	FontStyleId,
+	GalleryBox,
 	RovingFocus,
 	TextRibbonState,
 } from "./types"
@@ -95,6 +98,41 @@ export function useShapeGalleryScroll(totalShapes: number) {
 		scrollUp: () => setRow(r => Math.max(0, r - 1)),
 		scrollDown: () => setRow(r => Math.min(maxRow, r + 1)),
 	}
+}
+
+/**
+ * expand and collapse the gallery box.
+ */
+export function useGalleryBox(
+	stripRef: RefObject<HTMLElement>,
+	open: boolean,
+): GalleryBox | null {
+	const [box, setBox] = useState<GalleryBox | null>(null)
+
+	useLayoutEffect(() => {
+		const strip = stripRef.current
+		if (!open || !strip) {
+			setBox(null)
+			return
+		}
+
+		const place = () => {
+			const rect = strip.getBoundingClientRect()
+			setBox({ top: rect.top, left: rect.left, width: rect.width })
+		}
+
+		place()
+		window.addEventListener("resize", place)
+		// capture phase lets it follow any scrolling ancestor, not just the window
+		window.addEventListener("scroll", place, true)
+
+		return () => {
+			window.removeEventListener("resize", place)
+			window.removeEventListener("scroll", place, true)
+		}
+	}, [open, stripRef])
+
+	return box
 }
 
 /** what the machine answered, kept for the life of the page. */

@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest"
 import { SHAPE_DEFS } from "common/constant"
 import type { ShapeSubpath } from "types/engine.types"
-import type { ShapeKind } from "types/store.types"
+import type { Point, ShapeKind } from "types/store.types"
 
 const POINT_DRIVEN: ShapeKind[] = ["line", "curve", "polygon"]
 
@@ -66,7 +66,25 @@ describe("SHAPE_DEFS", () => {
 			expect([kind, wide && tall]).toEqual([kind, true])
 		}
 	})
+
+	it("points each arrow the way its name reads", () => {
+		for (const [kind, tip] of Object.entries(ARROW_TIPS)) {
+			const def = SHAPE_DEFS[kind as ShapeKind]
+			const anchors = (def.outline ?? []).flatMap(anchorsOf)
+			const found = anchors.filter(p => p.x === tip.x && p.y === tip.y)
+
+			expect([kind, found]).toEqual([kind, [tip]])
+		}
+	})
 })
+
+/** where the point of each arrow lands, with y running down the box. */
+const ARROW_TIPS: Record<string, Point> = {
+	"arrow-right": { x: 1, y: 0.5 },
+	"arrow-left": { x: 0, y: 0.5 },
+	"arrow-up": { x: 0.5, y: 0 },
+	"arrow-down": { x: 0.5, y: 1 },
+}
 
 function within(value: number, slack: number): boolean {
 	return value >= -slack - 0.001 && value <= 1 + slack + 0.001

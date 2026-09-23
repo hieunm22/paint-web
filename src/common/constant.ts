@@ -676,12 +676,12 @@ export const SHAPE_DEFS: Record<ShapeKind, ShapeDef> = {
 		multiStep: false,
 	},
 	"arrow-up": {
-		outline: [polyline(transpose(ARROW_RIGHT))],
+		outline: [polyline(mirror(transpose(ARROW_RIGHT), "y"))],
 		fillable: true,
 		multiStep: false,
 	},
 	"arrow-down": {
-		outline: [polyline(mirror(transpose(ARROW_RIGHT), "y"))],
+		outline: [polyline(transpose(ARROW_RIGHT))],
 		fillable: true,
 		multiStep: false,
 	},

@@ -89,9 +89,8 @@ export const SHAPE_GALLERY_COLS = 7
 export const SHAPE_GALLERY_VISIBLE_ROWS = 3
 export const SHAPE_GALLERY_ROW_HEIGHT = 23
 
-/** the strip and the panel behind the expand button share their columns. */
+/** the strip and the grown gallery share their columns, and so their width. */
 export const SHAPE_GRID_COLUMNS = `repeat(${SHAPE_GALLERY_COLS}, 26px)`
-export const SHAPE_PANEL_WIDTH = SHAPE_GALLERY_COLS * 27 + 10
 
 /**
  * the fallback list, for a browser that will not name the installed fonts.
