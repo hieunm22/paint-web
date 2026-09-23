@@ -2,12 +2,12 @@ import classnames from "classnames"
 import { useTranslation } from "react-i18next"
 import { WINDOW_BUTTONS } from "./constant"
 import { Icon } from "components/Icon"
+import Menu from "components/Menu"
 import {
-	Menu,
 	MenuAnchor,
 	MenuItem,
 	MenuSectionLabel,
-} from "components/Menu"
+} from "components/Menu/components"
 import { toggleFullscreen } from "common/dom"
 import { useFileCommands } from "hooks/useFileCommands"
 import { useAppDispatch, useAppSelector } from "store/hooks"
@@ -52,7 +52,7 @@ export function QuickAccessToolbar() {
 					<Icon name="caretDown" size={9} />
 				</button>
 				{open && (
-					<Menu width={QAT_MENU_WIDTH}>
+					<Menu width={QAT_MENU_WIDTH} sticky>
 						<MenuSectionLabel>{t("titlebar.qat.customize")}</MenuSectionLabel>
 						{items.map(item => (
 							<MenuItem

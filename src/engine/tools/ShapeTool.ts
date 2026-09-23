@@ -124,9 +124,13 @@ export class ShapeTool implements Tool {
 		if (!draft) return
 
 		if (this.mode === "vertex") {
-			// a click that did not drag leaves the polygon open for the next one
 			const at = clampPoint(pt, ctx.doc)
 			draft.points[draft.points.length - 1] = at
+		}
+
+		if (this.mode === "draw" && !draft.box.w && !draft.box.h) {
+			this.cancel(ctx)
+			return
 		}
 		this.mode = null
 		this.paint(ctx)

@@ -1,6 +1,6 @@
 import classnames from "classnames"
 import { Icon } from "components/Icon"
-import { MenuAnchor } from "components/Menu"
+import { MenuAnchor } from "components/Menu/components"
 import type { RibbonButtonProps, SplitButtonProps } from "./types"
 import "./RibbonButton.scss"
 

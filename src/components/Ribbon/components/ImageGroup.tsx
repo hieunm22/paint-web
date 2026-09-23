@@ -1,12 +1,12 @@
 import { useTranslation } from "react-i18next"
 import { TOOLS as IMPLEMENTED } from "engine/tools/registry"
+import Menu from "components/Menu"
 import {
-	Menu,
 	MenuAnchor,
 	MenuItem,
 	MenuSectionLabel,
 	MenuSeparator,
-} from "components/Menu"
+} from "components/Menu/components"
 import { SmallButton, SplitButton } from "components/RibbonButton"
 import { ButtonStack, RibbonGroup } from "components/RibbonGroup"
 import { shortcutText, tooltipWithShortcut } from "locales/common"

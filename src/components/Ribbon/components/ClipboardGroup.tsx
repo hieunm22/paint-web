@@ -1,5 +1,6 @@
 import { useTranslation } from "react-i18next"
-import { Menu, MenuItem } from "components/Menu"
+import Menu from "components/Menu"
+import { MenuItem } from "components/Menu/components"
 import { SmallButton, SplitButton } from "components/RibbonButton"
 import { ButtonStack, RibbonGroup } from "components/RibbonGroup"
 import { shortcutText, tooltipWithShortcut } from "locales/common"

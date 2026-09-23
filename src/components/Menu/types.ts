@@ -14,6 +14,10 @@ export interface Viewport {
 export interface MenuProps {
 	children: ReactNode
 	width?: number
+	/**
+	 * keep a list of switches stays open while they are flipped
+	 */
+	sticky?: boolean
 }
 
 export interface MenuSectionLabelProps {
