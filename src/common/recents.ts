@@ -1,6 +1,6 @@
+import { SETTINGS_STORAGE_KEY } from "./constant"
 import type { RecentEntry } from "types/common.types"
 
-const DB_NAME = "paint-web"
 const DB_VERSION = 1
 const STORE = "recents"
 
@@ -9,7 +9,7 @@ const LIMIT = 6
 
 function openDatabase(): Promise<IDBDatabase> {
 	return new Promise((resolve, reject) => {
-		const request = indexedDB.open(DB_NAME, DB_VERSION)
+		const request = indexedDB.open(SETTINGS_STORAGE_KEY, DB_VERSION)
 		request.onupgradeneeded = () => {
 			const db = request.result
 			if (!db.objectStoreNames.contains(STORE)) {

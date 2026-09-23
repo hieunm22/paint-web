@@ -17,6 +17,7 @@ import {
 	THUMBNAIL_INTERVAL_MS,
 } from "./constant"
 import { isSecondaryButton } from "common/platform"
+import { writeSettings } from "common/settings"
 import {
 	boxToThumb,
 	fittedBox,
@@ -30,7 +31,6 @@ import { getCursor, reportCursor, subscribeCursor } from "engine/cursor"
 import { getOverlayState, subscribeOverlay } from "engine/overlay"
 import { paint } from "engine/PaintEngine"
 import { penPressure, penTilt, smoothPressure } from "engine/pressure"
-import { writePageSize, writeThumbnailWidth } from "store/common"
 import type {
 	Modifiers,
 	OverlayState,
@@ -451,7 +451,7 @@ export function useDocumentResize(doc: Size, zoom: number) {
 			show(null)
 			paint.resizeCanvas(drag.size)
 			// the size the user chose by hand outlives the document
-			writePageSize(drag.size)
+			writeSettings({ pageSize: drag.size })
 		},
 		[show],
 	)
@@ -589,7 +589,7 @@ export function useThumbnailResize({
 			if (!drag || drag.pointerId !== e.pointerId) return
 
 			session.current = null
-			writeThumbnailWidth(drag.next)
+			writeSettings({ thumbnailWidth: drag.next })
 		},
 	}
 }

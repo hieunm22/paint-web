@@ -174,7 +174,7 @@ src/locales/
 ├─ convert-to-json.py         # python3 stdlib only, no venv
 ├─ generate-language.sh       # run: yarn i18n
 ├─ en.json  vi.json           # GENERATED - never edit by hand
-├─ i18n.ts                    # init, fallback locale, localStorage key "language"
+├─ i18n.ts                    # init, fallback locale, the stored language
 ├─ translate.ts               # non-hook helper for code outside React
 ├─ common.ts
 ```
@@ -221,7 +221,8 @@ promise that pictures never leave the machine. `yarn check:i18n` compares the tw
 neither can drift.
 
 Both languages sit in the markup and one of them is shown. `public/about.js` reads the
-same `language` key the editor writes to localStorage and marks the page `lang="vi"`;
+same `paint-web` settings key the editor writes to localStorage, takes `language` from
+it and marks the page `lang="vi"`;
 the stylesheet hides whatever does not match, and a visitor who has never opened the
 editor reads English. It is a file rather than an inline block because the CSP allows
 `script-src 'self'` only.

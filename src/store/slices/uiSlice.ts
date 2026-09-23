@@ -1,6 +1,6 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit"
 import { QAT_ORDER } from "common/constant"
-import { readQat } from "store/common"
+import { readSettings } from "common/settings"
 import type {
 	DialogId,
 	PendingFileAction,
@@ -19,7 +19,7 @@ const initialState: UiState = {
 	pending: null,
 	toast: null,
 	draggingFile: false,
-	qat: readQat(),
+	qat: readSettings().qat,
 }
 
 const uiSlice = createSlice({

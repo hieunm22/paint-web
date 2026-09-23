@@ -20,25 +20,16 @@ import type {
 	Point,
 	PrintSetup,
 	QatItemId,
+	Settings,
 	ShapeKind,
 	StrokeStyle,
 	ViewToggles,
 } from "types/store.types"
 
-/** localStorage key holding the chosen language. */
-export const LANGUAGE_STORAGE_KEY = "language"
-
-/** localStorage key holding which Quick Access Toolbar buttons are on show. */
-export const QAT_STORAGE_KEY = "qat"
-
-/** localStorage key holding the page size the last manual resize settled on. */
-export const PAGE_SIZE_STORAGE_KEY = "page-size"
-
-/** localStorage key holding the width the thumbnail was last dragged to. */
-export const THUMBNAIL_WIDTH_STORAGE_KEY = "thumbnail-width"
-
-/** localStorage key holding the Show or hide checkboxes. */
-export const VIEW_TOGGLES_STORAGE_KEY = "view-toggles"
+/**
+ * the one localStorage key keeps every setting the app lives under it.
+ */
+export const SETTINGS_STORAGE_KEY = "paint-web"
 
 /** what the Show or hide checkboxes read before a visit has changed them. */
 export const VIEW_TOGGLES_DEFAULT: ViewToggles = {
@@ -85,6 +76,15 @@ export const CAN_ENCODE_OFF_THREAD =
 
 /** the canvas Paint opens with, which New goes back to. */
 export const DEFAULT_DOCUMENT: Size = { width: 1152, height: 648 }
+
+/** what a first visit starts from, and what an unreadable store falls back to. */
+export const SETTINGS_DEFAULT: Settings = {
+	language: FALLBACK_LANGUAGE,
+	qat: QAT_DEFAULT,
+	pageSize: DEFAULT_DOCUMENT,
+	thumbnailWidth: null,
+	view: VIEW_TOGGLES_DEFAULT,
+}
 
 /**
  * the public page carrying the disclaimer, served beside the app. the file

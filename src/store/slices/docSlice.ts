@@ -1,5 +1,5 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit"
-import { readPageSize } from "store/common"
+import { readSettings } from "common/settings"
 import type { Size } from "types/engine.types"
 import type {
 	DocumentState,
@@ -7,7 +7,7 @@ import type {
 	OpenedPayload,
 } from "types/store.types"
 
-const startSize = readPageSize()
+const startSize = readSettings().pageSize
 
 const initialState: DocumentState = {
 	width: startSize.width,

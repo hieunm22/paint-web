@@ -1,4 +1,6 @@
 /** data model types, limited to what the UI layer needs. */
+import type { Size } from "types/engine.types"
+import type { Language } from "types/locales.types"
 
 export type ImageFormat = "png" | "jpeg" | "bmp" | "gif" | "webp"
 
@@ -159,6 +161,19 @@ export type ViewToggles = Pick<
 	ViewState,
 	"showRuler" | "showGrid" | "showStatusBar"
 >
+
+/**
+ * everything that outlives a visit, held in localStorage as one value. a field
+ * added here needs a default and a reader before it can be stored.
+ */
+export interface Settings {
+	language: Language
+	qat: QatItemId[]
+	pageSize: Size
+	/** null until a drag sets it: the thumbnail then opens at its own width. */
+	thumbnailWidth: number | null
+	view: ViewToggles
+}
 
 export interface HistoryState {
 	canUndo: boolean

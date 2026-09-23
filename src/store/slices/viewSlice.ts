@@ -1,12 +1,14 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit"
 import { ZOOM_STEPS } from "common/constant"
-import { readViewToggles } from "store/common"
+import { readSettings } from "common/settings"
 import type { Point, ViewState } from "types/store.types"
+
+const settings = readSettings()
 
 const initialState: ViewState = {
 	zoom: 1,
 	focus: null,
-	...readViewToggles(),
+	...settings.view,
 	showThumbnail: false,
 	fullScreen: false,
 }

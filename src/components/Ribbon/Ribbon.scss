@@ -153,7 +153,6 @@
 	}
 }
 
-// Shapes: scrolling gallery plus the Outline and Fill menus
 .shape-gallery {
 	display: flex;
 	align-items: flex-start;
@@ -161,7 +160,7 @@
 	&__viewport {
 		overflow: hidden;
 		border: 1px solid #d2d2d2;
-    border-radius: 1px;
+		border-radius: 1px;
 	}
 
 	&__grid {

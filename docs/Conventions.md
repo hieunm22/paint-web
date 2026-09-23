@@ -82,6 +82,12 @@ src/components/ rendering.
   call is what copies the old pixels onto the undo stack.
 - **Live pointer values go through `engine/cursor.ts`**, the external store the status
   bar subscribes to - not through a slice.
+- **One localStorage key**, `paint-web`, holding the whole `Settings` object.
+  `common/settings.ts` is the only module that touches localStorage: a reader takes
+  `readSettings().<field>`, a writer calls `writeSettings({ <field>: value })`. Adding a
+  setting means a field on `Settings`, a default in `SETTINGS_DEFAULT` and a parser in
+  `parseSettings`. A missing or damaged key is a first visit, and every field falls back
+  on its own. `public/about.js` reads the same key by hand, outside the bundle.
 
 ---
 

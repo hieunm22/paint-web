@@ -16,7 +16,8 @@ import {
 import { formatOfMime, stemOf, withExtension } from "common/format"
 import { printImage } from "common/print"
 import { rememberRecent } from "common/recents"
-import { documentName, readPageSize } from "store/common"
+import { readSettings } from "common/settings"
+import { documentName } from "store/common"
 import { fitsCanvas } from "engine/canvasLimit"
 import {
 	decodeImage,
@@ -86,7 +87,7 @@ export function useFileCommands(): FileCommands {
 		}
 
 		const applyNew = () => {
-			const size = readPageSize()
+			const size = readSettings().pageSize
 			paint.newDocument(size)
 			setActiveHandle(null)
 			dispatch(resetDocument(size))

@@ -16,7 +16,7 @@ import {
 	THUMBNAIL_GAP,
 	THUMBNAIL_WIDTH,
 } from "./constant"
-import { readThumbnailWidth } from "store/common"
+import { readSettings } from "common/settings"
 import {
 	buildRulerTicks,
 	textDecoration,
@@ -184,7 +184,7 @@ export function TextBox({ box, zoom }: TextBoxProps) {
 export function Thumbnail({ doc, zoom, scrollRef }: ThumbnailProps) {
 	const { t } = useTranslation()
 	const [width, setWidth] = useState(
-		() => readThumbnailWidth() ?? THUMBNAIL_WIDTH,
+		() => readSettings().thumbnailWidth ?? THUMBNAIL_WIDTH,
 	)
 	const pane = usePaneSize(scrollRef)
 	const max = useMemo(
