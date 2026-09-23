@@ -14,6 +14,7 @@ const initialState: UiState = {
 	textTab: false,
 	priorTab: "home",
 	backstageOpen: false,
+	ribbon: "open",
 	openMenu: null,
 	dialog: null,
 	pending: null,
@@ -35,6 +36,10 @@ const uiSlice = createSlice({
 		},
 		closeMenu(state) {
 			state.openMenu = null
+		},
+		/** the minimise caret. */
+		collapseRibbon(state) {
+			state.ribbon = "collapsed"
 		},
 		/** asks about unsaved work, remembering what it is holding back. */
 		confirmDiscard(state, action: PayloadAction<PendingFileAction>) {
@@ -63,6 +68,14 @@ const uiSlice = createSlice({
 			state.dialog = action.payload
 			state.openMenu = null
 			state.backstageOpen = false
+		},
+		/** a tab clicked while minimised stands the ribbon over the canvas. */
+		peekRibbon(state) {
+			state.ribbon = "peek"
+		},
+		/** the pin caret, which gives the ribbon its own room back. */
+		pinRibbon(state) {
+			state.ribbon = "open"
 		},
 		setTab(state, action: PayloadAction<RibbonTabId>) {
 			state.tab = action.payload
@@ -107,12 +120,15 @@ export const {
 	closeBackstage,
 	closeDialog,
 	closeMenu,
+	collapseRibbon,
 	confirmDiscard,
 	dismissToast,
 	endFileDrag,
 	hideTextTab,
 	openBackstage,
 	openDialog,
+	peekRibbon,
+	pinRibbon,
 	setTab,
 	showMenu,
 	showTextTab,

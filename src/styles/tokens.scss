@@ -40,8 +40,8 @@
 	--menu-hover-bg: #cde6f7;
 	--menu-hover-bd: #7da2ce;
 
-	/* Stacking. one scale for everything that floats over the app shell:
-	   a flyout opened from the backstage has to clear the backstage itself. */
+	/* Stacking. one scale for everything that floats over the app shell. */
+	--z-ribbon-peek: 50;
 	--z-backstage: 60;
 	--z-menu: 70;
 	--z-toast: 80;

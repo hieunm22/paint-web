@@ -5,6 +5,8 @@ ribbon.tab.view;View;Xem
 ribbon.tab.text;Text;Văn bản
 ribbon.tab.strip;Ribbon tabs;Các thẻ ribbon
 ribbon.toolbar.label;Drawing tools;Công cụ vẽ
+ribbon.toolbar.minimize;Minimize the Ribbon;Thu gọn ribbon
+ribbon.toolbar.pin;Pin the Ribbon;Ghim ribbon
 ribbon.clipboard.label;Clipboard;Bảng tạm
 ribbon.clipboard.paste;Paste;Dán
 ribbon.clipboard.paste-from;Paste from...;Dán từ...

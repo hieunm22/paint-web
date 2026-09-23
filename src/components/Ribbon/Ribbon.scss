@@ -56,6 +56,18 @@
 		}
 	}
 
+	&__minimize {
+		margin-left: auto;
+		padding: 0 10px;
+		color: var(--rb-ink);
+		border: 1px solid transparent;
+
+		&:hover {
+			background: var(--rb-tab-hover);
+			border-color: #a8cdf0;
+		}
+	}
+
 	&__content {
 		display: flex;
 		align-items: stretch;
@@ -84,6 +96,15 @@
 
 		&::-webkit-scrollbar-thumb:hover {
 			background: #a8a8a8;
+		}
+
+		&--peek {
+			position: absolute;
+			top: 100%;
+			left: 0;
+			right: 0;
+			z-index: var(--z-ribbon-peek);
+			box-shadow: 0 2px 5px rgb(0 0 0 / 20%);
 		}
 	}
 }

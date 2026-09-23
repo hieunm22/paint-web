@@ -8,7 +8,9 @@
 			"strip": "Ribbon tabs"
 		},
 		"toolbar": {
-			"label": "Drawing tools"
+			"label": "Drawing tools",
+			"minimize": "Minimize the Ribbon",
+			"pin": "Pin the Ribbon"
 		},
 		"clipboard": {
 			"label": "Clipboard",

@@ -8,7 +8,9 @@
 			"strip": "Các thẻ ribbon"
 		},
 		"toolbar": {
-			"label": "Công cụ vẽ"
+			"label": "Công cụ vẽ",
+			"minimize": "Thu gọn ribbon",
+			"pin": "Ghim ribbon"
 		},
 		"clipboard": {
 			"label": "Bảng tạm",

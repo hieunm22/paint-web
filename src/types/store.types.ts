@@ -238,6 +238,8 @@ export interface UiState {
 	/** the tab to go back to once the Text tab leaves again. */
 	priorTab: RibbonTabId
 	backstageOpen: boolean
+	/** minimised, open, or standing over the canvas until the next outside click. */
+	ribbon: RibbonView
 	openMenu: string | null
 	dialog: DialogId | null
 	pending: PendingFileAction | null
@@ -248,6 +250,8 @@ export interface UiState {
 	/** which Quick Access Toolbar buttons are on show, in their fixed order. */
 	qat: QatItemId[]
 }
+
+export type RibbonView = "open" | "collapsed" | "peek"
 
 export type QatItemId =
 	"new" | "open" | "save" | "undo" | "redo" | "print-preview"
