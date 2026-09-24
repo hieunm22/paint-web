@@ -143,12 +143,11 @@ export function useKeyboardShortcuts() {
 					return
 			}
 
-			// gridlines need zoom >= 4, as in the ribbon
 			if (e.ctrlKey && !e.metaKey && !e.shiftKey) {
 				if (e.key === "e") {
 					e.preventDefault()
 					dispatch(openDialog("image-properties"))
-				} else if (e.key === "g" && zoom >= 4) {
+				} else if (e.key === "g") {
 					e.preventDefault()
 					dispatch(toggleView("showGrid"))
 				}

@@ -65,3 +65,10 @@ export const THUMBNAIL_INTERVAL_MS = 100
 export const RULER_MAJOR_STEP = 100
 export const RULER_MINOR_STEP = 10
 export const RULER_SIZE = 20
+
+/** from this zoom the grid draws one cell per image pixel, as Paint does. */
+export const GRID_PIXEL_ZOOM = 4
+
+/** further out a cell takes the first step that spans this many screen pixels. */
+export const GRID_STEPS = [1, 2, 4, 5, 8, 10, 20, 40, 80]
+export const GRID_MIN_SPACING = 10

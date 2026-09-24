@@ -142,7 +142,6 @@
 			"label": "Hiện hoặc ẩn",
 			"rulers": "Thước",
 			"gridlines": "Lưới",
-			"gridlines-tooltip": "Lưới ({0}) - cần thu phóng >= 400%",
 			"status-bar": "Thanh trạng thái"
 		},
 		"display": {

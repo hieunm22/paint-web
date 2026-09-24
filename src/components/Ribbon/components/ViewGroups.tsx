@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next"
 import { LargeButton, SmallButton } from "components/RibbonButton"
 import { ButtonStack, RibbonGroup } from "components/RibbonGroup"
-import { shortcutText, tooltipWithShortcut } from "locales/common"
+import { tooltipWithShortcut } from "locales/common"
 import { useAppDispatch, useAppSelector } from "store/hooks"
 import {
 	setZoom,
@@ -44,7 +44,7 @@ export function ViewTabGroups() {
 
 			<RibbonGroup label={t("ribbon.show-hide.label")}>
 				<ButtonStack>
-					{/* rulers need zoom >= 1, gridlines need zoom >= 4. */}
+					{/* rulers need zoom >= 1. gridlines toggle at any zoom, as in Paint */}
 					<SmallButton
 						label={t("ribbon.show-hide.rulers")}
 						icon={view.showRuler ? "checked" : "unchecked"}
@@ -58,10 +58,10 @@ export function ViewTabGroups() {
 					<SmallButton
 						label={t("ribbon.show-hide.gridlines")}
 						icon={view.showGrid ? "checked" : "unchecked"}
-						title={t("ribbon.show-hide.gridlines-tooltip", {
-							0: shortcutText("shortcut.view.gridlines"),
-						})}
-						disabled={view.zoom < 4}
+						title={tooltipWithShortcut(
+							"ribbon.show-hide.gridlines",
+							"shortcut.view.gridlines",
+						)}
 						onClick={() => dispatch(toggleView("showGrid"))}
 					/>
 					<SmallButton

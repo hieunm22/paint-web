@@ -112,7 +112,6 @@ ribbon.zoom.actual;100%;100%
 ribbon.show-hide.label;Show or hide;Hiện hoặc ẩn
 ribbon.show-hide.rulers;Rulers;Thước
 ribbon.show-hide.gridlines;Gridlines;Lưới
-ribbon.show-hide.gridlines-tooltip;Gridlines ({0}) - needs zoom >= 400%;Lưới ({0}) - cần thu phóng >= 400%
 ribbon.show-hide.status-bar;Status bar;Thanh trạng thái
 ribbon.display.label;Display;Hiển thị
 ribbon.display.full-screen;Full screen;Toàn màn hình

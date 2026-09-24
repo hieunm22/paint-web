@@ -142,7 +142,6 @@
 			"label": "Show or hide",
 			"rulers": "Rulers",
 			"gridlines": "Gridlines",
-			"gridlines-tooltip": "Gridlines ({0}) - needs zoom >= 400%",
 			"status-bar": "Status bar"
 		},
 		"display": {
