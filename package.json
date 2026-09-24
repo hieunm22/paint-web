@@ -13,7 +13,7 @@
     "test:watch": "vitest",
     "test:visual": "playwright test --project=chromium tests/ribbon.spec.ts",
     "test:visual:update": "playwright test --project=chromium tests/ribbon.spec.ts --update-snapshots",
-    "test:e2e": "playwright test --project=chromium tests/editor.spec.ts tests/virtual.spec.ts",
+    "test:e2e": "playwright test --project=chromium tests/editor.spec.ts tests/virtual.spec.ts tests/pressure.spec.ts tests/touch-target.spec.ts",
     "test:perf": "playwright test --project=performance --workers=1",
     "test:offline": "yarn build && playwright test --config=playwright.offline.config.ts",
     "test:browser": "playwright test --project=chromium && yarn test:perf",

@@ -139,9 +139,27 @@
 			bottom: -3px;
 			cursor: nwse-resize;
 		}
+
+		@media (pointer: coarse) {
+			&::before {
+				content: "";
+				position: absolute;
+			}
+
+			&--e::before {
+				inset: -14px -24px -14px 0;
+			}
+
+			&--s::before {
+				inset: 0 -14px -24px -14px;
+			}
+
+			&--se::before {
+				inset: 0 -24px -24px 0;
+			}
+		}
 	}
 
-	// the paper a drag has reached, drawn while the handle is held
 	&__resize-preview {
 		position: absolute;
 		left: 0;
@@ -151,7 +169,6 @@
 		border: 1px dotted var(--cv-handle-bd);
 	}
 
-	// marching ants: one gradient per edge, black over white to read on any ink.
 	&__ants {
 		position: absolute;
 		pointer-events: none;
