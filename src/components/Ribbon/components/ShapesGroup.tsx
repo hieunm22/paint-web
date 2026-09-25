@@ -4,8 +4,8 @@ import { useTranslation } from "react-i18next"
 import { TOOLS as IMPLEMENTED } from "engine/tools/registry"
 import { SHAPE_ORDER } from "components/ShapeIcon/constant"
 import {
+	SHAPE_GALLERY_HEIGHT,
 	SHAPE_GALLERY_ROW_HEIGHT,
-	SHAPE_GALLERY_VISIBLE_ROWS,
 	SHAPE_GRID_COLUMNS,
 } from "../constant"
 import { Icon } from "components/Icon"
@@ -50,9 +50,7 @@ export function ShapesGroup() {
 				<div
 					ref={stripRef}
 					className="shape-gallery__viewport"
-					style={{
-						height: SHAPE_GALLERY_VISIBLE_ROWS * SHAPE_GALLERY_ROW_HEIGHT,
-					}}
+					style={{ height: SHAPE_GALLERY_HEIGHT }}
 				>
 					<div
 						className="shape-gallery__grid"

@@ -120,7 +120,7 @@ src/components/ rendering.
 
 ## 5. Icons
 
-- **Every glyph is registered once** in `src/components/Icon/constant.ts` and used
+- **Every glyph is registered once** in `src/components/Icon/constant.tsx` and used
   through `<Icon name="..." />`.
 - **Class names are generated from the packages, never hand-typed.** `faVectorSquare`
   resolves to `fa-draw-square`, and aliases like that are why.
@@ -134,7 +134,7 @@ src/components/ rendering.
 - **A canvas cursor takes path data** from `@fortawesome/free-solid-svg-icons`, and only
   the solid style of that package is installed.
 - **Hand-written SVG is for outlines that must be exact** - the 23 gallery shapes, the
-  app icons. Everything else comes from the registry.
+  app icons, and the `SVG_ICONS` entries in the registry for glyphs the font lacks.
 - **Never extract or reuse artwork from Microsoft binaries.**
 
 ---

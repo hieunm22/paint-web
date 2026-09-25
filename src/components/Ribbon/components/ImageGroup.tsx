@@ -1,4 +1,5 @@
 import { useTranslation } from "react-i18next"
+import { Icon } from "components/Icon"
 import { TOOLS as IMPLEMENTED } from "engine/tools/registry"
 import Menu from "components/Menu"
 import {
@@ -15,6 +16,9 @@ import { useAppDispatch, useAppSelector } from "store/hooks"
 import { toggleTransparent } from "store/slices/selectionSlice"
 import { setTool } from "store/slices/toolSlice"
 import { openDialog, toggleMenu } from "store/slices/uiSlice"
+
+/** the marquee runs out to the edges of the button, as it does in paint. */
+const SELECT_ICON_SIZE = 44
 
 /** Select split button, Crop, Resize and Rotate. */
 export function ImageGroup() {
@@ -39,7 +43,7 @@ export function ImageGroup() {
 		<RibbonGroup label={t("ribbon.image.label")}>
 			<SplitButton
 				label={t("ribbon.image.select")}
-				icon="select"
+				iconNode={<Icon name="select" size={SELECT_ICON_SIZE} />}
 				selected={selecting}
 				disabled={!canSelect}
 				onClick={pickSelect}

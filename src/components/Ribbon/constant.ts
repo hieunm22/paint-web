@@ -89,6 +89,9 @@ export const SHAPE_GALLERY_COLS = 7
 export const SHAPE_GALLERY_VISIBLE_ROWS = 3
 export const SHAPE_GALLERY_ROW_HEIGHT = 23
 
+/** three rows plus padding and border, with 2px spare under the last row. */
+export const SHAPE_GALLERY_HEIGHT = SHAPE_GALLERY_VISIBLE_ROWS * SHAPE_GALLERY_ROW_HEIGHT + 3
+
 /** the strip and the grown gallery share their columns, and so their width. */
 export const SHAPE_GRID_COLUMNS = `repeat(${SHAPE_GALLERY_COLS}, 26px)`
 

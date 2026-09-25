@@ -20,7 +20,7 @@
 		display: flex;
 		align-items: center;
 		height: 28px;
-		padding: 0 4px 0 10px;
+		padding: 0 0 0 10px;
 		background: #fff;
 		border-bottom: 1px solid #e2e2e2;
 		font-size: 12px;
@@ -149,7 +149,7 @@
 		margin-bottom: 8px;
 
 		&--flush {
-			padding-left: 0;
+			padding-left: 9px;
 		}
 	}
 
@@ -299,7 +299,7 @@
 
 	&__sheet {
 		position: relative;
-		margin: 0 auto;
+		margin: 0 auto 10px;
 		border: 1px solid #7a7a7a;
 		background: #fff;
 		box-shadow: 2px 2px 6px rgb(0 0 0 / 18%);
