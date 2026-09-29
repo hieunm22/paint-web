@@ -5,6 +5,7 @@ import {
 	fittedBox,
 	gridCell,
 	resizedDocument,
+	rulerStep,
 	screenToImage,
 	thumbnailBox,
 	thumbToImage,
@@ -205,8 +206,29 @@ describe("gridCell", () => {
 	})
 })
 
+describe("rulerStep", () => {
+	it("keeps ten image pixels a tick from 50% up", () => {
+		expect(rulerStep(0.5)).toBe(10)
+		expect(rulerStep(1)).toBe(10)
+		expect(rulerStep(8)).toBe(10)
+	})
+
+	it("steps up as the picture zooms out, keeping ticks apart on screen", () => {
+		expect(rulerStep(0.25)).toBe(20)
+		expect(rulerStep(0.125)).toBe(50)
+	})
+})
+
 describe("buildRulerTicks", () => {
 	const ticks = buildRulerTicks(200, 1)
+
+	it("labels every tenth of the coarser step when zoomed out", () => {
+		const far = buildRulerTicks(1000, 0.125)
+		expect(far.filter(t => t.label !== undefined).map(t => t.label)).toEqual([
+			500, 1000,
+		])
+		expect(far[1].pos).toBe(50 * 0.125 + 6)
+	})
 
 	it("labels the major ticks only, and never the zero", () => {
 		expect(ticks.filter(t => t.label !== undefined).map(t => t.label)).toEqual([

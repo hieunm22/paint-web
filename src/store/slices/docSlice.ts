@@ -17,6 +17,7 @@ const initialState: DocumentState = {
 	isDirty: false,
 	savedAt: null,
 	dpi: 96,
+	monochrome: false,
 }
 
 const docSlice = createSlice({
@@ -38,6 +39,7 @@ const docSlice = createSlice({
 			state.format = format
 			state.savedAt = savedAt
 			state.isDirty = false
+			state.monochrome = false
 		},
 		/** the bytes reached disk, or at least the browser's download folder. */
 		documentSaved(
@@ -68,6 +70,10 @@ const docSlice = createSlice({
 			state.height = action.payload.height
 			state.isDirty = true
 		},
+		/** Properties chose black and white, or went back to color. */
+		setMonochrome(state, action: PayloadAction<boolean>) {
+			state.monochrome = action.payload
+		},
 	},
 })
 
@@ -77,5 +83,6 @@ export const {
 	resetDocument,
 	setDirty,
 	setDocSize,
+	setMonochrome,
 } = docSlice.actions
 export default docSlice.reducer

@@ -1,6 +1,8 @@
 import { CAN_ENCODE_OFF_THREAD, MIME_TYPES } from "common/constant"
 import { encodeOffThread } from "engine/encodeWorker"
 import { encodeGifOffThread } from "engine/gifWorker"
+import { decodeHeifOffThread } from "engine/heifWorker"
+import { iconSize, wrapIco } from "engine/ico"
 import type { ImageFormat } from "types/store.types"
 
 const PAPER = 255
@@ -10,6 +12,20 @@ const FLATTENED: ImageFormat[] = ["jpeg", "bmp"]
 
 /** marks an animated gif; every encoder that loops writes this block. */
 const LOOP_MARKER = "NETSCAPE2.0"
+
+/** the brand an heif file names at bytes 8 to 12, behind its ftyp box. */
+const HEIF_BRANDS = [
+	"heic",
+	"heix",
+	"heim",
+	"heis",
+	"hevc",
+	"hevx",
+	"hevm",
+	"hevs",
+	"mif1",
+	"msf1",
+]
 
 function copyOf(image: ImageData): ImageData {
 	return new ImageData(
@@ -60,8 +76,26 @@ function canvasToBlob(
 }
 
 /**
- * one document to one file. quality applies to jpeg and webp only; the other
- * three ignore it. the input is left untouched whatever the format does.
+ * an ico holds one png of at most 256 pixels a side: a larger picture is
+ * scaled down to fit. small enough that the main thread can afford it.
+ */
+async function encodeIco(image: ImageData): Promise<Blob> {
+	const target = iconSize(image)
+	const fitted = document.createElement("canvas")
+	fitted.width = target.width
+	fitted.height = target.height
+	fitted
+		.getContext("2d")
+		?.drawImage(canvasOf(image), 0, 0, target.width, target.height)
+
+	const png = await canvasToBlob(fitted, MIME_TYPES.png)
+	const bytes = new Uint8Array(await png.arrayBuffer())
+	return wrapIco(bytes, target)
+}
+
+/**
+ * one document to one file. quality applies to jpeg and webp only; the
+ * others ignore it. the input is left untouched whatever the format does.
  */
 export function encodeImage(
 	image: ImageData,
@@ -74,6 +108,7 @@ export function encodeImage(
 	const type = MIME_TYPES[format]
 
 	if (format === "gif") return encodeGifOffThread(source)
+	if (format === "ico") return encodeIco(source)
 	// the hand-written bmp writer needs no canvas and always goes off thread
 	const isBmp = format === "bmp"
 	const offThread = isBmp || CAN_ENCODE_OFF_THREAD
@@ -88,9 +123,25 @@ export async function imageObjectUrl(image: ImageData): Promise<string> {
 	return URL.createObjectURL(png)
 }
 
-/** decodes off the main thread. an animated gif yields its first frame only. */
-export function decodeImage(source: Blob): Promise<ImageBitmap> {
-	return createImageBitmap(source)
+/** read from the bytes: a phone photo often arrives with no type at all. */
+async function isHeif(file: Blob): Promise<boolean> {
+	const head = new Uint8Array(await file.slice(4, 12).arrayBuffer())
+	const text = new TextDecoder("latin1").decode(head)
+	return text.startsWith("ftyp") && HEIF_BRANDS.includes(text.slice(4))
+}
+
+/**
+ * decodes off the main thread. an animated gif yields its first frame only,
+ * and heif goes to a decoder of its own wherever the browser lacks one.
+ */
+export async function decodeImage(source: Blob): Promise<ImageBitmap> {
+	try {
+		return await createImageBitmap(source)
+	} catch (error) {
+		if (!(await isHeif(source))) throw error
+		const imageData = await decodeHeifOffThread(source)
+		return createImageBitmap(imageData)
+	}
 }
 
 /**

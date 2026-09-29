@@ -1,12 +1,13 @@
 import type { CSSProperties } from "react"
-import { MAX_DIMENSION, MAX_SKEW } from "common/constant"
-import { HUE_MAX, LEVEL_MAX } from "./constant"
+import { MAX_DIMENSION, MAX_SKEW, MM_PER_INCH } from "common/constant"
+import { HUE_MAX, LEVEL_MAX, UNIT_STEP } from "./constant"
 import type { PrintLayout } from "types/common.types"
 import type { RGBA, WinHsl } from "types/engine.types"
 import type {
 	DragBase,
 	Point,
 	ResizeUnit,
+	SizeUnit,
 	Viewport,
 } from "./types"
 
@@ -14,6 +15,8 @@ const EDGE_GAP = 4
 
 /** how much of the dialog must stay on screen to remain grabbable. */
 const MIN_VISIBLE = 28
+
+const CM_PER_INCH = MM_PER_INCH / 10
 
 function clamp(value: number, min: number, max: number): number {
 	return max < min ? min : Math.min(Math.max(value, min), max)
@@ -80,6 +83,27 @@ export function clampScale(scale: number, side: number): number {
 	if (!(scale > 0) || !side) return 1
 
 	return Math.min(scale, MAX_DIMENSION / side)
+}
+
+/** pixels in one unit at the given dpi, which counts them per inch. */
+function pixelsPerUnit(unit: SizeUnit, dpi: number): number {
+	if (unit === "pixels") return 1
+
+	return unit === "inches" ? dpi : dpi / CM_PER_INCH
+}
+
+/** a side read in the chosen unit, to the precision its field shows. */
+export function fromPixels(px: number, unit: SizeUnit, dpi: number): number {
+	const scale = 1 / UNIT_STEP[unit]
+	return Math.round((px / pixelsPerUnit(unit, dpi)) * scale) / scale
+}
+
+/** the paper a field asks for, in whole pixels within what the app opens. */
+export function toPixels(value: number, unit: SizeUnit, dpi: number): number {
+	const px = Math.round(value * pixelsPerUnit(unit, dpi))
+	if (!Number.isFinite(px)) return 1
+
+	return clamp(px, 1, MAX_DIMENSION)
 }
 
 /** hue wraps at the top of its scale; saturation and luminance stop there. */

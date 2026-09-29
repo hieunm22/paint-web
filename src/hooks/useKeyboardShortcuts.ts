@@ -20,7 +20,6 @@ import { toggleView, zoomIn, zoomOut } from "store/slices/viewSlice"
  */
 export function useKeyboardShortcuts() {
 	const dispatch = useAppDispatch()
-	const zoom = useAppSelector(s => s.view.zoom)
 	const fullScreen = useAppSelector(s => s.view.fullScreen)
 	const files = useFileCommands()
 
@@ -43,8 +42,7 @@ export function useKeyboardShortcuts() {
 				return
 			}
 
-			// rulers need zoom >= 1, as in the ribbon
-			if (isReservedCtrlKey(e, "r") && zoom >= 1) {
+			if (isReservedCtrlKey(e, "r")) {
 				e.preventDefault()
 				dispatch(toggleView("showRuler"))
 				return
@@ -133,10 +131,8 @@ export function useKeyboardShortcuts() {
 					return
 				case "Escape":
 					// full screen goes first: it is the newest thing on the screen
-					if (fullScreen)
-						dispatch(toggleView("fullScreen"))
-					else if (!paint.deselect())
-						paint.discardHeld()
+					if (fullScreen) dispatch(toggleView("fullScreen"))
+					else if (!paint.deselect()) paint.discardHeld()
 					return
 				case "Enter":
 					paint.commitHeld()
@@ -156,5 +152,5 @@ export function useKeyboardShortcuts() {
 
 		window.addEventListener("keydown", onKeyDown)
 		return () => window.removeEventListener("keydown", onKeyDown)
-	}, [dispatch, zoom, fullScreen, files])
+	}, [dispatch, fullScreen, files])
 }

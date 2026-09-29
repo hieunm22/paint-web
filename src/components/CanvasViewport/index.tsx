@@ -20,6 +20,7 @@ import {
 	usePointerTools,
 	useSurface,
 	useVirtualView,
+	useWheelZoom,
 	useZoomFocus,
 } from "./hooks"
 import "./CanvasViewport.scss"
@@ -47,18 +48,22 @@ export function CanvasViewport() {
 	const pointerProps = usePointerTools(zoom, paneRef, previewRef)
 	const viewportRef = useZoomFocus(focus)
 	useVirtualView(viewportRef, zoom)
+	useWheelZoom(viewportRef, zoom)
 	useOverlayReset(activeTool)
 
-	// rulers need zoom >= 1. the grid draws at every zoom, coarser when far out
-	const rulerOn = showRuler && zoom >= 1
+	// rulers and grid both draw at every zoom, coarser when far out
 	const gridSize = gridCell(zoom) * zoom
 	const layerSize = zoomedSize(width, height, zoom)
 
 	return (
 		<div className="canvas">
-			{rulerOn ? <div className="canvas__corner" /> : <div />}
-			{rulerOn ? <Ruler orientation="h" length={width} zoom={zoom} /> : <div />}
-			{rulerOn ? (
+			{showRuler ? <div className="canvas__corner" /> : <div />}
+			{showRuler ? (
+				<Ruler orientation="h" length={width} zoom={zoom} />
+			) : (
+				<div />
+			)}
+			{showRuler ? (
 				<Ruler orientation="v" length={height} zoom={zoom} />
 			) : (
 				<div />

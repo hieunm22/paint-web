@@ -35,6 +35,12 @@ export const QAT_ITEMS: Record<QatItemId, QatItemDef> = {
 		labelKey: "titlebar.qat.redo",
 		shortcutKey: "shortcut.edit.redo",
 	},
+	print: {
+		id: "print",
+		icon: "print",
+		labelKey: "titlebar.qat.print",
+		shortcutKey: "shortcut.file.print",
+	},
 	// the only one Paint gives no shortcut, and the tooltip is the bare label
 	"print-preview": {
 		id: "print-preview",

@@ -4,3 +4,7 @@ export interface ShapeIconProps {
 	kind: ShapeKind
 	size?: number
 }
+
+export interface ShapePathProps {
+	kind: ShapeKind
+}

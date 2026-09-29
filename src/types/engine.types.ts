@@ -202,6 +202,19 @@ export interface GifResponse {
 	buffer: ArrayBuffer
 }
 
+/** the file's bytes, transferred to the heif worker rather than copied. */
+export interface HeifRequest {
+	buffer: ArrayBuffer
+}
+
+export interface HeifResponse {
+	/** rgba pixels of the primary picture, null when nothing could be read. */
+	buffer: ArrayBuffer | null
+	width: number
+	height: number
+	error: string | null
+}
+
 /** what crosses to the encode worker; the pixel buffer travels, it is not copied. */
 export interface EncodeRequest {
 	buffer: ArrayBuffer
@@ -269,6 +282,8 @@ export interface HistoryFull {
 	kind: "full"
 	/** the picture as it was, carrying the size to go back to. */
 	image: ImageData
+	/** the color mode as it was, going back with the pixels. */
+	monochrome: boolean
 }
 
 export type HistoryEntry = HistoryTiles | HistoryFull

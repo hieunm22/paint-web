@@ -2,7 +2,7 @@
 import type { Size } from "types/engine.types"
 import type { Language } from "types/locales.types"
 
-export type ImageFormat = "png" | "jpeg" | "bmp" | "gif" | "webp"
+export type ImageFormat = "png" | "jpeg" | "bmp" | "gif" | "webp" | "ico"
 
 export type ToolId =
 	| "pencil"
@@ -87,6 +87,8 @@ export interface DocumentState {
 	/** when the file on disk was last written, shown in Properties. */
 	savedAt: number | null
 	dpi: number
+	/** true once Properties turned the picture black and white. */
+	monochrome: boolean
 }
 
 /** everything a freshly opened file settles in the document slice at once. */
@@ -144,6 +146,17 @@ export interface ZoomFocus {
 	x: number
 	y: number
 	zoom: number
+	/** where in the viewport that pixel stays; null puts it in the middle. */
+	anchor: Point | null
+}
+
+export type ZoomDirection = "in" | "out"
+
+/** one wheel notch with Ctrl held, about the pixel under the pointer. */
+export interface ZoomAroundPayload {
+	direction: ZoomDirection
+	at: Point
+	anchor: Point
 }
 
 export interface ViewState {
@@ -254,7 +267,7 @@ export interface UiState {
 export type RibbonView = "open" | "collapsed" | "peek"
 
 export type QatItemId =
-	"new" | "open" | "save" | "undo" | "redo" | "print-preview"
+	"new" | "open" | "save" | "undo" | "redo" | "print" | "print-preview"
 
 export type DialogId =
 	| "resize-skew"

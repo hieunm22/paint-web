@@ -144,6 +144,7 @@ titlebar.qat.open;Open;Mở
 titlebar.qat.save;Save;Lưu
 titlebar.qat.undo;Undo;Hoàn tác
 titlebar.qat.redo;Redo;Làm lại
+titlebar.qat.print;Print;In
 titlebar.qat.print-preview;Print preview;Xem trước khi in
 titlebar.qat.customize;Customize Quick Access Toolbar;Tuỳ chỉnh thanh truy cập nhanh
 titlebar.window.title;{0} - Paint Web;{0} - Paint Web
@@ -279,6 +280,7 @@ dialog.save-as.hint-jpeg;JPEG has no alpha: a transparent background turns white
 dialog.save-as.hint-bmp;BMP is written by a hand-rolled encoder, 24-bit uncompressed - alpha is flattened onto white.;BMP ghi bằng encoder tự viết, 24-bit không nén - alpha hợp nhất với nền trắng.
 dialog.save-as.hint-gif;GIF is quantised to 256 colors with 1-bit alpha.;GIF lượng tử hoá về 256 màu, alpha 1-bit.
 dialog.save-as.hint-webp;"WEBP keeps alpha; Safari 16 and later.";"WEBP giữ alpha; Safari 16 trở lên."
+dialog.save-as.hint-ico;ICO holds one PNG of at most 256 pixels a side: a larger picture is scaled down to fit.;ICO chứa một ảnh PNG tối đa 256 điểm ảnh mỗi chiều: ảnh lớn hơn sẽ được thu nhỏ cho vừa.
 document.name.untitled;Untitled;Chưa đặt tên
 document.name.camera;Camera;Máy ảnh
 drop.overlay.label;Drop a picture here to open it;Thả ảnh vào đây để mở
@@ -316,4 +318,5 @@ history.label.rotate;Rotate;Xoay
 history.label.flip;Flip;Lật
 history.label.resize;Resize;Đổi cỡ
 history.label.canvas;Canvas size;Cỡ trang vẽ
+history.label.monochrome;Black and white;Đen trắng
 history.label.text;Text;Văn bản

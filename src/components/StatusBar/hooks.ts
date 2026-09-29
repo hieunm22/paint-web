@@ -1,6 +1,6 @@
 import { useEffect, useState, useSyncExternalStore } from "react"
-import { MIME_TYPES } from "common/constant"
 import { SIZE_ESTIMATE_MS } from "./constant"
+import { encodeImage } from "engine/codec"
 import { getCursor, subscribeCursor } from "engine/cursor"
 import { getOverlayState, subscribeOverlay } from "engine/overlay"
 import { paint } from "engine/PaintEngine"
@@ -23,7 +23,8 @@ export function useSelectionBox() {
 }
 
 /**
- * what the picture would weigh on disk, encoded rather than guessed. it waits
+ * what the picture would weigh on disk, written by the same encoder a save
+ * uses: the canvas's own toBlob hands back png for bmp, gif and ico. it waits
  * for the canvas to stand still: a cosmetic cell cannot cost every stroke.
  */
 export function useEncodedSize(): number | null {
@@ -32,14 +33,15 @@ export function useEncodedSize(): number | null {
 	const [bytes, setBytes] = useState<number | null>(null)
 
 	useEffect(() => {
-		const canvas = paint.surface.baseContext?.canvas
-		if (!canvas) return
-
 		let live = true
 		const timer = setTimeout(() => {
-			canvas.toBlob(blob => {
-				if (live) setBytes(blob?.size ?? null)
-			}, MIME_TYPES[format])
+			const image = paint.readDocument()
+			if (!image) return
+
+			encodeImage(image, format).then(
+				blob => live && setBytes(blob.size),
+				() => live && setBytes(null),
+			)
 		}, SIZE_ESTIMATE_MS)
 
 		return () => {

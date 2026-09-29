@@ -201,7 +201,7 @@ UI icons are Font Awesome Free as a **webfont**, registered in
 takes path data from `@fortawesome/free-solid-svg-icons` instead.
 
 The 23 shapes in the Shapes gallery are hand-written SVG geometry in
-`src/components/ShapeIcon/constant.tsx`: they are the outlines the user actually draws
+`src/components/ShapeIcon/components.tsx`: they are the outlines the user actually draws
 and must be exact, and FA carries no right triangle, rounded rectangle, curve, four- or
 six-point star, or the three callout shapes.
 
@@ -227,11 +227,15 @@ the stylesheet hides whatever does not match, and a visitor who has never opened
 editor reads English. It is a file rather than an inline block because the CSP allows
 `script-src 'self'` only.
 
-The live site is GitHub Pages at `paint.hieunm.io.vn`: `.github/workflows/gh-pages.yml`
-builds on every push to `master` and publishes `dist/`. Pages sends no headers of its
-own choosing, so the CSP, `Cache-Control: no-cache` and the rest of `deploy/` apply to
-the container only. The server workflows are parked as `.txt` beside it and no longer
-run.
+The live site is on GitHub Pages. `.github/workflows/deploy.yml` runs on every push to
+`master` and goes where the repo variable `DEPLOY_TARGET` says:
+`pages` (the default when unset) builds here and publishes `dist/`; `vps` reaches the
+server over ssh, pulls the branch and runs `make publish-sync`, which installs, builds
+and swaps the container. A manual run from the Actions tab picks the target with its
+input instead. The vps target needs `SERVER_IP` and `SSH_PORT` as repo variables and
+`SSH_PRIVATE_KEY` as a secret; a Telegram report is sent when `TELEGRAM_CHAT_ID` and
+`TELEGRAM_BOT_TOKEN` are set. Pages sends no headers of its own choosing, so the CSP,
+`Cache-Control: no-cache` and the rest of `deploy/` apply to the container only.
 
 The container listens on port 80 and expects TLS at an edge proxy. That matters more
 than it looks: the File System Access, `getUserMedia` and Clipboard APIs only work on a
@@ -262,6 +266,12 @@ name taken from the list, which is what lets `activate` drop the previous build.
 pass `ignoreVary`: the assets answer with `Vary: Origin` and Vite tags the bundle
 `crossorigin`, and without it every subresource misses the cache and the first offline
 visit is a blank page. `yarn test:offline` is the guard.
+
+`scripts/precache.config.mjs` names the built files that stay out of that list and are
+fetched the first time something asks for them, then cached. Today that is the heif
+decoder worker alone: at 3 MB it outweighs the rest of the shell four times over, and
+only a `.heic` file ever asks for it, so opening heic needs a network connection at least
+once. Remove it from `ON_DEMAND` and the next build precaches it, heic offline included.
 
 A file opened through `file_handlers` arrives as a handle rather than through a picker:
 `hooks/useLaunchFiles.ts` reads the launch queue and hands it to `openPicked`.

@@ -33,7 +33,10 @@
 				"image/jpeg": [".jpg", ".jpeg"],
 				"image/bmp": [".bmp", ".dib"],
 				"image/gif": [".gif"],
-				"image/webp": [".webp"]
+				"image/webp": [".webp"],
+				"image/x-icon": [".ico"],
+				"image/heic": [".heic"],
+				"image/heif": [".heif"]
 			}
 		}
 	]

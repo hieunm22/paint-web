@@ -8,6 +8,7 @@ import { createHash } from "node:crypto"
 import { readdirSync, readFileSync, statSync, writeFileSync } from "node:fs"
 import { dirname, join, relative, resolve, sep } from "node:path"
 import { fileURLToPath } from "node:url"
+import { ON_DEMAND } from "./precache.config.mjs"
 
 const REPO = resolve(dirname(fileURLToPath(import.meta.url)), "..")
 const DIST = resolve(REPO, "dist")
@@ -15,6 +16,12 @@ const WORKER = resolve(DIST, "sw.js")
 
 /** the worker is fetched by the browser itself and never served from cache. */
 const SKIP = "/sw.js"
+
+/** a built file the config keeps out of the shell, by the start of its name. */
+function onDemand(url) {
+	const name = url.slice(url.lastIndexOf("/") + 1)
+	return ON_DEMAND.some(prefix => name.startsWith(prefix))
+}
 
 const START = "/* precache:start */"
 const END = "/* precache:end */"
@@ -37,7 +44,9 @@ function urls() {
 		const parts = relative(DIST, path).split(sep)
 		return `/${parts.join("/")}`
 	})
-	const served = paths.filter(url => url !== SKIP).sort()
+	const served = paths
+		.filter(url => url !== SKIP && !onDemand(url))
+		.sort()
 	return ["/", ...served]
 }
 

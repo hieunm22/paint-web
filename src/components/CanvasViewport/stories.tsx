@@ -23,7 +23,7 @@ export default meta
  */
 export const Default: StoryObj<typeof meta> = {}
 
-/** rulers need zoom >= 1, which is where they earn their tick spacing. */
+/** rulers at 100%, where a minor tick is ten image pixels. */
 export const Rulers: StoryObj<typeof meta> = {
 	parameters: {
 		state: { view: { showRuler: true, zoom: 1 } } satisfies StoryState,

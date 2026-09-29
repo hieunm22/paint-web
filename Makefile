@@ -1,4 +1,4 @@
-# deploy targets, run from the repo root. the workflows in .github/ call publish-sync.
+# deploy targets, run from the repo root. the vps job in .github/ calls publish-sync.
 IMAGE := paint-web
 CONTAINER := paint-web
 PORT := 3004
@@ -6,7 +6,7 @@ PORT := 3004
 .PHONY: install build destroy publish publish-sync logs restart
 
 install:
-	yarn install
+	yarn install --frozen-lockfile
 
 build:
 	yarn build
@@ -22,7 +22,7 @@ destroy:
 	else \
 		echo "container $(CONTAINER) does not exist, skipping destroy."; \
 	fi
-	docker image rm $(IMAGE); \
+	-docker image rm $(IMAGE)
 
 kill:
 	lsof -ti :3004 | xargs kill -9
@@ -39,7 +39,7 @@ publish: destroy
 	docker build --progress=plain -t $(IMAGE) -f Dockerfile .
 	docker run --name $(CONTAINER) -ditp $(PORT):80 --restart unless-stopped $(IMAGE)
 
-publish-sync: build publish
+publish-sync: install build publish
 
 restart:
 	docker container restart $(CONTAINER)

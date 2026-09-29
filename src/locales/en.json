@@ -196,6 +196,7 @@
 			"save": "Save",
 			"undo": "Undo",
 			"redo": "Redo",
+			"print": "Print",
 			"print-preview": "Print preview",
 			"customize": "Customize Quick Access Toolbar"
 		},
@@ -382,7 +383,8 @@
 			"hint-jpeg": "JPEG has no alpha: a transparent background turns white.",
 			"hint-bmp": "BMP is written by a hand-rolled encoder, 24-bit uncompressed - alpha is flattened onto white.",
 			"hint-gif": "GIF is quantised to 256 colors with 1-bit alpha.",
-			"hint-webp": "WEBP keeps alpha; Safari 16 and later."
+			"hint-webp": "WEBP keeps alpha; Safari 16 and later.",
+			"hint-ico": "ICO holds one PNG of at most 256 pixels a side: a larger picture is scaled down to fit."
 		}
 	},
 	"document": {
@@ -450,6 +452,7 @@
 			"flip": "Flip",
 			"resize": "Resize",
 			"canvas": "Canvas size",
+			"monochrome": "Black and white",
 			"text": "Text"
 		}
 	}

@@ -1,0 +1,129 @@
+# one workflow, two targets. a push to master goes where the repo variable
+# DEPLOY_TARGET says (pages when unset); a manual run picks with its input.
+# vps needs: SERVER_IP, SSH_PORT (variables) and SSH_PRIVATE_KEY (secret).
+# telegram is optional: TELEGRAM_CHAT_ID (variable) and TELEGRAM_BOT_TOKEN (secret).
+name: Deploy
+
+on:
+  push:
+    branches: [master]
+    paths-ignore:
+      - "README.md"
+      - "docs/**"
+  workflow_dispatch:
+    inputs:
+      target:
+        description: Where to deploy
+        type: choice
+        options: [pages, vps]
+        default: pages
+
+env:
+  APP_NAME: Paint Web
+  # the checkout on the vps, kept up to date by the ssh step
+  APP_DIR: /root/projects/paint-web
+  # what yarn build writes and what pages serves
+  DIST: dist
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: deploy
+  cancel-in-progress: true
+
+jobs:
+  target:
+    runs-on: ubuntu-latest
+    outputs:
+      name: ${{ steps.pick.outputs.name }}
+    steps:
+      - id: pick
+        run: echo "name=${{ inputs.target || vars.DEPLOY_TARGET || 'pages' }}" >> "$GITHUB_OUTPUT"
+
+  pages:
+    needs: target
+    if: needs.target.outputs.name == 'pages'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: yarn
+      - run: yarn install --frozen-lockfile
+      - run: yarn build
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: ${{ env.DIST }}
+      - id: deployment
+        uses: actions/deploy-pages@v4
+
+  vps:
+    needs: target
+    if: needs.target.outputs.name == 'vps'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      SERVER_IP: ${{ vars.SERVER_IP }}
+      SSH_PORT: ${{ vars.SSH_PORT }}
+      DEPLOY_BRANCH: ${{ github.ref_name }}
+    steps:
+      - name: setup ssh
+        run: |
+          set -eo pipefail
+          if [ -z "$SERVER_IP" ] || [ -z "$SSH_PORT" ]; then
+            echo "::error::repo variables SERVER_IP and SSH_PORT are required for the vps target"
+            exit 1
+          fi
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          if ! ssh-keyscan -H -p "$SSH_PORT" -T 10 "$SERVER_IP" >> ~/.ssh/known_hosts; then
+            echo "::error::ssh-keyscan could not reach ${SERVER_IP}:${SSH_PORT}"
+            exit 1
+          fi
+
+      - name: build and run on the server
+        run: |
+          set -eo pipefail
+          ssh -p "$SSH_PORT" root@"$SERVER_IP" \
+            APP_DIR="$APP_DIR" \
+            DEPLOY_BRANCH="$DEPLOY_BRANCH" \
+            bash -s <<'REMOTE'
+          set -e
+          cd "$APP_DIR"
+          # fetch then reset: a plain pull only moves whatever branch the server sat on
+          git fetch origin "$DEPLOY_BRANCH"
+          git checkout "$DEPLOY_BRANCH"
+          git reset --hard "origin/$DEPLOY_BRANCH"
+          source /root/.nvm/nvm.sh
+          make publish-sync
+          REMOTE
+
+  notify:
+    needs: [target, pages, vps]
+    # always() so a failed deploy still reports; the job that ran names the target
+    if: always() && vars.TELEGRAM_CHAT_ID != '' && needs.target.result == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - name: send telegram message
+        env:
+          TARGET: ${{ needs.target.outputs.name }}
+          STATUS: ${{ needs.target.outputs.name == 'vps' && needs.vps.result || needs.pages.result }}
+          BRANCH: ${{ github.ref_name }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          TIMESTAMP=$(TZ='Asia/Ho_Chi_Minh' date '+%Y-%m-%d %H:%M:%S')
+          if [ "$STATUS" = "success" ]; then EMOJI="✅"; else EMOJI="❌"; fi
+          printf -v MESSAGE '%s %s deploy to %s (%s) finished at %s: %s\n%s' \
+            "$EMOJI" "$APP_NAME" "$TARGET" "$BRANCH" "$TIMESTAMP" "$STATUS" "$RUN_URL"
+          curl -s -X POST \
+            "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
+            -d chat_id="${{ vars.TELEGRAM_CHAT_ID }}" \
+            --data-urlencode "text=$MESSAGE"

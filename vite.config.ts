@@ -32,6 +32,8 @@ export default defineConfig({
 		port: 3004
 	},
 	resolve: { alias: rootAliases },
+	// commonjs reached only from a worker, which the dependency scan never enters
+	optimizeDeps: { include: ["libheif-js"] },
 	// node is the default: the engine tests exercise pixel maths, and a jsdom
 	// that cannot back a canvas would only look like it covers more. a component
 	// test asks for jsdom in its own docblock.

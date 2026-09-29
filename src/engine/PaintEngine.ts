@@ -3,6 +3,7 @@ import { TOOLS } from "engine/tools/registry"
 import { announce } from "engine/announce"
 import { fitsCanvas } from "engine/canvasLimit"
 import { History } from "engine/History"
+import { monochromeImage } from "engine/monochrome"
 import { reportSelectionBox } from "engine/overlay"
 import { SelectionManager } from "engine/SelectionManager"
 import { Surface } from "engine/Surface"
@@ -17,7 +18,7 @@ import {
 import { translate } from "locales/translate"
 import { store } from "store"
 import { historyChanged } from "store/actions"
-import { setDirty, setDocSize } from "store/slices/docSlice"
+import { setDirty, setDocSize, setMonochrome } from "store/slices/docSlice"
 import { clearSelection, setSelection } from "store/slices/selectionSlice"
 import { setTool } from "store/slices/toolSlice"
 import { showToast } from "store/slices/uiSlice"
@@ -81,7 +82,7 @@ class PaintEngine {
 	private history = new History(
 		this.surface,
 		() => this.publishHistory(),
-		size => this.adoptSize(size),
+		(size, monochrome) => this.adoptDocument(size, monochrome),
 	)
 	private active: Tool | null = null
 	/** a tool holding an object on preview between gestures. */
@@ -199,20 +200,37 @@ class PaintEngine {
 	/**
 	 * a handle drag on the paper's edge: it grows or crops the document and
 	 * never scales the picture, which stays in the corner it was drawn in.
+	 * false when the browser cannot hold the paper asked for.
 	 */
-	resizeCanvas(size: Size): void {
+	resizeCanvas(size: Size): boolean {
 		const current = this.surface.documentSize
-		if (size.width === current.width && size.height === current.height) return
-		if (!this.canBack(size)) return
+		if (size.width === current.width && size.height === current.height) {
+			return true
+		}
+		if (!this.canBack(size)) return false
 
 		this.commitHeld()
 		const source = this.surface.snapshot()
-		if (!source) return
+		if (!source) return false
 
 		this.replaceDocument(
 			padImage(source, size),
 			translate("history.label.canvas"),
 		)
+		return true
+	}
+
+	/** Properties set to black and white: the whole picture, selection baked. */
+	toBlackAndWhite(): void {
+		this.commitHeld()
+		const source = this.surface.snapshot()
+		if (!source) return
+
+		this.replaceDocument(
+			monochromeImage(source),
+			translate("history.label.monochrome"),
+		)
+		store.dispatch(setMonochrome(true))
 	}
 
 	/** Resize and Skew, on the selection when one is up. */
@@ -530,7 +548,7 @@ class PaintEngine {
 		const ctx = this.context()
 		if (!ctx) return
 
-		if (this.selection.isActive) {
+		if (this.selection.isActive && !this.selectionCoversPaper()) {
 			const tool = this.held ?? TOOLS["select-rect"]
 			if (!tool) return
 
@@ -546,6 +564,20 @@ class PaintEngine {
 		if (source) this.replaceDocument(make(source), label)
 	}
 
+	/** a rectangle over every pixel, which is what Select all and a paste leave. */
+	private selectionCoversPaper(): boolean {
+		const box = this.selection.bounds
+		if (!box || this.selection.kind !== "rect") return false
+
+		const { width, height } = this.surface.documentSize
+		return (
+			box.x <= 0 &&
+			box.y <= 0 &&
+			box.x + box.w >= width &&
+			box.y + box.h >= height
+		)
+	}
+
 	/**
 	 * swaps the whole picture for another one of any size. the old bitmap goes
 	 * on the stack whole: a tile id means nothing once the grid is recut.
@@ -553,11 +585,12 @@ class PaintEngine {
 	private replaceDocument(source: HTMLCanvasElement, label: string): void {
 		const { width, height } = this.surface.documentSize
 		const before = this.surface.readRegion({ x: 0, y: 0, w: width, h: height })
+		const wasMonochrome = store.getState().doc.monochrome
 
 		this.surface.replaceDocument(source)
 		this.surface.clearPreview()
 		this.docSize = this.surface.documentSize
-		if (before) this.history.pushFull(label, before)
+		if (before) this.history.pushFull(label, before, wasMonochrome)
 		store.dispatch(setDocSize(this.docSize))
 		announce("live.image.size", {
 			0: this.docSize.width,
@@ -565,10 +598,16 @@ class PaintEngine {
 		})
 	}
 
-	/** an undone size change resized the surface; the store catches up to it. */
-	private adoptSize(size: Size): void {
+	/**
+	 * an undone full step resized the surface and may have changed the color
+	 * mode; the store catches up, and the mode it held goes back on the stack.
+	 */
+	private adoptDocument(size: Size, monochrome: boolean): boolean {
+		const was = store.getState().doc.monochrome
 		this.docSize = size
 		store.dispatch(setDocSize(size))
+		if (was !== monochrome) store.dispatch(setMonochrome(monochrome))
+		return was
 	}
 
 	/**

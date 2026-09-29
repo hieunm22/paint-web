@@ -196,6 +196,7 @@
 			"save": "Lưu",
 			"undo": "Hoàn tác",
 			"redo": "Làm lại",
+			"print": "In",
 			"print-preview": "Xem trước khi in",
 			"customize": "Tuỳ chỉnh thanh truy cập nhanh"
 		},
@@ -382,7 +383,8 @@
 			"hint-jpeg": "JPEG không có alpha: nền trong suốt sẽ thành trắng.",
 			"hint-bmp": "BMP ghi bằng encoder tự viết, 24-bit không nén - alpha hợp nhất với nền trắng.",
 			"hint-gif": "GIF lượng tử hoá về 256 màu, alpha 1-bit.",
-			"hint-webp": "WEBP giữ alpha; Safari 16 trở lên."
+			"hint-webp": "WEBP giữ alpha; Safari 16 trở lên.",
+			"hint-ico": "ICO chứa một ảnh PNG tối đa 256 điểm ảnh mỗi chiều: ảnh lớn hơn sẽ được thu nhỏ cho vừa."
 		}
 	},
 	"document": {
@@ -450,6 +452,7 @@
 			"flip": "Lật",
 			"resize": "Đổi cỡ",
 			"canvas": "Cỡ trang vẽ",
+			"monochrome": "Đen trắng",
 			"text": "Văn bản"
 		}
 	}

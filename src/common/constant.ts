@@ -48,6 +48,7 @@ export const QAT_ORDER: QatItemId[] = [
 	"save",
 	"undo",
 	"redo",
+	"print",
 	"print-preview",
 ]
 
@@ -162,6 +163,7 @@ export const MIME_TYPES: Record<ImageFormat, string> = {
 	bmp: "image/bmp",
 	gif: "image/gif",
 	webp: "image/webp",
+	ico: "image/x-icon",
 }
 
 export const EXTENSIONS: Record<ImageFormat, string> = {
@@ -170,6 +172,7 @@ export const EXTENSIONS: Record<ImageFormat, string> = {
 	bmp: ".bmp",
 	gif: ".gif",
 	webp: ".webp",
+	ico: ".ico",
 }
 
 export const FORMATS = Object.keys(MIME_TYPES) as ImageFormat[]
@@ -181,6 +184,12 @@ export const DEFAULT_FORMAT: ImageFormat = "png"
 export const FORMAT_ALIASES: Partial<Record<ImageFormat, string[]>> = {
 	jpeg: [".jpeg"],
 	bmp: [".dib"],
+}
+
+/** opened but never written: a heif file saves back as png. */
+export const READ_ONLY_TYPES: Record<string, string[]> = {
+	"image/heic": [".heic"],
+	"image/heif": [".heif"],
 }
 
 /** past this the memory cost stops being worth it, and Paint has no use for it. */

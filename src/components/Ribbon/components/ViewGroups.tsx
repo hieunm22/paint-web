@@ -47,7 +47,6 @@ export function ViewTabGroups() {
 
 			<RibbonGroup label={t("ribbon.show-hide.label")}>
 				<ButtonStack>
-					{/* rulers need zoom >= 1. gridlines toggle at any zoom, as in Paint */}
 					<SmallButton
 						label={t("ribbon.show-hide.rulers")}
 						icon={view.showRuler ? "checked" : "unchecked"}
@@ -55,7 +54,6 @@ export function ViewTabGroups() {
 							"ribbon.show-hide.rulers",
 							"shortcut.view.rulers",
 						)}
-						disabled={view.zoom < 1}
 						keyTip="R"
 						onClick={() => dispatch(toggleView("showRuler"))}
 					/>

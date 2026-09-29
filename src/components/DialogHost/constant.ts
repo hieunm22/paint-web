@@ -1,5 +1,12 @@
 import type { ImageFormat } from "types/store.types"
-import type { MarginField, OrientationOption, PaperOption } from "./types"
+import type {
+	ColorModeOption,
+	MarginField,
+	OrientationOption,
+	PaperOption,
+	SizeUnit,
+	UnitOption,
+} from "./types"
 
 /** the quality slider runs on whole percent and only jpeg and webp read it. */
 export const DEFAULT_QUALITY = 92
@@ -10,6 +17,7 @@ export const FORMAT_HINT_KEYS: Record<ImageFormat, string> = {
 	bmp: "dialog.save-as.hint-bmp",
 	gif: "dialog.save-as.hint-gif",
 	webp: "dialog.save-as.hint-webp",
+	ico: "dialog.save-as.hint-ico",
 }
 
 /** what a dialog may hand the keyboard to, which is what Tab cycles through. */
@@ -34,6 +42,28 @@ export const MARGIN_FIELDS: MarginField[] = [
 	{ edge: "top", labelKey: "dialog.page-setup.top" },
 	{ edge: "bottom", labelKey: "dialog.page-setup.bottom" },
 ]
+
+/** the units Image Properties offers, in the order Paint lists them. */
+export const UNIT_OPTIONS: UnitOption[] = [
+	{ id: "inches", labelKey: "dialog.image-properties.inches" },
+	{ id: "centimeters", labelKey: "dialog.image-properties.centimeters" },
+	{ id: "pixels", labelKey: "dialog.image-properties.pixels" },
+]
+
+export const COLOR_MODE_OPTIONS: ColorModeOption[] = [
+	{
+		id: "black-and-white",
+		labelKey: "dialog.image-properties.black-and-white",
+	},
+	{ id: "color", labelKey: "dialog.image-properties.color" },
+]
+
+/** how fine a size field steps: whole pixels, hundredths of the others. */
+export const UNIT_STEP: Record<SizeUnit, number> = {
+	inches: 0.01,
+	centimeters: 0.01,
+	pixels: 1,
+}
 
 /** how wide the preview draws one sheet, in css pixels. */
 export const SHEET_WIDTH = 288

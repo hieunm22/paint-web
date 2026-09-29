@@ -156,7 +156,7 @@ describe("a full step, which a crop or a rotate pushes", () => {
 			width: 100,
 			height: 100,
 		} as ImageData)
-		history.pushFull(label, before)
+		history.pushFull(label, before, false)
 	}
 
 	it("puts the old size and its pixels back", () => {
@@ -167,7 +167,18 @@ describe("a full step, which a crop or a rotate pushes", () => {
 		history.undo()
 		expect(surface.documentSize).toEqual({ width: DOC, height: DOC })
 		expect(at(1, 1)).toBe(40)
-		expect(resized).toHaveBeenCalledWith({ width: DOC, height: DOC })
+		expect(resized).toHaveBeenCalledWith({ width: DOC, height: DOC }, false)
+	})
+
+	/** the mode the store hands back on undo is what redo asks for again. */
+	it("carries the color mode back and forth with the pixels", () => {
+		resized.mockReturnValue(true)
+		shrink("Black and white")
+		history.undo()
+		expect(resized).toHaveBeenLastCalledWith({ width: DOC, height: DOC }, false)
+
+		history.redo()
+		expect(resized).toHaveBeenLastCalledWith({ width: 100, height: 100 }, true)
 	})
 
 	it("redoes back to the cropped size", () => {
