@@ -139,9 +139,27 @@
 			bottom: -3px;
 			cursor: nwse-resize;
 		}
+
+		@media (pointer: coarse) {
+			&::before {
+				content: "";
+				position: absolute;
+			}
+
+			&--e::before {
+				inset: -14px -24px -14px 0;
+			}
+
+			&--s::before {
+				inset: 0 -14px -24px -14px;
+			}
+
+			&--se::before {
+				inset: 0 -24px -24px 0;
+			}
+		}
 	}
 
-	// the paper a drag has reached, drawn while the handle is held
 	&__resize-preview {
 		position: absolute;
 		left: 0;
@@ -151,7 +169,6 @@
 		border: 1px dotted var(--cv-handle-bd);
 	}
 
-	// marching ants: one gradient per edge, black over white to read on any ink.
 	&__ants {
 		position: absolute;
 		pointer-events: none;
@@ -266,16 +283,30 @@
 			background: linear-gradient(315deg, transparent 50%, #9aa3b2 50%);
 		}
 
+		&--ne {
+			right: 0;
+			top: 0;
+			cursor: nesw-resize;
+			background: linear-gradient(45deg, transparent 50%, #9aa3b2 50%);
+		}
+
 		&--se {
 			right: 0;
 			bottom: 0;
 			background: linear-gradient(135deg, transparent 50%, #9aa3b2 50%);
 		}
+
+		&--sw {
+			left: 0;
+			bottom: 0;
+			cursor: nesw-resize;
+			background: linear-gradient(225deg, transparent 50%, #9aa3b2 50%);
+		}
 	}
 
 	&__thumbnail-title {
 		font-size: 11px;
-		padding: 2px 5px 2px 16px;
+		padding: 2px 16px;
 		cursor: move;
 		user-select: none;
 		touch-action: none;

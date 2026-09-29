@@ -2,8 +2,8 @@ import { useEffect, useMemo } from "react"
 import { useTranslation } from "react-i18next"
 import { QAT_ORDER } from "common/constant"
 import { QAT_ITEMS } from "./constant"
+import { writeSettings } from "common/settings"
 import { tooltipWithShortcut } from "locales/common"
-import { writeQat } from "store/common"
 import { paint } from "engine/PaintEngine"
 import { useFileCommands } from "hooks/useFileCommands"
 import { useAppDispatch, useAppSelector } from "store/hooks"
@@ -14,7 +14,7 @@ import type { QatItem } from "./types"
 
 /** the customization outlives the session, which is what localStorage is for. */
 export function useQatPersistence(items: QatItemId[]): void {
-	useEffect(() => writeQat(items), [items])
+	useEffect(() => writeSettings({ qat: items }), [items])
 }
 
 /**
@@ -38,11 +38,11 @@ export function useQatItems(): QatItem[] {
 			"print-preview": true,
 		}
 		const handlers: Record<QatItemId, EmptyVoid> = {
-			new: () => files.newDocument(),
-			open: () => void files.openDocument(),
-			save: () => void files.save(),
-			undo: () => paint.undo(),
-			redo: () => paint.redo(),
+			new: files.newDocument,
+			open: files.openDocument,
+			save: files.save,
+			undo: paint.undo,
+			redo: paint.redo,
 			"print-preview": () => void dispatch(openDialog("print-preview")),
 		}
 

@@ -1,10 +1,10 @@
 import classnames from "classnames"
-import { ICONS } from "./constant"
+import { ICONS, SVG_ICONS } from "./constant"
 import type { IconProps } from "./types"
 
 /**
- * a font glyph, not an svg element. size drives font-size only: a fixed width
- * would not scale the glyph the way svg did, it would let wide ones spill out.
+ * a font glyph, or an svg sized in em for glyphs the font lacks. size drives
+ * font-size only: a fixed width would let wide glyphs spill out.
  */
 export function Icon({
 	name,
@@ -13,16 +13,33 @@ export function Icon({
 	className,
 	rotate,
 }: IconProps) {
-	const cls = classnames(ICONS[name], className)
+	const style = {
+		fontSize: size,
+		color,
+		transform: rotate ? `rotate(${rotate}deg)` : undefined,
+	}
+
+	if (name in SVG_ICONS) {
+		const { width, glyph } = SVG_ICONS[name as keyof typeof SVG_ICONS]
+
+		return (
+			<svg
+				className={className}
+				style={style}
+				width={`${width / 16}em`}
+				height="1em"
+				viewBox={`0 0 ${width} 16`}
+				aria-hidden
+			>
+				{glyph}
+			</svg>
+		)
+	}
 
 	return (
 		<i
-			className={cls}
-			style={{
-				fontSize: size,
-				color,
-				transform: rotate ? `rotate(${rotate}deg)` : undefined,
-			}}
+			className={classnames(ICONS[name as keyof typeof ICONS], className)}
+			style={style}
 			aria-hidden
 		/>
 	)

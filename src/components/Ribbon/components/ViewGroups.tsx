@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next"
 import { LargeButton, SmallButton } from "components/RibbonButton"
 import { ButtonStack, RibbonGroup } from "components/RibbonGroup"
-import { shortcutText, tooltipWithShortcut } from "locales/common"
+import { tooltipWithShortcut } from "locales/common"
 import { useAppDispatch, useAppSelector } from "store/hooks"
 import {
 	setZoom,
@@ -23,6 +23,7 @@ export function ViewTabGroups() {
 					label={t("ribbon.zoom.in")}
 					icon="zoomIn"
 					title={tooltipWithShortcut("ribbon.zoom.in", "shortcut.view.zoom-in")}
+					keyTip="I"
 					onClick={() => dispatch(zoomIn())}
 				/>
 				<LargeButton
@@ -32,19 +33,21 @@ export function ViewTabGroups() {
 						"ribbon.zoom.out",
 						"shortcut.view.zoom-out",
 					)}
+					keyTip="O"
 					onClick={() => dispatch(zoomOut())}
 				/>
 				<LargeButton
 					label={t("ribbon.zoom.actual")}
 					icon="zoom100"
 					selected={view.zoom === 1}
+					keyTip="M"
 					onClick={() => dispatch(setZoom(1))}
 				/>
 			</RibbonGroup>
 
 			<RibbonGroup label={t("ribbon.show-hide.label")}>
 				<ButtonStack>
-					{/* rulers need zoom >= 1, gridlines need zoom >= 4. */}
+					{/* rulers need zoom >= 1. gridlines toggle at any zoom, as in Paint */}
 					<SmallButton
 						label={t("ribbon.show-hide.rulers")}
 						icon={view.showRuler ? "checked" : "unchecked"}
@@ -53,20 +56,23 @@ export function ViewTabGroups() {
 							"shortcut.view.rulers",
 						)}
 						disabled={view.zoom < 1}
+						keyTip="R"
 						onClick={() => dispatch(toggleView("showRuler"))}
 					/>
 					<SmallButton
 						label={t("ribbon.show-hide.gridlines")}
 						icon={view.showGrid ? "checked" : "unchecked"}
-						title={t("ribbon.show-hide.gridlines-tooltip", {
-							0: shortcutText("shortcut.view.gridlines"),
-						})}
-						disabled={view.zoom < 4}
+						title={tooltipWithShortcut(
+							"ribbon.show-hide.gridlines",
+							"shortcut.view.gridlines",
+						)}
+						keyTip="G"
 						onClick={() => dispatch(toggleView("showGrid"))}
 					/>
 					<SmallButton
 						label={t("ribbon.show-hide.status-bar")}
 						icon={view.showStatusBar ? "checked" : "unchecked"}
+						keyTip="S"
 						onClick={() => dispatch(toggleView("showStatusBar"))}
 					/>
 				</ButtonStack>
@@ -81,12 +87,14 @@ export function ViewTabGroups() {
 						"shortcut.view.full-screen",
 					)}
 					selected={view.fullScreen}
+					keyTip="F"
 					onClick={() => dispatch(toggleView("fullScreen"))}
 				/>
 				<LargeButton
 					label={t("ribbon.display.thumbnail")}
 					icon="thumbnail"
 					selected={view.showThumbnail}
+					keyTip="T"
 					onClick={() => dispatch(toggleView("showThumbnail"))}
 				/>
 			</RibbonGroup>

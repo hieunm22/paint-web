@@ -8,6 +8,7 @@ export type FileMenuAction =
 
 export interface FileMenuEntry {
 	labelKey: string
+	keyTip: string
 	icon: IconName
 	shortcutKey?: string
 	submenu?: boolean
@@ -43,6 +44,13 @@ export interface ChoiceRowProps {
 	label: string
 	shortcut?: string
 	onClick: EmptyVoid
+}
+
+/** what a backstage row listens with to answer a pointer resting on it. */
+export interface SubmenuHover {
+	onClick: EmptyVoid
+	onMouseEnter: EmptyVoid
+	onMouseLeave: EmptyVoid
 }
 
 /** the backstage recents list, and the way a row leaves it. */

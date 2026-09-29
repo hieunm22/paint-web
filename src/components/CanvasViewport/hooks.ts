@@ -15,8 +15,10 @@ import {
 	CANVAS_MARGIN,
 	THUMBNAIL_FRAME,
 	THUMBNAIL_INTERVAL_MS,
+	THUMBNAIL_PULL,
 } from "./constant"
 import { isSecondaryButton } from "common/platform"
+import { writeSettings } from "common/settings"
 import {
 	boxToThumb,
 	fittedBox,
@@ -30,7 +32,6 @@ import { getCursor, reportCursor, subscribeCursor } from "engine/cursor"
 import { getOverlayState, subscribeOverlay } from "engine/overlay"
 import { paint } from "engine/PaintEngine"
 import { penPressure, penTilt, smoothPressure } from "engine/pressure"
-import { writePageSize, writeThumbnailWidth } from "store/common"
 import type {
 	Modifiers,
 	OverlayState,
@@ -451,7 +452,7 @@ export function useDocumentResize(doc: Size, zoom: number) {
 			show(null)
 			paint.resizeCanvas(drag.size)
 			// the size the user chose by hand outlives the document
-			writePageSize(drag.size)
+			writeSettings({ pageSize: drag.size })
 		},
 		[show],
 	)
@@ -570,11 +571,11 @@ export function useThumbnailResize({
 			const drag = session.current
 			if (!drag || drag.pointerId !== e.pointerId) return
 
-			// the panel is anchored bottom right, so the corners grow opposite ways
-			const pull = corner === "nw" ? -1 : 1
-			const byX = (e.clientX - drag.start.x) * pull
+			// each grip enlarges the panel when dragged away from its own corner
+			const pull = THUMBNAIL_PULL[corner]
+			const byX = (e.clientX - drag.start.x) * pull.x
 			const byY = doc.height
-				? ((e.clientY - drag.start.y) * pull * doc.width) / doc.height
+				? ((e.clientY - drag.start.y) * pull.y * doc.width) / doc.height
 				: 0
 
 			drag.next = thumbnailBox(
@@ -589,7 +590,7 @@ export function useThumbnailResize({
 			if (!drag || drag.pointerId !== e.pointerId) return
 
 			session.current = null
-			writeThumbnailWidth(drag.next)
+			writeSettings({ thumbnailWidth: drag.next })
 		},
 	}
 }

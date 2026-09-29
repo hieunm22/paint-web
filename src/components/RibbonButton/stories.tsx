@@ -1,7 +1,8 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
 import { useTranslation } from "react-i18next"
 import { expect, screen } from "storybook/test"
-import { Menu, MenuItem, MenuSeparator } from "components/Menu"
+import Menu from "components/Menu"
+import { MenuItem, MenuSeparator } from "components/Menu/components"
 import {
 	IconButton,
 	LargeButton,

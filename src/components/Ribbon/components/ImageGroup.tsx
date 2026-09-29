@@ -1,12 +1,13 @@
 import { useTranslation } from "react-i18next"
+import { Icon } from "components/Icon"
 import { TOOLS as IMPLEMENTED } from "engine/tools/registry"
+import Menu from "components/Menu"
 import {
-	Menu,
 	MenuAnchor,
 	MenuItem,
 	MenuSectionLabel,
 	MenuSeparator,
-} from "components/Menu"
+} from "components/Menu/components"
 import { SmallButton, SplitButton } from "components/RibbonButton"
 import { ButtonStack, RibbonGroup } from "components/RibbonGroup"
 import { shortcutText, tooltipWithShortcut } from "locales/common"
@@ -15,6 +16,9 @@ import { useAppDispatch, useAppSelector } from "store/hooks"
 import { toggleTransparent } from "store/slices/selectionSlice"
 import { setTool } from "store/slices/toolSlice"
 import { openDialog, toggleMenu } from "store/slices/uiSlice"
+
+/** the marquee runs out to the edges of the button, as it does in paint. */
+const SELECT_ICON_SIZE = 44
 
 /** Select split button, Crop, Resize and Rotate. */
 export function ImageGroup() {
@@ -39,9 +43,10 @@ export function ImageGroup() {
 		<RibbonGroup label={t("ribbon.image.label")}>
 			<SplitButton
 				label={t("ribbon.image.select")}
-				icon="select"
+				iconNode={<Icon name="select" size={SELECT_ICON_SIZE} />}
 				selected={selecting}
 				disabled={!canSelect}
+				keyTip="SE"
 				onClick={pickSelect}
 				open={openMenu === "select"}
 				onToggleMenu={() => dispatch(toggleMenu("select"))}
@@ -97,6 +102,7 @@ export function ImageGroup() {
 					label={t("ribbon.image.crop")}
 					icon="crop"
 					disabled={!hasSelection}
+					keyTip="RP"
 					onClick={() => paint.crop()}
 				/>
 				<SmallButton
@@ -106,6 +112,7 @@ export function ImageGroup() {
 						"dialog.resize-skew.title",
 						"shortcut.image.resize",
 					)}
+					keyTip="RE"
 					onClick={() => dispatch(openDialog("resize-skew"))}
 				/>
 				<MenuAnchor>
@@ -113,6 +120,7 @@ export function ImageGroup() {
 						label={t("ribbon.image.rotate")}
 						icon="rotate"
 						caret
+						keyTip="RO"
 						onClick={() => dispatch(toggleMenu("rotate"))}
 					/>
 					{openMenu === "rotate" && (

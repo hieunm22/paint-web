@@ -14,21 +14,47 @@ export const ARROW_STEPS: Record<string, number | undefined> = {
 }
 
 export const RIBBON_TABS: RibbonTabDef[] = [
-	{ id: "home", labelKey: "ribbon.tab.home" },
-	{ id: "view", labelKey: "ribbon.tab.view" },
+	{ id: "home", labelKey: "ribbon.tab.home", keyTip: "H" },
+	{ id: "view", labelKey: "ribbon.tab.view", keyTip: "V" },
 ]
 
 /** 3x2 grid in the same order Paint uses. */
 export const TOOLS: ToolDef[] = [
-	{ id: "pencil", icon: "pencil", labelKey: "ribbon.tools.pencil" },
-	{ id: "fill", icon: "fill", labelKey: "ribbon.tools.fill" },
-	{ id: "text", icon: "text", labelKey: "ribbon.tools.text" },
-	{ id: "eraser", icon: "eraser", labelKey: "ribbon.tools.eraser" },
-	{ id: "picker", icon: "picker", labelKey: "ribbon.tools.picker" },
+	{
+		id: "pencil",
+		icon: "pencil",
+		labelKey: "ribbon.tools.pencil",
+		keyTip: "P1",
+	},
+	{
+		id: "fill",
+		icon: "fill",
+		labelKey: "ribbon.tools.fill",
+		keyTip: "K",
+	},
+	{
+		id: "text",
+		icon: "text",
+		labelKey: "ribbon.tools.text",
+		keyTip: "T",
+	},
+	{
+		id: "eraser",
+		icon: "eraser",
+		labelKey: "ribbon.tools.eraser",
+		keyTip: "ER",
+	},
+	{
+		id: "picker",
+		icon: "picker",
+		labelKey: "ribbon.tools.picker",
+		keyTip: "D",
+	},
 	{
 		id: "magnifier",
 		icon: "magnifier",
 		labelKey: "ribbon.tools.magnifier",
+		keyTip: "M",
 	},
 ]
 
@@ -89,9 +115,11 @@ export const SHAPE_GALLERY_COLS = 7
 export const SHAPE_GALLERY_VISIBLE_ROWS = 3
 export const SHAPE_GALLERY_ROW_HEIGHT = 23
 
-/** the strip and the panel behind the expand button share their columns. */
+/** three rows plus padding and border, with 2px spare under the last row. */
+export const SHAPE_GALLERY_HEIGHT = SHAPE_GALLERY_VISIBLE_ROWS * SHAPE_GALLERY_ROW_HEIGHT + 3
+
+/** the strip and the grown gallery share their columns, and so their width. */
 export const SHAPE_GRID_COLUMNS = `repeat(${SHAPE_GALLERY_COLS}, 26px)`
-export const SHAPE_PANEL_WIDTH = SHAPE_GALLERY_COLS * 27 + 10
 
 /**
  * the fallback list, for a browser that will not name the installed fonts.
@@ -119,12 +147,28 @@ export const FONT_SIZES = [
 
 /** the four character styles, each a toggle of its own. */
 export const FONT_STYLES: FontStyleDef[] = [
-	{ id: "bold", icon: "bold", labelKey: "ribbon.font.bold" },
-	{ id: "italic", icon: "italic", labelKey: "ribbon.font.italic" },
-	{ id: "underline", icon: "underline", labelKey: "ribbon.font.underline" },
+	{
+		id: "bold",
+		icon: "bold",
+		labelKey: "ribbon.font.bold",
+		keyTip: "B",
+	},
+	{
+		id: "italic",
+		icon: "italic",
+		labelKey: "ribbon.font.italic",
+		keyTip: "I",
+	},
+	{
+		id: "underline",
+		icon: "underline",
+		labelKey: "ribbon.font.underline",
+		keyTip: "U",
+	},
 	{
 		id: "strikethrough",
 		icon: "strikethrough",
 		labelKey: "ribbon.font.strikethrough",
+		keyTip: "S",
 	},
 ]

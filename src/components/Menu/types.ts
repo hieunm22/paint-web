@@ -1,4 +1,5 @@
 import type { ReactNode, RefObject } from "react"
+import { EmptyVoid } from "types/common.types"
 import type { IconName } from "components/Icon/types"
 
 export interface MenuPosition {
@@ -14,6 +15,10 @@ export interface Viewport {
 export interface MenuProps {
 	children: ReactNode
 	width?: number
+	/**
+	 * keep a list of switches stays open while they are flipped
+	 */
+	sticky?: boolean
 }
 
 export interface MenuSectionLabelProps {
@@ -37,5 +42,5 @@ export interface MenuItemProps {
 	/** the item is one of a set where picking it drops the others. */
 	radio?: boolean
 	submenu?: boolean
-	onClick?: () => void
+	onClick?: EmptyVoid
 }

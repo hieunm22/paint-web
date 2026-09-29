@@ -1,7 +1,8 @@
 import { useTranslation } from "react-i18next"
 import { STROKE_STYLES } from "../constant"
 import { Icon } from "components/Icon"
-import { Menu, MenuAnchor, MenuItem } from "components/Menu"
+import Menu from "components/Menu"
+import { MenuAnchor, MenuItem } from "components/Menu/components"
 import { strokeStyleKey } from "../common"
 import type { StrokeMenuButtonProps } from "../types"
 
@@ -12,6 +13,7 @@ export function StrokeMenuButton({
 	value,
 	disabled,
 	open,
+	keyTip,
 	onToggle,
 	onPick,
 }: StrokeMenuButtonProps) {
@@ -25,6 +27,7 @@ export function StrokeMenuButton({
 				className="ribbon-btn ribbon-btn--small shape-gallery__option-btn"
 				disabled={disabled}
 				aria-expanded={open}
+				data-keytip={keyTip}
 				onClick={onToggle}
 			>
 				<span className="ribbon-btn__label">{label}</span>

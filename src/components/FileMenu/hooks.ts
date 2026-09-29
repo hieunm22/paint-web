@@ -1,8 +1,15 @@
-import { useCallback, useEffect, useState } from "react"
+import {
+	useCallback,
+	useEffect,
+	useRef,
+	useState,
+} from "react"
+import { SUBMENU_HOVER_DELAY } from "./constant"
 import { forgetRecent, listRecents } from "common/recents"
-import { useAppSelector } from "store/hooks"
-import type { RecentEntry } from "types/common.types"
-import type { RecentsState } from "./types"
+import { useAppDispatch, useAppSelector } from "store/hooks"
+import { closeMenu, showMenu } from "store/slices/uiSlice"
+import type { EmptyVoid, RecentEntry } from "types/common.types"
+import type { RecentsState, SubmenuHover } from "./types"
 
 /**
  * the recents list out of IndexedDB. the document name is the trigger: it
@@ -28,4 +35,30 @@ export function useRecents(): RecentsState {
 	}, [])
 
 	return { entries, forget }
+}
+
+export function useSubmenuHover(
+	menuId: string | undefined,
+	onClick: EmptyVoid,
+): SubmenuHover {
+	const dispatch = useAppDispatch()
+	const timer = useRef(0)
+
+	const cancel = useCallback(() => window.clearTimeout(timer.current), [])
+
+	useEffect(() => cancel, [cancel])
+
+	const rest = useCallback(() => {
+		cancel()
+		timer.current = window.setTimeout(() => {
+			dispatch(menuId ? showMenu(menuId) : closeMenu())
+		}, SUBMENU_HOVER_DELAY)
+	}, [cancel, dispatch, menuId])
+
+	const pick = useCallback(() => {
+		cancel()
+		onClick()
+	}, [cancel, onClick])
+
+	return { onClick: pick, onMouseEnter: rest, onMouseLeave: cancel }
 }

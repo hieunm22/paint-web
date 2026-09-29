@@ -20,25 +20,16 @@ import type {
 	Point,
 	PrintSetup,
 	QatItemId,
+	Settings,
 	ShapeKind,
 	StrokeStyle,
 	ViewToggles,
 } from "types/store.types"
 
-/** localStorage key holding the chosen language. */
-export const LANGUAGE_STORAGE_KEY = "language"
-
-/** localStorage key holding which Quick Access Toolbar buttons are on show. */
-export const QAT_STORAGE_KEY = "qat"
-
-/** localStorage key holding the page size the last manual resize settled on. */
-export const PAGE_SIZE_STORAGE_KEY = "page-size"
-
-/** localStorage key holding the width the thumbnail was last dragged to. */
-export const THUMBNAIL_WIDTH_STORAGE_KEY = "thumbnail-width"
-
-/** localStorage key holding the Show or hide checkboxes. */
-export const VIEW_TOGGLES_STORAGE_KEY = "view-toggles"
+/**
+ * the one localStorage key keeps every setting the app lives under it.
+ */
+export const SETTINGS_STORAGE_KEY = "paint-web"
 
 /** what the Show or hide checkboxes read before a visit has changed them. */
 export const VIEW_TOGGLES_DEFAULT: ViewToggles = {
@@ -86,6 +77,15 @@ export const CAN_ENCODE_OFF_THREAD =
 /** the canvas Paint opens with, which New goes back to. */
 export const DEFAULT_DOCUMENT: Size = { width: 1152, height: 648 }
 
+/** what a first visit starts from, and what an unreadable store falls back to. */
+export const SETTINGS_DEFAULT: Settings = {
+	language: FALLBACK_LANGUAGE,
+	qat: QAT_DEFAULT,
+	pageSize: DEFAULT_DOCUMENT,
+	thumbnailWidth: null,
+	view: VIEW_TOGGLES_DEFAULT,
+}
+
 /**
  * the public page carrying the disclaimer, served beside the app. the file
  * name is named outright: only nginx maps the shorter /about onto it.
@@ -109,19 +109,33 @@ export const WINDOWS_KEY_LABELS: Record<string, string> = {
 	Mod: "Ctrl",
 }
 
+/** what an automatic key tip draws from once the letters of its label run out. */
+export const KEYTIP_POOL = "ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789"
+
+/** a tip on a row-shaped control sits this far in from its left edge, over the icon. */
+export const KEYTIP_INSET = 14
+
+/** a control this many times wider than tall is row-shaped. */
+export const KEYTIP_WIDE_RATIO = 2
+
 /** macOS prints modifiers in this order, whichever order they were written. */
 export const MAC_MODIFIER_ORDER = ["Ctrl", "Alt", "Shift", "Mod"]
 
 /**
- * a browser keeps Ctrl+N and Cmd+N for its own new window and never hands the
- * key to the page, so Paint answers a different one on each platform.
+ * a browser keeps some keys for its own window, tab and reload. Paint answers
+ * a different combination on each platform where it cannot have the key.
  */
 export const WINDOWS_SHORTCUT_OVERRIDES: Record<string, string> = {
 	"Mod+N": "Mod+Alt+N",
+	"Ctrl+R": "Ctrl+Alt+R",
+	"Ctrl+W": "Ctrl+Alt+W",
+	"Mod+PgUp": "Mod+Alt+PgUp",
+	"Mod+PgDn": "Mod+Alt+PgDn",
 }
 
 export const MAC_SHORTCUT_OVERRIDES: Record<string, string> = {
 	"Mod+N": "Ctrl+N",
+	F11: "Mod+Shift+F",
 }
 
 /**
@@ -676,12 +690,12 @@ export const SHAPE_DEFS: Record<ShapeKind, ShapeDef> = {
 		multiStep: false,
 	},
 	"arrow-up": {
-		outline: [polyline(transpose(ARROW_RIGHT))],
+		outline: [polyline(mirror(transpose(ARROW_RIGHT), "y"))],
 		fillable: true,
 		multiStep: false,
 	},
 	"arrow-down": {
-		outline: [polyline(mirror(transpose(ARROW_RIGHT), "y"))],
+		outline: [polyline(transpose(ARROW_RIGHT))],
 		fillable: true,
 		multiStep: false,
 	},

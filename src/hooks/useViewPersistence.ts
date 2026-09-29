@@ -1,5 +1,5 @@
 import { useEffect } from "react"
-import { writeViewToggles } from "store/common"
+import { writeSettings } from "common/settings"
 import { useAppSelector } from "store/hooks"
 
 export function useViewPersistence() {
@@ -8,6 +8,6 @@ export function useViewPersistence() {
 	const showStatusBar = useAppSelector(s => s.view.showStatusBar)
 
 	useEffect(() => {
-		writeViewToggles({ showRuler, showGrid, showStatusBar })
+		writeSettings({ view: { showRuler, showGrid, showStatusBar } })
 	}, [showRuler, showGrid, showStatusBar])
 }

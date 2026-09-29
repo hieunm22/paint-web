@@ -31,11 +31,6 @@ function macOrder(parts: string[]): string[] {
 	return [...modifiers, key]
 }
 
-/**
- * prints a canonical shortcut the way the running platform marks its keys.
- * one or two keys run together, as "Ctrl+S" or a glyph pair, and three or more
- * are spaced out so nobody has to pick the combination apart.
- */
 export function formatShortcut(shortcut: string): string {
 	const overrides = IS_MAC ? MAC_SHORTCUT_OVERRIDES : WINDOWS_SHORTCUT_OVERRIDES
 	const parts = (overrides[shortcut] ?? shortcut).split("+")
@@ -47,10 +42,23 @@ export function formatShortcut(shortcut: string): string {
 	return spelled.split(SHORTCUT_JOIN).join(IS_MAC ? "" : "+")
 }
 
-/** the key standing in for New, which no browser lets the page have. */
-export function isNewDocumentKey(event: KeyboardEvent): boolean {
-	if (event.key.toLowerCase() !== "n") return false
-	if (IS_MAC) return event.ctrlKey && !event.metaKey && !event.altKey
+export function isReservedCtrlKey(e: KeyboardEvent, key: string): boolean {
+	if (e.key.toLowerCase() !== key) return false
+	if (IS_MAC) return e.ctrlKey && !e.metaKey && !e.altKey
 
-	return event.ctrlKey && event.altKey
+	return e.ctrlKey && e.altKey
+}
+
+/** the zoom keys, which take Alt on windows where Ctrl+PageUp changes tab. */
+export function isZoomKey(e: KeyboardEvent): boolean {
+	if (e.key !== "PageUp" && e.key !== "PageDown") return false
+
+	return isPrimaryModifier(e) && (IS_MAC || e.altKey)
+}
+
+/** F11, and Cmd+Shift+F on macOS, where F11 belongs to Mission Control. */
+export function isFullScreenKey(e: KeyboardEvent): boolean {
+	if (e.key === "F11") return true
+
+	return IS_MAC && e.metaKey && e.shiftKey && e.key.toLowerCase() === "f"
 }

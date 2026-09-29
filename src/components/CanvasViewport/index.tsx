@@ -7,6 +7,7 @@ import {
 	Thumbnail,
 } from "./components"
 import {
+	gridCell,
 	lassoPoints,
 	overlayBox,
 	overlayGrip,
@@ -48,9 +49,9 @@ export function CanvasViewport() {
 	useVirtualView(viewportRef, zoom)
 	useOverlayReset(activeTool)
 
-	// rulers need zoom >= 1, gridlines need zoom >= 4.
+	// rulers need zoom >= 1. the grid draws at every zoom, coarser when far out
 	const rulerOn = showRuler && zoom >= 1
-	const gridOn = showGrid && zoom >= 4
+	const gridSize = gridCell(zoom) * zoom
 	const layerSize = zoomedSize(width, height, zoom)
 
 	return (
@@ -85,10 +86,10 @@ export function CanvasViewport() {
 								{...pointerProps}
 							/>
 
-							{gridOn && (
+							{showGrid && (
 								<div
 									className="canvas__grid"
-									style={{ backgroundSize: `${zoom}px ${zoom}px` }}
+									style={{ backgroundSize: `${gridSize}px ${gridSize}px` }}
 								/>
 							)}
 

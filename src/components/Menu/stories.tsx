@@ -2,13 +2,13 @@ import type { Meta, StoryObj } from "@storybook/react-vite"
 import { useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { expect, screen, waitFor } from "storybook/test"
+import Menu from "components/Menu"
 import {
-	Menu,
 	MenuAnchor,
 	MenuItem,
 	MenuSectionLabel,
 	MenuSeparator,
-} from "components/Menu"
+} from "components/Menu/components"
 import { SmallButton } from "components/RibbonButton"
 import { shortcutText } from "locales/common"
 

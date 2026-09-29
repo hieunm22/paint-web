@@ -40,17 +40,23 @@
 	--menu-hover-bg: #cde6f7;
 	--menu-hover-bd: #7da2ce;
 
-	/* Stacking. one scale for everything that floats over the app shell:
-	   a flyout opened from the backstage has to clear the backstage itself. */
+	/* Alt key tips */
+	--kt-bg: linear-gradient(#ffffff, #ebebeb);
+	--kt-bd: #767676;
+	--kt-text: #262626;
+
+	/* Stacking. one scale for everything that floats over the app shell. */
+	--z-ribbon-peek: 50;
 	--z-backstage: 60;
 	--z-menu: 70;
 	--z-toast: 80;
+	--z-keytip: 90;
 	--z-dialog: 100;
 	--z-full-screen: 120;
 	--z-drop: 130;
 
 	/* Metrics */
-	--rb-height: 94px;
+	--rb-height: 96px;
 	--tab-height: 24px;
 	--title-height: 32px;
 	--status-height: 24px;

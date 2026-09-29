@@ -6,10 +6,11 @@ export function ColorSlot({
 	label,
 	hex,
 	editing,
+	keyTip,
 	onClick,
 }: ColorSlotProps) {
 	const cls = classnames("colors__slot", {
-		"colors__slot--editing": editing
+		"colors__slot--editing": editing,
 	})
 
 	return (
@@ -17,6 +18,7 @@ export function ColorSlot({
 			type="button"
 			className={cls}
 			aria-pressed={editing}
+			data-keytip={keyTip}
 			onClick={onClick}
 		>
 			<span className="colors__slot-swatch" style={{ background: hex }} />

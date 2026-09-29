@@ -24,7 +24,7 @@ export function ConfirmDiscardDialog() {
 					<button
 						type="button"
 						className="dialog__btn dialog__btn--primary"
-						onClick={() => void saveThenResume()}
+						onClick={saveThenResume}
 					>
 						{t("dialog.confirm-discard.save")}
 					</button>

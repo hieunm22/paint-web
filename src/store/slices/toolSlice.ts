@@ -35,14 +35,15 @@ const toolSlice = createSlice({
 	name: "tool",
 	initialState,
 	reducers: {
-		setTool(state, action: PayloadAction<ToolId>) {
-			if (action.payload === state.active) return
-			state.prevTool = state.active
-			state.active = action.payload
-		},
 		setBrush(state, action: PayloadAction<BrushKind>) {
 			state.brush = action.payload
 			state.active = "brush"
+		},
+		setFill(state, action: PayloadAction<StrokeStyle>) {
+			state.fill = action.payload
+		},
+		setOutline(state, action: PayloadAction<StrokeStyle>) {
+			state.outline = action.payload
 		},
 		setShape(state, action: PayloadAction<ShapeKind>) {
 			state.shape = action.payload
@@ -51,19 +52,18 @@ const toolSlice = createSlice({
 		setSize(state, action: PayloadAction<BrushSize>) {
 			state.size = action.payload
 		},
+		setTextOptions(state, action: PayloadAction<Partial<TextOptions>>) {
+			Object.assign(state.text, action.payload)
+		},
+		setTool(state, action: PayloadAction<ToolId>) {
+			if (action.payload === state.active) return
+			state.prevTool = state.active
+			state.active = action.payload
+		},
 		/** Ctrl+= and Ctrl+- step through the four sizes. */
 		stepSize(state, action: PayloadAction<1 | -1>) {
 			const i = SIZES.indexOf(state.size) + action.payload
 			if (i >= 0 && i < SIZES.length) state.size = SIZES[i]
-		},
-		setOutline(state, action: PayloadAction<StrokeStyle>) {
-			state.outline = action.payload
-		},
-		setFill(state, action: PayloadAction<StrokeStyle>) {
-			state.fill = action.payload
-		},
-		setTextOptions(state, action: PayloadAction<Partial<TextOptions>>) {
-			Object.assign(state.text, action.payload)
 		},
 	},
 	extraReducers: builder => {
@@ -75,13 +75,13 @@ const toolSlice = createSlice({
 })
 
 export const {
-	setTool,
 	setBrush,
+	setFill,
+	setOutline,
 	setShape,
 	setSize,
-	stepSize,
-	setOutline,
-	setFill,
 	setTextOptions,
+	setTool,
+	stepSize,
 } = toolSlice.actions
 export default toolSlice.reducer

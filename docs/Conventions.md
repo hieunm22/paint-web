@@ -82,6 +82,12 @@ src/components/ rendering.
   call is what copies the old pixels onto the undo stack.
 - **Live pointer values go through `engine/cursor.ts`**, the external store the status
   bar subscribes to - not through a slice.
+- **One localStorage key**, `paint-web`, holding the whole `Settings` object.
+  `common/settings.ts` is the only module that touches localStorage: a reader takes
+  `readSettings().<field>`, a writer calls `writeSettings({ <field>: value })`. Adding a
+  setting means a field on `Settings`, a default in `SETTINGS_DEFAULT` and a parser in
+  `parseSettings`. A missing or damaged key is a first visit, and every field falls back
+  on its own. `public/about.js` reads the same key by hand, outside the bundle.
 
 ---
 
@@ -108,13 +114,16 @@ src/components/ rendering.
   splits into extra columns. That silently put English text in `vi.json` once.
 - **A mark the interface needs is an icon, never a character** - in a string, in the
   CSV or in JSX.
+- **Key tips are keys, not text.** The letters Alt shows over a control (`keyTip="SE"`,
+  `data-keytip`) are written in code like an id and never get a CSV row; they stay the
+  same in every language.
 - `yarn check:i18n` runs alongside `yarn typecheck` before work is called done.
 
 ---
 
 ## 5. Icons
 
-- **Every glyph is registered once** in `src/components/Icon/constant.ts` and used
+- **Every glyph is registered once** in `src/components/Icon/constant.tsx` and used
   through `<Icon name="..." />`.
 - **Class names are generated from the packages, never hand-typed.** `faVectorSquare`
   resolves to `fa-draw-square`, and aliases like that are why.
@@ -128,7 +137,7 @@ src/components/ rendering.
 - **A canvas cursor takes path data** from `@fortawesome/free-solid-svg-icons`, and only
   the solid style of that package is installed.
 - **Hand-written SVG is for outlines that must be exact** - the 23 gallery shapes, the
-  app icons. Everything else comes from the registry.
+  app icons, and the `SVG_ICONS` entries in the registry for glyphs the font lacks.
 - **Never extract or reuse artwork from Microsoft binaries.**
 
 ---

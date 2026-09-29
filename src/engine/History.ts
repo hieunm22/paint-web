@@ -1,4 +1,5 @@
 import type { Surface } from "engine/Surface"
+import { EmptyVoid } from "types/common.types"
 import type {
 	HistoryEntry,
 	HistoryFull,
@@ -26,7 +27,7 @@ export class History {
 
 	constructor(
 		private surface: Surface,
-		private onChange: () => void,
+		private onChange: EmptyVoid,
 		/** a full step restored the picture at another size; the store follows. */
 		private onResize: (size: Size) => void,
 	) {}

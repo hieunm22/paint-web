@@ -3,6 +3,7 @@ import {
 	boxToThumb,
 	buildRulerTicks,
 	fittedBox,
+	gridCell,
 	resizedDocument,
 	screenToImage,
 	thumbnailBox,
@@ -186,6 +187,21 @@ describe("resizedDocument", () => {
 			height: 1,
 		})
 		expect(resizedDocument("e", doc, { x: 99999, y: 0 }).width).toBe(8000)
+	})
+})
+
+describe("gridCell", () => {
+	it("draws one cell per image pixel from 400% up", () => {
+		expect(gridCell(4)).toBe(1)
+		expect(gridCell(8)).toBe(1)
+	})
+
+	it("gathers pixels into a cell of at least ten screen pixels below that", () => {
+		expect(gridCell(3)).toBe(4)
+		expect(gridCell(2)).toBe(5)
+		expect(gridCell(1)).toBe(10)
+		expect(gridCell(0.5)).toBe(20)
+		expect(gridCell(0.125)).toBe(80)
 	})
 })
 

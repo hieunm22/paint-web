@@ -1,10 +1,9 @@
-// the page opens in the language the editor is set to; the app writes that
-// choice here, and a visitor who has never opened the editor reads english.
-const STORAGE_KEY = "language"
+// one key holds every setting the editor keeps, language among them.
+const STORAGE_KEY = "paint-web"
 
 function storedLanguage() {
 	try {
-		return localStorage.getItem(STORAGE_KEY)
+		return JSON.parse(localStorage.getItem(STORAGE_KEY)).language
 	} catch {
 		return null
 	}

@@ -12,6 +12,7 @@ export function FileMenu() {
 			role="menu"
 			aria-label={t("ribbon.tab.file")}
 			data-menu-root
+			data-keytip-layer="menu"
 		>
 			<div className="file-menu__left">
 				<FileMenuList />

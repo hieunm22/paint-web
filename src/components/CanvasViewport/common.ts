@@ -2,6 +2,9 @@ import type { CSSProperties } from "react"
 import { MAX_DIMENSION } from "common/constant"
 import {
 	CANVAS_MARGIN,
+	GRID_MIN_SPACING,
+	GRID_PIXEL_ZOOM,
+	GRID_STEPS,
 	RULER_MAJOR_STEP,
 	RULER_MINOR_STEP,
 	THUMBNAIL_MIN,
@@ -13,6 +16,14 @@ import type { HandlePosition, RulerTick } from "./types"
 /** css size of a document-space layer at the current zoom. */
 export function zoomedSize(width: number, height: number, zoom: number): Size {
 	return { width: width * zoom, height: height * zoom }
+}
+
+/** image pixels per grid cell. */
+export function gridCell(zoom: number): number {
+	if (zoom >= GRID_PIXEL_ZOOM) return 1
+
+	const step = GRID_STEPS.find(s => s * zoom >= GRID_MIN_SPACING)
+	return step ?? GRID_STEPS[GRID_STEPS.length - 1]
 }
 
 /**

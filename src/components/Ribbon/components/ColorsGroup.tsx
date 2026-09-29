@@ -27,12 +27,14 @@ export function ColorsGroup() {
 					label={t("ribbon.colors.color1")}
 					hex={color1}
 					editing={editing === "color1"}
+					keyTip="1"
 					onClick={() => dispatch(setEditingSwatch("color1"))}
 				/>
 				<ColorSlot
 					label={t("ribbon.colors.color2")}
 					hex={color2}
 					editing={editing === "color2"}
+					keyTip="2"
 					onClick={() => dispatch(setEditingSwatch("color2"))}
 				/>
 
@@ -52,6 +54,7 @@ export function ColorsGroup() {
 				<button
 					type="button"
 					className="colors__edit"
+					data-keytip="EC"
 					onClick={() => dispatch(openDialog("edit-colors"))}
 				>
 					<span className="colors__edit-wheel" />

@@ -174,7 +174,7 @@ src/locales/
 ├─ convert-to-json.py         # python3 stdlib only, no venv
 ├─ generate-language.sh       # run: yarn i18n
 ├─ en.json  vi.json           # GENERATED - never edit by hand
-├─ i18n.ts                    # init, fallback locale, localStorage key "language"
+├─ i18n.ts                    # init, fallback locale, the stored language
 ├─ translate.ts               # non-hook helper for code outside React
 ├─ common.ts
 ```
@@ -221,10 +221,17 @@ promise that pictures never leave the machine. `yarn check:i18n` compares the tw
 neither can drift.
 
 Both languages sit in the markup and one of them is shown. `public/about.js` reads the
-same `language` key the editor writes to localStorage and marks the page `lang="vi"`;
+same `paint-web` settings key the editor writes to localStorage, takes `language` from
+it and marks the page `lang="vi"`;
 the stylesheet hides whatever does not match, and a visitor who has never opened the
 editor reads English. It is a file rather than an inline block because the CSP allows
 `script-src 'self'` only.
+
+The live site is GitHub Pages at `paint.hieunm.io.vn`: `.github/workflows/gh-pages.yml`
+builds on every push to `master` and publishes `dist/`. Pages sends no headers of its
+own choosing, so the CSP, `Cache-Control: no-cache` and the rest of `deploy/` apply to
+the container only. The server workflows are parked as `.txt` beside it and no longer
+run.
 
 The container listens on port 80 and expects TLS at an edge proxy. That matters more
 than it looks: the File System Access, `getUserMedia` and Clipboard APIs only work on a

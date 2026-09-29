@@ -13,10 +13,11 @@ import {
 	RULER_SIZE,
 	THUMBNAIL_CHROME,
 	THUMBNAIL_CHROME_Y,
+	THUMBNAIL_CORNERS,
 	THUMBNAIL_GAP,
 	THUMBNAIL_WIDTH,
 } from "./constant"
-import { readThumbnailWidth } from "store/common"
+import { readSettings } from "common/settings"
 import {
 	buildRulerTicks,
 	textDecoration,
@@ -184,7 +185,7 @@ export function TextBox({ box, zoom }: TextBoxProps) {
 export function Thumbnail({ doc, zoom, scrollRef }: ThumbnailProps) {
 	const { t } = useTranslation()
 	const [width, setWidth] = useState(
-		() => readThumbnailWidth() ?? THUMBNAIL_WIDTH,
+		() => readSettings().thumbnailWidth ?? THUMBNAIL_WIDTH,
 	)
 	const pane = usePaneSize(scrollRef)
 	const max = useMemo(
@@ -208,8 +209,12 @@ export function Thumbnail({ doc, zoom, scrollRef }: ThumbnailProps) {
 		box,
 	)
 	const reach = { width: box.width, doc, max, onResize: setWidth }
-	const nwGrip = useThumbnailResize({ corner: "nw", ...reach })
-	const seGrip = useThumbnailResize({ corner: "se", ...reach })
+	const grips = {
+		nw: useThumbnailResize({ corner: "nw", ...reach }),
+		ne: useThumbnailResize({ corner: "ne", ...reach }),
+		se: useThumbnailResize({ corner: "se", ...reach }),
+		sw: useThumbnailResize({ corner: "sw", ...reach }),
+	}
 	const { dialogRef, offset, handleProps } = useDialogDrag()
 
 	return (
@@ -232,14 +237,13 @@ export function Thumbnail({ doc, zoom, scrollRef }: ThumbnailProps) {
 				onPointerDown={onPointerDown}
 				onPointerMove={onPointerMove}
 			/>
-			<span
-				className="canvas__thumbnail-grip canvas__thumbnail-grip--nw"
-				{...nwGrip}
-			/>
-			<span
-				className="canvas__thumbnail-grip canvas__thumbnail-grip--se"
-				{...seGrip}
-			/>
+			{THUMBNAIL_CORNERS.map(corner => (
+				<span
+					key={corner}
+					className={`canvas__thumbnail-grip canvas__thumbnail-grip--${corner}`}
+					{...grips[corner]}
+				/>
+			))}
 		</div>
 	)
 }

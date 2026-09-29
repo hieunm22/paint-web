@@ -13,7 +13,8 @@ export function ExtrasGroup() {
 				label={t("ribbon.extras.copy")}
 				icon="clipboard"
 				title={t("ribbon.extras.copy-tooltip")}
-				onClick={() => void files.copyImage()}
+				keyTip="L"
+				onClick={files.copyImage}
 			/>
 		</RibbonGroup>
 	)

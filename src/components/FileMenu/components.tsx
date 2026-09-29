@@ -15,7 +15,7 @@ import { Icon } from "components/Icon"
 import { shortcutText } from "locales/common"
 import { useFileCommands } from "hooks/useFileCommands"
 import { useAppDispatch, useAppSelector } from "store/hooks"
-import { useRecents } from "./hooks"
+import { useRecents, useSubmenuHover } from "./hooks"
 import { currentLanguage, setLanguage } from "locales/i18n"
 import {
 	closeBackstage,
@@ -40,6 +40,7 @@ function FileMenuRow({
 	onClick,
 }: FileMenuRowProps) {
 	const { t } = useTranslation()
+	const hover = useSubmenuHover(MENU_IDS[row.action ?? ""], onClick)
 	const cls = classnames("file-menu__item", {
 		"file-menu__item--open": expanded,
 	})
@@ -51,7 +52,8 @@ function FileMenuRow({
 			title={title}
 			disabled={row.pending}
 			aria-expanded={row.submenu ? Boolean(expanded) : undefined}
-			onClick={onClick}
+			data-keytip={row.keyTip}
+			{...hover}
 		>
 			<span className="file-menu__item-icon">
 				<Icon name={row.icon} size={17} />
@@ -221,14 +223,22 @@ export function FileMenuPanel() {
 		<div className="file-menu__right">
 			<div className="file-menu__right-title">{t(titleKey)}</div>
 			{openMenu === SAVE_AS_MENU ? (
-				<div className="file-menu__choice-list">
+				<div
+					className="file-menu__choice-list"
+					data-keytip-layer="menu"
+					data-keytip-auto
+				>
 					<SaveAsChoices
 						onPick={saveAs}
 						onOther={() => dispatch(openDialog("save-as"))}
 					/>
 				</div>
 			) : openMenu === PRINT_MENU ? (
-				<div className="file-menu__choice-list">
+				<div
+					className="file-menu__choice-list"
+					data-keytip-layer="menu"
+					data-keytip-auto
+				>
 					<PrintChoices onPrint={print} />
 				</div>
 			) : (

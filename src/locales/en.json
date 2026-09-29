@@ -8,7 +8,9 @@
 			"strip": "Ribbon tabs"
 		},
 		"toolbar": {
-			"label": "Drawing tools"
+			"label": "Drawing tools",
+			"minimize": "Minimize the Ribbon",
+			"pin": "Pin the Ribbon"
 		},
 		"clipboard": {
 			"label": "Clipboard",
@@ -140,7 +142,6 @@
 			"label": "Show or hide",
 			"rulers": "Rulers",
 			"gridlines": "Gridlines",
-			"gridlines-tooltip": "Gridlines ({0}) - needs zoom >= 400%",
 			"status-bar": "Status bar"
 		},
 		"display": {

@@ -1,10 +1,9 @@
+import type { EmptyVoid } from "types/common.types"
 import type { Point } from "types/store.types"
 
 const PUBLISH_MS = 60
 
-type Listener = () => void
-
-const listeners = new Set<Listener>()
+const listeners = new Set<EmptyVoid>()
 let pending: Point | null = null
 let published: Point | null = null
 let timer: ReturnType<typeof setTimeout> | null = null
@@ -29,7 +28,7 @@ export function reportCursor(next: Point | null): void {
 	timer = setTimeout(publish, PUBLISH_MS)
 }
 
-export function subscribeCursor(listener: Listener): () => void {
+export function subscribeCursor(listener: EmptyVoid): EmptyVoid {
 	listeners.add(listener)
 	return () => {
 		listeners.delete(listener)

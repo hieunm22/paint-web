@@ -68,8 +68,8 @@ export interface ThumbnailProps {
 	scrollRef: RefObject<HTMLDivElement>
 }
 
-/** the two corners of the thumbnail a drag may take hold of. */
-export type ThumbnailCorner = "nw" | "se"
+/** the four corners of the thumbnail a drag may take hold of. */
+export type ThumbnailCorner = "ne" | "nw" | "se" | "sw"
 
 export interface ThumbnailResize {
 	corner: ThumbnailCorner

@@ -1,0 +1,28 @@
+.key-tips {
+	position: fixed;
+	inset: 0;
+	z-index: var(--z-keytip);
+	pointer-events: none;
+
+	&__tip {
+		position: absolute;
+		min-width: 16px;
+		height: 16px;
+		padding: 0 3px;
+		transform: translate(-50%, -50%);
+		border: 1px solid var(--kt-bd);
+		border-radius: 2px;
+		background: var(--kt-bg);
+		box-shadow: 1px 1px 2px rgb(0 0 0 / 25%);
+		color: var(--kt-text);
+		font-family: var(--font-ui);
+		font-size: 11px;
+		line-height: 14px;
+		text-align: center;
+		white-space: nowrap;
+	}
+
+	&__tip--disabled {
+		color: var(--rb-ink-disabled);
+	}
+}

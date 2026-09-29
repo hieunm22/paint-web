@@ -1,4 +1,5 @@
 import type { ReactNode } from "react"
+import { EmptyVoid } from "types/common.types"
 import type { IconName } from "components/Icon/types"
 
 export interface StatusCellProps {
@@ -12,6 +13,6 @@ export interface ZoomControlProps {
 	maxIndex: number
 	label: string
 	onStep: (index: number) => void
-	onZoomIn: () => void
-	onZoomOut: () => void
+	onZoomIn: EmptyVoid
+	onZoomOut: EmptyVoid
 }

@@ -423,3 +423,25 @@ describe("ShapeTool colors", () => {
 		expect(draw({}).some(p => p.kind === "fill")).toBe(false)
 	})
 })
+
+describe("ShapeTool holding", () => {
+	it("holds a shape that was dragged out, waiting to be baked", () => {
+		const h = harness(1, 1)
+		const shape = new ShapeTool()
+		shape.begin({ x: 0, y: 0 }, LEFT, h.ctx)
+		shape.update([{ x: 3, y: 3 }], LEFT, h.ctx)
+		shape.end({ x: 3, y: 3 }, LEFT, h.ctx)
+
+		expect(shape.isPending()).toBe(true)
+	})
+
+	it("holds nothing after a click that only baked the shape before it", () => {
+		const h = harness(1, 1)
+		const shape = new ShapeTool()
+		shape.begin({ x: 2, y: 2 }, LEFT, h.ctx)
+		shape.end({ x: 2, y: 2 }, LEFT, h.ctx)
+
+		// an empty box held on preview would swallow the next Ctrl+Z
+		expect(shape.isPending()).toBe(false)
+	})
+})

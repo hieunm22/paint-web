@@ -1,5 +1,6 @@
 import { useTranslation } from "react-i18next"
-import { Menu, MenuItem } from "components/Menu"
+import Menu from "components/Menu"
+import { MenuItem } from "components/Menu/components"
 import { SmallButton, SplitButton } from "components/RibbonButton"
 import { ButtonStack, RibbonGroup } from "components/RibbonGroup"
 import { shortcutText, tooltipWithShortcut } from "locales/common"
@@ -25,7 +26,8 @@ export function ClipboardGroup() {
 					"shortcut.edit.paste",
 				)}
 				open={open}
-				onClick={() => void files.pasteImage()}
+				keyTip="V"
+				onClick={files.pasteImage}
 				onToggleMenu={() => dispatch(toggleMenu("paste"))}
 				menu={
 					<Menu>
@@ -33,12 +35,12 @@ export function ClipboardGroup() {
 							label={t("ribbon.clipboard.paste")}
 							icon="paste"
 							shortcut={shortcutText("shortcut.edit.paste")}
-							onClick={() => void files.pasteImage()}
+							onClick={files.pasteImage}
 						/>
 						<MenuItem
 							label={t("ribbon.clipboard.paste-from")}
 							icon="open"
-							onClick={() => void files.pasteFrom()}
+							onClick={files.pasteFrom}
 						/>
 					</Menu>
 				}
@@ -52,7 +54,8 @@ export function ClipboardGroup() {
 						"shortcut.edit.cut",
 					)}
 					disabled={!hasSelection}
-					onClick={() => void files.cutSelection()}
+					keyTip="X"
+					onClick={files.cutSelection}
 				/>
 				<SmallButton
 					label={t("ribbon.clipboard.copy")}
@@ -62,7 +65,8 @@ export function ClipboardGroup() {
 						"shortcut.edit.copy",
 					)}
 					disabled={!hasSelection}
-					onClick={() => void files.copySelection()}
+					keyTip="C"
+					onClick={files.copySelection}
 				/>
 			</ButtonStack>
 		</RibbonGroup>

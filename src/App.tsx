@@ -3,6 +3,7 @@ import { DialogHost } from "components/DialogHost"
 import { DropOverlay } from "components/DropOverlay"
 import { FileMenu } from "components/FileMenu"
 import { FullScreenView } from "components/FullScreenView"
+import { KeyTips } from "components/KeyTips"
 import { LiveRegion } from "components/LiveRegion"
 import { Ribbon } from "components/Ribbon"
 import { StatusBar } from "components/StatusBar"
@@ -50,6 +51,7 @@ export default function App() {
 			<DialogHost />
 			<DropOverlay />
 			<Toast />
+			<KeyTips />
 			<LiveRegion />
 		</div>
 	)

@@ -22,7 +22,13 @@ async function formatterFor(userAgent: string) {
 }
 
 function keyEvent(init: Partial<KeyboardEvent>) {
-	const base = { key: "n", ctrlKey: false, metaKey: false, altKey: false }
+	const base = {
+		key: "n",
+		ctrlKey: false,
+		metaKey: false,
+		altKey: false,
+		shiftKey: false,
+	}
 	return { ...base, ...init } as KeyboardEvent
 }
 
@@ -35,14 +41,33 @@ describe("formatShortcut", () => {
 		const format = await formatterFor(WINDOWS)
 
 		expect(format("Mod+O")).toBe("Ctrl+O")
-		expect(format("Mod+PgUp")).toBe("Ctrl+PgUp")
 		expect(format("Del")).toBe("Del")
 	})
 
 	it("keeps a literal Ctrl shortcut on Windows", async () => {
 		const format = await formatterFor(WINDOWS)
 
-		expect(format("Ctrl+R")).toBe("Ctrl+R")
+		expect(format("Ctrl+E")).toBe("Ctrl+E")
+	})
+
+	it("hands the keys Windows reserves an Alt of their own", async () => {
+		const format = await formatterFor(WINDOWS)
+
+		expect(format("Ctrl+R")).toBe("Ctrl + Alt + R")
+		expect(format("Ctrl+W")).toBe("Ctrl + Alt + W")
+		expect(format("Mod+PgUp")).toBe("Ctrl + Alt + PgUp")
+	})
+
+	it("leaves those same keys alone on macOS", async () => {
+		const format = await formatterFor(MAC)
+
+		expect(format("Ctrl+R")).toBe("\u2303R")
+		expect(format("Ctrl+W")).toBe("\u2303W")
+	})
+
+	it("moves full screen off F11 on macOS, where Mission Control has it", async () => {
+		expect(await (await formatterFor(MAC))("F11")).toBe("\u21e7 + \u2318 + F")
+		expect(await (await formatterFor(WINDOWS))("F11")).toBe("F11")
 	})
 
 	it("marks the macOS keys with the symbols on the keyboard", async () => {
@@ -77,34 +102,77 @@ describe("formatShortcut", () => {
 	})
 
 	it("passes an unmapped key straight through", async () => {
-		expect(await (await formatterFor(MAC))("F11")).toBe("F11")
-		expect(await (await formatterFor(WINDOWS))("F11")).toBe("F11")
+		expect(await (await formatterFor(MAC))("Enter")).toBe("Enter")
+		expect(await (await formatterFor(WINDOWS))("Enter")).toBe("Enter")
 	})
 })
 
-describe("isNewDocumentKey", () => {
-	it("answers Control+N on macOS, where Cmd+N is the browser's", async () => {
-		const { isNewDocumentKey } = await platformFor(MAC)
+describe("isReservedCtrlKey", () => {
+	it("answers plain Control on macOS, where the browser's key is Cmd", async () => {
+		const { isReservedCtrlKey } = await platformFor(MAC)
 
-		expect(isNewDocumentKey(keyEvent({ ctrlKey: true }))).toBe(true)
-		expect(isNewDocumentKey(keyEvent({ metaKey: true }))).toBe(false)
-		expect(isNewDocumentKey(keyEvent({ ctrlKey: true, altKey: true }))).toBe(
+		expect(isReservedCtrlKey(keyEvent({ ctrlKey: true }), "n")).toBe(true)
+		expect(isReservedCtrlKey(keyEvent({ metaKey: true }), "n")).toBe(false)
+		expect(
+			isReservedCtrlKey(keyEvent({ ctrlKey: true, altKey: true }), "n"),
+		).toBe(false)
+	})
+
+	it("asks for Alt as well on Windows, where the browser keeps Ctrl", async () => {
+		const { isReservedCtrlKey } = await platformFor(WINDOWS)
+
+		expect(
+			isReservedCtrlKey(
+				keyEvent({ key: "w", ctrlKey: true, altKey: true }),
+				"w",
+			),
+		).toBe(true)
+		expect(isReservedCtrlKey(keyEvent({ key: "w", ctrlKey: true }), "w")).toBe(
 			false,
 		)
 	})
 
-	it("answers Ctrl+Alt+N on Windows, where Ctrl+N is the browser's", async () => {
-		const { isNewDocumentKey } = await platformFor(WINDOWS)
+	it("ignores every other letter", async () => {
+		const { isReservedCtrlKey } = await platformFor(MAC)
 
-		expect(isNewDocumentKey(keyEvent({ ctrlKey: true, altKey: true }))).toBe(
-			true,
+		expect(isReservedCtrlKey(keyEvent({ key: "m", ctrlKey: true }), "n")).toBe(
+			false,
 		)
-		expect(isNewDocumentKey(keyEvent({ ctrlKey: true }))).toBe(false)
+	})
+})
+
+describe("isZoomKey", () => {
+	it("takes the primary modifier alone on macOS", async () => {
+		const { isZoomKey } = await platformFor(MAC)
+
+		expect(isZoomKey(keyEvent({ key: "PageUp", metaKey: true }))).toBe(true)
+		expect(isZoomKey(keyEvent({ key: "PageUp" }))).toBe(false)
 	})
 
-	it("ignores every other letter", async () => {
-		const { isNewDocumentKey } = await platformFor(MAC)
+	it("asks for Alt on Windows, where Ctrl+PageUp changes tab", async () => {
+		const { isZoomKey } = await platformFor(WINDOWS)
 
-		expect(isNewDocumentKey(keyEvent({ key: "m", ctrlKey: true }))).toBe(false)
+		expect(
+			isZoomKey(keyEvent({ key: "PageDown", ctrlKey: true, altKey: true })),
+		).toBe(true)
+		expect(isZoomKey(keyEvent({ key: "PageDown", ctrlKey: true }))).toBe(false)
+	})
+})
+
+describe("isFullScreenKey", () => {
+	it("answers F11 on either platform", async () => {
+		expect(
+			(await platformFor(WINDOWS)).isFullScreenKey(keyEvent({ key: "F11" })),
+		).toBe(true)
+		expect(
+			(await platformFor(MAC)).isFullScreenKey(keyEvent({ key: "F11" })),
+		).toBe(true)
+	})
+
+	it("answers Cmd+Shift+F on macOS alone", async () => {
+		const held = keyEvent({ key: "f", metaKey: true, shiftKey: true })
+
+		expect((await platformFor(MAC)).isFullScreenKey(held)).toBe(true)
+		expect((await platformFor(WINDOWS)).isFullScreenKey(held)).toBe(false)
 	})
 })

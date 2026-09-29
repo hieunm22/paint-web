@@ -35,6 +35,7 @@ function FontGroup() {
 				<select
 					className="font-grid__box font-grid__box--family"
 					aria-label={t("ribbon.font.family")}
+					data-keytip="FF"
 					value={options.fontFamily}
 					onPointerDown={load}
 					onChange={e => setFamily(e.target.value)}
@@ -49,6 +50,7 @@ function FontGroup() {
 				<select
 					className="font-grid__box font-grid__box--size"
 					aria-label={t("ribbon.font.size")}
+					data-keytip="FS"
 					value={options.fontSize}
 					onChange={e => setSize(Number(e.target.value))}
 				>
@@ -66,6 +68,7 @@ function FontGroup() {
 							label={t(style.labelKey)}
 							icon={style.icon}
 							selected={options[style.id]}
+							keyTip={style.keyTip}
 							onClick={() => toggleStyle(style.id)}
 						/>
 					))}
@@ -87,12 +90,14 @@ function BackgroundGroup() {
 					label={t("ribbon.background.transparent")}
 					icon="backgroundTransparent"
 					selected={options.background === "transparent"}
+					keyTip="T"
 					onClick={() => setBackground("transparent")}
 				/>
 				<SmallButton
 					label={t("ribbon.background.opaque")}
 					icon="backgroundOpaque"
 					selected={options.background === "opaque"}
+					keyTip="O"
 					onClick={() => setBackground("opaque")}
 				/>
 			</ButtonStack>

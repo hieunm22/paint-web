@@ -1,5 +1,5 @@
-import type { ToolId } from "types/store.types"
-import type { HandlePosition } from "./types"
+import type { Point, ToolId } from "types/store.types"
+import type { HandlePosition, ThumbnailCorner } from "./types"
 
 /**
  * the document resize handles, on the two edges that can move: the picture is
@@ -42,6 +42,16 @@ export const THUMBNAIL_CHROME_Y = 32
 /** clear space kept between the panel and the edges of the drawing area. */
 export const THUMBNAIL_GAP = 12
 
+/** the corners a grip sits on, clockwise from the top left. */
+export const THUMBNAIL_CORNERS: ThumbnailCorner[] = ["nw", "ne", "se", "sw"]
+
+export const THUMBNAIL_PULL: Record<ThumbnailCorner, Point> = {
+	nw: { x: -1, y: -1 },
+	ne: { x: 1, y: -1 },
+	se: { x: 1, y: 1 },
+	sw: { x: -1, y: 1 },
+}
+
 /** the frame around the viewed part of the picture. */
 export const THUMBNAIL_FRAME = "#d00000"
 
@@ -55,3 +65,10 @@ export const THUMBNAIL_INTERVAL_MS = 100
 export const RULER_MAJOR_STEP = 100
 export const RULER_MINOR_STEP = 10
 export const RULER_SIZE = 20
+
+/** from this zoom the grid draws one cell per image pixel, as Paint does. */
+export const GRID_PIXEL_ZOOM = 4
+
+/** further out a cell takes the first step that spans this many screen pixels. */
+export const GRID_STEPS = [1, 2, 4, 5, 8, 10, 20, 40, 80]
+export const GRID_MIN_SPACING = 10

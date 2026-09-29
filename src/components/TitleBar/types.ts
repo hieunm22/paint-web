@@ -1,4 +1,5 @@
 import type { QatItemId } from "types/store.types"
+import { EmptyVoid } from "types/common.types"
 import type { IconName } from "components/Icon/types"
 
 export interface QatItemDef {
@@ -12,7 +13,7 @@ export interface QatItemDef {
 export interface QatItem extends QatItemDef {
 	title: string
 	disabled: boolean
-	onClick?: () => void
+	onClick?: EmptyVoid
 }
 
 export type WindowButtonId = "minimize" | "maximize" | "close"

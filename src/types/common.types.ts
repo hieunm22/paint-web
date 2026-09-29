@@ -91,6 +91,41 @@ export interface PrintLayout {
 	y: number
 }
 
+/** which set of Alt key tips is on screen: the tab strip, the open tab, or a menu. */
+export type KeyTipLayer = "root" | "tab" | "menu"
+
+/** what the tips fall back to once no menu stands over the ribbon. */
+export type KeyTipBase = Exclude<KeyTipLayer, "menu">
+
+/** a box as getBoundingClientRect reports it, cut to what placing a tip reads. */
+export interface KeyTipBox {
+	left: number
+	top: number
+	right: number
+	bottom: number
+}
+
+/** the center of a tip, in viewport pixels. */
+export interface KeyTipSpot {
+	left: number
+	top: number
+}
+
+/** a control of a layer before the automatic tips are handed out. */
+export interface KeyTipCandidate {
+	/** null asks for a tip drawn from the label. */
+	keys: string | null
+	label: string
+	disabled: boolean
+}
+
+/** one tip on screen and the control it presses. */
+export interface KeyTipTarget extends KeyTipSpot {
+	el: HTMLElement
+	keys: string
+	disabled: boolean
+}
+
 /** one row of the backstage recents list, as it sits in IndexedDB. */
 export interface RecentEntry {
 	/** the file name doubles as the key: opening it again replaces the row. */

@@ -22,6 +22,7 @@ export function ToolsGroup() {
 						icon={tool.icon}
 						selected={active === tool.id}
 						disabled={!IMPLEMENTED[tool.id]}
+						keyTip={tool.keyTip}
 						onClick={() => dispatch(setTool(tool.id))}
 					/>
 				))}

@@ -1,4 +1,5 @@
 import { boxHandles } from "engine/geometry"
+import { EmptyVoid } from "types/common.types"
 import type { OverlayShape, OverlayState } from "types/engine.types"
 import type { Point, Rect } from "types/store.types"
 
@@ -12,9 +13,7 @@ const EMPTY: OverlayState = {
 	text: null,
 }
 
-type Listener = () => void
-
-const listeners = new Set<Listener>()
+const listeners = new Set<EmptyVoid>()
 let pending: OverlayState = EMPTY
 let published: OverlayState = EMPTY
 let timer: ReturnType<typeof setTimeout> | null = null
@@ -98,7 +97,7 @@ export function clearOverlayState(): void {
 	report(EMPTY)
 }
 
-export function subscribeOverlay(listener: Listener): () => void {
+export function subscribeOverlay(listener: EmptyVoid): EmptyVoid {
 	listeners.add(listener)
 	return () => {
 		listeners.delete(listener)

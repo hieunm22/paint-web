@@ -1,6 +1,6 @@
 import classnames from "classnames"
 import { Icon } from "components/Icon"
-import { MenuAnchor } from "components/Menu"
+import { MenuAnchor } from "components/Menu/components"
 import type { RibbonButtonProps, SplitButtonProps } from "./types"
 import "./RibbonButton.scss"
 
@@ -16,6 +16,7 @@ export function LargeButton({
 	disabled,
 	selected,
 	caret,
+	keyTip,
 	onClick,
 }: RibbonButtonProps) {
 	const cls = classnames("ribbon-btn ribbon-btn--large", {
@@ -31,6 +32,7 @@ export function LargeButton({
 			aria-pressed={caret ? undefined : selected}
 			aria-expanded={caret ? selected : undefined}
 			aria-haspopup={caret ? "menu" : undefined}
+			data-keytip={keyTip}
 			onClick={onClick}
 		>
 			<span className="ribbon-btn__icon ribbon-btn__icon--large">
@@ -59,6 +61,7 @@ export function SmallButton({
 	disabled,
 	selected,
 	caret,
+	keyTip,
 	onClick,
 }: RibbonButtonProps) {
 	const cls = classnames("ribbon-btn ribbon-btn--small", {
@@ -72,6 +75,7 @@ export function SmallButton({
 			title={title ?? label}
 			disabled={disabled}
 			aria-pressed={selected}
+			data-keytip={keyTip}
 			onClick={onClick}
 		>
 			<span className="ribbon-btn__icon ribbon-btn__icon--small">
@@ -93,6 +97,7 @@ export function IconButton({
 	title,
 	disabled,
 	selected,
+	keyTip,
 	onClick,
 }: RibbonButtonProps) {
 	const cls = classnames("ribbon-btn ribbon-btn--icon-only", {
@@ -107,6 +112,7 @@ export function IconButton({
 			aria-label={label}
 			disabled={disabled}
 			aria-pressed={selected}
+			data-keytip={keyTip}
 			onClick={onClick}
 		>
 			{iconNode ?? (icon && <Icon name={icon} size={16} />)}
@@ -125,6 +131,7 @@ export function SplitButton({
 	title,
 	disabled,
 	selected,
+	keyTip,
 	onClick,
 	menu,
 	open,
@@ -156,6 +163,7 @@ export function SplitButton({
 				disabled={disabled}
 				aria-expanded={open}
 				aria-haspopup="menu"
+				data-keytip={keyTip}
 				onClick={onToggleMenu}
 			>
 				<span className="ribbon-split__label-row">

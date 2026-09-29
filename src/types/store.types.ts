@@ -1,4 +1,6 @@
 /** data model types, limited to what the UI layer needs. */
+import type { Size } from "types/engine.types"
+import type { Language } from "types/locales.types"
 
 export type ImageFormat = "png" | "jpeg" | "bmp" | "gif" | "webp"
 
@@ -160,6 +162,19 @@ export type ViewToggles = Pick<
 	"showRuler" | "showGrid" | "showStatusBar"
 >
 
+/**
+ * everything that outlives a visit, held in localStorage as one value. a field
+ * added here needs a default and a reader before it can be stored.
+ */
+export interface Settings {
+	language: Language
+	qat: QatItemId[]
+	pageSize: Size
+	/** null until a drag sets it: the thumbnail then opens at its own width. */
+	thumbnailWidth: number | null
+	view: ViewToggles
+}
+
 export interface HistoryState {
 	canUndo: boolean
 	canRedo: boolean
@@ -223,6 +238,8 @@ export interface UiState {
 	/** the tab to go back to once the Text tab leaves again. */
 	priorTab: RibbonTabId
 	backstageOpen: boolean
+	/** minimised, open, or standing over the canvas until the next outside click. */
+	ribbon: RibbonView
 	openMenu: string | null
 	dialog: DialogId | null
 	pending: PendingFileAction | null
@@ -233,6 +250,8 @@ export interface UiState {
 	/** which Quick Access Toolbar buttons are on show, in their fixed order. */
 	qat: QatItemId[]
 }
+
+export type RibbonView = "open" | "collapsed" | "peek"
 
 export type QatItemId =
 	"new" | "open" | "save" | "undo" | "redo" | "print-preview"

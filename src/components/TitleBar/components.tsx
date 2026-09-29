@@ -2,17 +2,18 @@ import classnames from "classnames"
 import { useTranslation } from "react-i18next"
 import { WINDOW_BUTTONS } from "./constant"
 import { Icon } from "components/Icon"
+import Menu from "components/Menu"
 import {
-	Menu,
 	MenuAnchor,
 	MenuItem,
 	MenuSectionLabel,
-} from "components/Menu"
+} from "components/Menu/components"
 import { toggleFullscreen } from "common/dom"
 import { useFileCommands } from "hooks/useFileCommands"
 import { useAppDispatch, useAppSelector } from "store/hooks"
 import { useQatItems, useQatPersistence } from "./hooks"
 import { toggleMenu, toggleQat } from "store/slices/uiSlice"
+import { EmptyVoid } from "types/common.types"
 import type { WindowButtonId } from "./types"
 
 const QAT_MENU_WIDTH = 236
@@ -26,21 +27,27 @@ export function QuickAccessToolbar() {
 	useQatPersistence(shown)
 
 	return (
-		<div className="title-bar__qat">
+		<div className="title-bar__qat" data-keytip-layer="root">
 			{items
 				.filter(item => shown.includes(item.id))
-				.map(item => (
-					<button
-						key={item.id}
-						type="button"
-						className="title-bar__qat-btn"
-						title={item.title}
-						disabled={item.disabled}
-						onClick={item.onClick}
-					>
-						<Icon name={item.icon} size={14} />
-					</button>
-				))}
+				.map((item, i) => {
+					// Paint numbers the bar from the left
+					const keyTip = String(i + 1)
+
+					return (
+						<button
+							key={item.id}
+							type="button"
+							className="title-bar__qat-btn"
+							title={item.title}
+							disabled={item.disabled}
+							data-keytip={keyTip}
+							onClick={item.onClick}
+						>
+							<Icon name={item.icon} size={14} />
+						</button>
+					)
+				})}
 			<MenuAnchor>
 				<button
 					type="button"
@@ -52,7 +59,7 @@ export function QuickAccessToolbar() {
 					<Icon name="caretDown" size={9} />
 				</button>
 				{open && (
-					<Menu width={QAT_MENU_WIDTH}>
+					<Menu width={QAT_MENU_WIDTH} sticky>
 						<MenuSectionLabel>{t("titlebar.qat.customize")}</MenuSectionLabel>
 						{items.map(item => (
 							<MenuItem
@@ -75,7 +82,7 @@ export function WindowButtons() {
 	const files = useFileCommands()
 
 	// minimize has no web equivalent; maximize is the tab going full screen
-	const handlers: Record<WindowButtonId, (() => void) | undefined> = {
+	const handlers: Record<WindowButtonId, (EmptyVoid) | undefined> = {
 		minimize: undefined,
 		maximize: toggleFullscreen,
 		close: () => files.exit(),

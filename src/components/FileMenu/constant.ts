@@ -8,24 +8,28 @@ import type { FileMenuRow, PrintMenuRow } from "./types"
 export const FILE_MENU_ROWS: FileMenuRow[] = [
 	{
 		labelKey: "filemenu.item.new",
+		keyTip: "N",
 		icon: "new",
 		shortcutKey: "shortcut.file.new",
 		action: "new",
 	},
 	{
 		labelKey: "filemenu.item.open",
+		keyTip: "O",
 		icon: "open",
 		shortcutKey: "shortcut.file.open",
 		action: "open",
 	},
 	{
 		labelKey: "filemenu.item.save",
+		keyTip: "S",
 		icon: "save",
 		shortcutKey: "shortcut.file.save",
 		action: "save",
 	},
 	{
 		labelKey: "filemenu.item.save-as",
+		keyTip: "A",
 		icon: "saveAs",
 		shortcutKey: "shortcut.file.save-as",
 		submenu: true,
@@ -34,6 +38,7 @@ export const FILE_MENU_ROWS: FileMenuRow[] = [
 	"sep",
 	{
 		labelKey: "filemenu.item.print",
+		keyTip: "P",
 		icon: "print",
 		shortcutKey: "shortcut.file.print",
 		submenu: true,
@@ -41,20 +46,37 @@ export const FILE_MENU_ROWS: FileMenuRow[] = [
 	},
 	{
 		labelKey: "filemenu.item.from-camera",
+		keyTip: "M",
 		icon: "camera",
 		noteKey: "filemenu.item.from-camera-note",
 		dialog: "from-camera",
 	},
-	{ labelKey: "filemenu.item.copy-image", icon: "copy", action: "copy-image" },
+	{
+		labelKey: "filemenu.item.copy-image",
+		keyTip: "C",
+		icon: "copy",
+		action: "copy-image",
+	},
 	"sep",
 	{
 		labelKey: "filemenu.item.properties",
+		keyTip: "E",
 		icon: "properties",
 		shortcutKey: "shortcut.file.properties",
 		dialog: "image-properties",
 	},
-	{ labelKey: "filemenu.item.about", icon: "about", dialog: "about" },
-	{ labelKey: "filemenu.item.exit", icon: "exit", action: "exit" },
+	{
+		labelKey: "filemenu.item.about",
+		keyTip: "T",
+		icon: "about",
+		dialog: "about",
+	},
+	{
+		labelKey: "filemenu.item.exit",
+		keyTip: "X",
+		icon: "exit",
+		action: "exit",
+	},
 ]
 
 /** the Print flyout, in the order Paint lists it. */
@@ -90,6 +112,9 @@ export const MENU_IDS: Record<string, string> = {
 	"save-as": SAVE_AS_MENU,
 	print: PRINT_MENU,
 }
+
+/** how long a pointer rests on a row before the row answers, in ms. */
+export const SUBMENU_HOVER_DELAY = 500
 
 /** what the right panel is headed while a row's choices stand in it. */
 export const PANEL_TITLE_KEYS: Record<string, string> = {

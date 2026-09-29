@@ -30,7 +30,7 @@ export const Rulers: StoryObj<typeof meta> = {
 	},
 }
 
-/** gridlines only appear from zoom 4, one line per image pixel. */
+/** from zoom 4 the grid draws one line per image pixel. */
 export const Gridlines: StoryObj<typeof meta> = {
 	parameters: {
 		state: {

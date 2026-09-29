@@ -14,6 +14,7 @@ import type { IconName } from "components/Icon/types"
 export interface RibbonTabDef {
 	id: RibbonTabId
 	labelKey: string
+	keyTip: string
 }
 
 /** what the toolbar container needs to keep one button in the tab order. */
@@ -27,6 +28,7 @@ export interface ToolDef {
 	id: ToolId
 	icon: IconName
 	labelKey: string
+	keyTip: string
 }
 
 export interface BrushDef {
@@ -56,6 +58,7 @@ export interface FontStyleDef {
 	id: FontStyleId
 	icon: IconName
 	labelKey: string
+	keyTip: string
 }
 
 /** what the Font and Background groups read and write, in one place. */
@@ -68,6 +71,13 @@ export interface TextRibbonState {
 }
 
 export type SizeDef = BrushSize
+
+/** where the expanded gallery stands, taken from the strip it grows out of. */
+export interface GalleryBox {
+	top: number
+	left: number
+	width: number
+}
 
 export interface ShapeCellProps {
 	kind: ShapeKind
@@ -82,7 +92,8 @@ export interface StrokeMenuButtonProps {
 	value: StrokeStyle
 	disabled: boolean
 	open: boolean
-	onToggle: () => void
+	keyTip: string
+	onToggle: EmptyVoid
 	onPick: (style: StrokeStyle) => void
 }
 
@@ -90,7 +101,8 @@ export interface ColorSlotProps {
 	label: string
 	hex: string
 	editing: boolean
-	onClick: () => void
+	keyTip: string
+	onClick: EmptyVoid
 }
 
 /** one square of the palette, or an empty custom slot when the hex is null. */
