@@ -5,7 +5,7 @@ const DB_VERSION = 1
 const STORE = "recents"
 
 /** how many rows the backstage column has space for. */
-const LIMIT = 6
+const LIMIT = 9
 
 function openDatabase(): Promise<IDBDatabase> {
 	return new Promise((resolve, reject) => {

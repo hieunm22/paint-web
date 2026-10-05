@@ -1,0 +1,10 @@
+{
+	// assets-only worker, no script: cloudflare serves dist as a static site
+	"name": "canvaslet",
+	"compatibility_date": "2026-10-05",
+	"assets": {
+		"directory": "./dist",
+		// unknown paths get index.html with 200, the app handles them client side
+		"not_found_handling": "single-page-application"
+	}
+}

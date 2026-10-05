@@ -2,12 +2,43 @@ import { describe, expect, it } from "vitest"
 import {
 	clampScale,
 	clampSkew,
+	fromPixels,
 	levelAt,
 	linkedValue,
 	scaleOf,
 	toneAt,
+	toPixels,
 	wholeOf,
 } from "./common"
+
+describe("fromPixels", () => {
+	it("reads pixels back as they are", () => {
+		expect(fromPixels(1152, "pixels", 96)).toBe(1152)
+	})
+
+	it("counts inches at the dpi and centimetres from them", () => {
+		expect(fromPixels(1152, "inches", 96)).toBe(12)
+		expect(fromPixels(96, "centimeters", 96)).toBe(2.54)
+	})
+
+	it("stops at two decimals, the precision the field shows", () => {
+		expect(fromPixels(100, "inches", 96)).toBe(1.04)
+	})
+})
+
+describe("toPixels", () => {
+	it("rounds to whole pixels", () => {
+		expect(toPixels(12, "inches", 96)).toBe(1152)
+		expect(toPixels(2.54, "centimeters", 96)).toBe(96)
+		expect(toPixels(10.4, "pixels", 96)).toBe(10)
+	})
+
+	it("keeps the paper inside the app's limits", () => {
+		expect(toPixels(0, "pixels", 96)).toBe(1)
+		expect(toPixels(9000, "pixels", 96)).toBe(8000)
+		expect(toPixels(Number.NaN, "inches", 96)).toBe(1)
+	})
+})
 
 describe("toneAt", () => {
 	it("reads hue across the field and saturation up it", () => {

@@ -196,11 +196,12 @@
 			"save": "Save",
 			"undo": "Undo",
 			"redo": "Redo",
+			"print": "Print",
 			"print-preview": "Print preview",
 			"customize": "Customize Quick Access Toolbar"
 		},
 		"window": {
-			"title": "{0} - Paint Web",
+			"title": "{0} - Canvaslet",
 			"maximize": "Maximize (full screen)",
 			"close": "Close"
 		}
@@ -246,7 +247,7 @@
 			"from-camera-note": "Uses getUserMedia - about 4K at most",
 			"copy-image": "Copy image",
 			"properties": "Properties",
-			"about": "About Paint Web",
+			"about": "About Canvaslet",
 			"exit": "Exit"
 		},
 		"save-as": {
@@ -277,14 +278,14 @@
 			"close": "Close"
 		},
 		"about": {
-			"title": "About Paint Web",
-			"app-name": "Paint Web 0.1.0",
-			"body": "A web rebuild of the Microsoft Paint (Windows 10) Ribbon interface, running entirely client-side.",
-			"disclaimer": "Not affiliated with Microsoft. The interface is inspired by Microsoft Paint. Icons come from Font Awesome Pro under a separate license; no original Paint asset is used.",
+			"title": "About Canvaslet",
+			"app-name": "Canvaslet 0.1.0",
+			"body": "An independent browser-based drawing app for learning and experimentation. It runs entirely on your device.",
+			"disclaimer": "Canvaslet is an independent educational project. It is not affiliated with, endorsed by, or sponsored by Microsoft. Microsoft and Paint are trademarks of Microsoft Corporation. No Microsoft code, artwork, icons, sounds, or other proprietary assets are used.",
 			"intro-link": "Read the public introduction"
 		},
 		"confirm-discard": {
-			"title": "Paint Web",
+			"title": "Canvaslet",
 			"message": "Do you want to save changes to {0}?",
 			"save": "Save",
 			"dont-save": "Don't Save"
@@ -382,7 +383,8 @@
 			"hint-jpeg": "JPEG has no alpha: a transparent background turns white.",
 			"hint-bmp": "BMP is written by a hand-rolled encoder, 24-bit uncompressed - alpha is flattened onto white.",
 			"hint-gif": "GIF is quantised to 256 colors with 1-bit alpha.",
-			"hint-webp": "WEBP keeps alpha; Safari 16 and later."
+			"hint-webp": "WEBP keeps alpha; Safari 16 and later.",
+			"hint-ico": "ICO holds one PNG of at most 256 pixels a side: a larger picture is scaled down to fit."
 		}
 	},
 	"document": {
@@ -450,6 +452,7 @@
 			"flip": "Flip",
 			"resize": "Resize",
 			"canvas": "Canvas size",
+			"monochrome": "Black and white",
 			"text": "Text"
 		}
 	}

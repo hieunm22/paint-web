@@ -28,8 +28,10 @@ export class History {
 	constructor(
 		private surface: Surface,
 		private onChange: EmptyVoid,
-		/** a full step restored the picture at another size; the store follows. */
-		private onResize: (size: Size) => void,
+		/**
+		 * a full step restored the picture at another size and color mode.
+		 */
+		private onRestore: (size: Size, monochrome: boolean) => boolean,
 	) {}
 
 	get canUndo(): boolean {
@@ -80,8 +82,8 @@ export class History {
 	 * a whole-bitmap step, taken before an operation that changes the document
 	 * size: the tile grid of every other step belongs to one size of paper.
 	 */
-	pushFull(label: string, image: ImageData): void {
-		this.push({ label, kind: "full", image })
+	pushFull(label: string, image: ImageData, monochrome: boolean): void {
+		this.push({ label, kind: "full", image, monochrome })
 	}
 
 	cancelStroke(): void {
@@ -154,8 +156,8 @@ export class History {
 		if (!current) return entry
 
 		this.surface.restoreDocument(entry.image)
-		this.onResize(this.surface.documentSize)
-		return { ...entry, image: current }
+		const was = this.onRestore(this.surface.documentSize, entry.monochrome)
+		return { ...entry, image: current, monochrome: was }
 	}
 
 	private colsOf(doc: Size): number {

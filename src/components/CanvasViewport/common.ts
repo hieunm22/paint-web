@@ -5,8 +5,8 @@ import {
 	GRID_MIN_SPACING,
 	GRID_PIXEL_ZOOM,
 	GRID_STEPS,
-	RULER_MAJOR_STEP,
-	RULER_MINOR_STEP,
+	RULER_MIN_SPACING,
+	RULER_STEPS,
 	THUMBNAIL_MIN,
 } from "./constant"
 import type { Size } from "types/engine.types"
@@ -26,15 +26,20 @@ export function gridCell(zoom: number): number {
 	return step ?? GRID_STEPS[GRID_STEPS.length - 1]
 }
 
-/**
- * builds the ruler ticks
- */
+/** the minor step at this zoom: ticks stay apart when the picture is far out. */
+export function rulerStep(zoom: number): number {
+	const fits = RULER_STEPS.find(step => step * zoom >= RULER_MIN_SPACING)
+	return fits ?? RULER_STEPS[RULER_STEPS.length - 1]
+}
+
+/** builds the ruler ticks: a label every tenth, a taller mark every fifth. */
 export function buildRulerTicks(length: number, zoom: number): RulerTick[] {
 	const ticks: RulerTick[] = []
+	const minor = rulerStep(zoom)
 
-	for (let v = 0; v <= length; v += RULER_MINOR_STEP) {
-		const isMajor = v % RULER_MAJOR_STEP === 0
-		const isMid = v % (RULER_MINOR_STEP * 5) === 0
+	for (let v = 0; v <= length; v += minor) {
+		const isMajor = v % (minor * 10) === 0
+		const isMid = v % (minor * 5) === 0
 
 		ticks.push({
 			pos: v * zoom + CANVAS_MARGIN,

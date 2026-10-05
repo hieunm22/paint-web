@@ -1,7 +1,12 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit"
 import { ZOOM_STEPS } from "common/constant"
 import { readSettings } from "common/settings"
-import type { Point, ViewState } from "types/store.types"
+import type {
+	Point,
+	ViewState,
+	ZoomAroundPayload,
+	ZoomDirection,
+} from "types/store.types"
 
 const settings = readSettings()
 
@@ -16,6 +21,13 @@ const initialState: ViewState = {
 type ToggleKey =
 	"showRuler" | "showGrid" | "showStatusBar" | "showThumbnail" | "fullScreen"
 
+/** the next stop on the ladder, or the same one at either end. */
+function steppedZoom(zoom: number, direction: ZoomDirection): number {
+	if (direction === "in") return ZOOM_STEPS.find(z => z > zoom) ?? zoom
+
+	return [...ZOOM_STEPS].reverse().find(z => z < zoom) ?? zoom
+}
+
 const viewSlice = createSlice({
 	name: "view",
 	initialState,
@@ -26,18 +38,26 @@ const viewSlice = createSlice({
 		toggleView(state, action: PayloadAction<ToggleKey>) {
 			state[action.payload] = !state[action.payload]
 		},
+		/** Ctrl+wheel keeps the pixel under the pointer where it is. */
+		zoomAround(state, action: PayloadAction<ZoomAroundPayload>) {
+			const { direction, at, anchor } = action.payload
+			const zoom = steppedZoom(state.zoom, direction)
+			if (zoom === state.zoom) return
+
+			state.zoom = zoom
+			state.focus = { x: at.x, y: at.y, zoom, anchor }
+		},
 		/** the magnifier zooms about the pixel that was clicked, as Paint does. */
 		zoomAt(state, action: PayloadAction<{ zoom: number; at: Point }>) {
 			const { zoom, at } = action.payload
 			state.zoom = zoom
-			state.focus = { x: at.x, y: at.y, zoom }
+			state.focus = { x: at.x, y: at.y, zoom, anchor: null }
 		},
 		zoomIn(state) {
-			state.zoom = ZOOM_STEPS.find(z => z > state.zoom) ?? state.zoom
+			state.zoom = steppedZoom(state.zoom, "in")
 		},
 		zoomOut(state) {
-			state.zoom =
-				[...ZOOM_STEPS].reverse().find(z => z < state.zoom) ?? state.zoom
+			state.zoom = steppedZoom(state.zoom, "out")
 		},
 	},
 })
@@ -45,6 +65,7 @@ const viewSlice = createSlice({
 export const {
 	setZoom,
 	toggleView,
+	zoomAround,
 	zoomAt,
 	zoomIn,
 	zoomOut,

@@ -35,14 +35,16 @@ export function useQatItems(): QatItem[] {
 			save: true,
 			undo: canUndo,
 			redo: canRedo,
+			print: true,
 			"print-preview": true,
 		}
 		const handlers: Record<QatItemId, EmptyVoid> = {
 			new: files.newDocument,
 			open: files.openDocument,
 			save: files.save,
-			undo: paint.undo,
-			redo: paint.redo,
+			undo: () => paint.undo(),
+			redo: () => paint.redo(),
+			print: files.print,
 			"print-preview": () => void dispatch(openDialog("print-preview")),
 		}
 

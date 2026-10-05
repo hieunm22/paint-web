@@ -1,8 +1,8 @@
-# Paint Web
+# Canvaslet
 
-A web clone of Microsoft Paint (Windows 10, Ribbon UI), built with React and
-TypeScript. Everything runs client-side - no backend, and images never leave the
-browser.
+An independent browser-based drawing app for learning and experimentation, built with
+React and TypeScript. Everything runs client-side - no backend, and images never leave
+the browser.
 
 Status: feature complete and ready to publish. Drawing, files, shapes, selection,
 image operations, text, brushes, the view tools, printing, camera capture, pen
@@ -201,7 +201,7 @@ UI icons are Font Awesome Free as a **webfont**, registered in
 takes path data from `@fortawesome/free-solid-svg-icons` instead.
 
 The 23 shapes in the Shapes gallery are hand-written SVG geometry in
-`src/components/ShapeIcon/constant.tsx`: they are the outlines the user actually draws
+`src/components/ShapeIcon/components.tsx`: they are the outlines the user actually draws
 and must be exact, and FA carries no right triangle, rounded rectangle, curve, four- or
 six-point star, or the three callout shapes.
 
@@ -227,11 +227,33 @@ the stylesheet hides whatever does not match, and a visitor who has never opened
 editor reads English. It is a file rather than an inline block because the CSP allows
 `script-src 'self'` only.
 
-The live site is GitHub Pages at `paint.hieunm.io.vn`: `.github/workflows/gh-pages.yml`
-builds on every push to `master` and publishes `dist/`. Pages sends no headers of its
-own choosing, so the CSP, `Cache-Control: no-cache` and the rest of `deploy/` apply to
-the container only. The server workflows are parked as `.txt` beside it and no longer
-run.
+`.github/workflows/deploy.yml` deploys each push to `master` to one target. The
+repository variable `DEPLOY_TARGET` chooses the target; leave it unset to deploy to
+GitHub Pages by default. Pushes that only change `README.md` or files under `docs/` are
+ignored.
+
+| Value | Destination | Required configuration |
+| --- | --- | --- |
+| `pages` | GitHub Pages | Enable GitHub Pages for the repository with GitHub Actions as its source. |
+| `cloudflare` | Cloudflare Worker `canvaslet` | Variable `CLOUDFLARE_ACCOUNT_ID`, secret `CLOUDFLARE_API_TOKEN`. |
+| `vps` | VPS Docker container | Variables `SERVER_IP`, `SSH_PORT`; secret `SSH_PRIVATE_KEY`. The server needs Git, Docker, Make, and nvm/Node, with this repo checked out at `/root/projects/tax-calculator`. |
+
+To change automatic deploys, go to **Settings > Secrets and variables > Actions >
+Variables**, then set `DEPLOY_TARGET` to one of the values above. In **Actions > Deploy >
+Run workflow**, choose a target for a one-off deploy; this manual choice takes precedence
+over `DEPLOY_TARGET`.
+
+Cloudflare builds `dist/` on the GitHub Actions runner and publishes it with Wrangler.
+Disconnect the Worker from Cloudflare Builds to avoid deploying twice on each push.
+The Worker serves static files only; the CSP, `Cache-Control: no-cache`, and other
+settings in `deploy/` apply to the Docker/nginx container, not to Cloudflare or GitHub
+Pages.
+
+The VPS job connects as `root`, fetches and checks out the selected branch, then runs
+`make publish-sync` to install dependencies, build, and replace the container. The
+workflow also sends a Telegram report for successful or failed deploys when
+`TELEGRAM_CHAT_ID` (repository variable) and `TELEGRAM_BOT_TOKEN` (repository secret)
+are configured.
 
 The container listens on port 80 and expects TLS at an edge proxy. That matters more
 than it looks: the File System Access, `getUserMedia` and Clipboard APIs only work on a
@@ -262,6 +284,12 @@ name taken from the list, which is what lets `activate` drop the previous build.
 pass `ignoreVary`: the assets answer with `Vary: Origin` and Vite tags the bundle
 `crossorigin`, and without it every subresource misses the cache and the first offline
 visit is a blank page. `yarn test:offline` is the guard.
+
+`scripts/precache.config.mjs` names the built files that stay out of that list and are
+fetched the first time something asks for them, then cached. Today that is the heif
+decoder worker alone: at 3 MB it outweighs the rest of the shell four times over, and
+only a `.heic` file ever asks for it, so opening heic needs a network connection at least
+once. Remove it from `ON_DEMAND` and the next build precaches it, heic offline included.
 
 A file opened through `file_handlers` arrives as a handle rather than through a picker:
 `hooks/useLaunchFiles.ts` reads the launch queue and hands it to `openPicked`.
@@ -340,9 +368,10 @@ conventions in `~/.claude/conventions/`. The two that catch newcomers first: no
 user-visible string is written in a `.ts` or `.tsx` file, and `yarn format` is the only
 formatter entry point.
 
-## Not affiliated with Microsoft
+## Project independence
 
-The interface imitates Microsoft Paint. No Microsoft code or artwork is used; the shape
-outlines are hand-drawn SVG and the remaining icons come from Font Awesome Free under
-its own license. "Paint Web" is the name of this project, which has no connection to
-Microsoft or to its products.
+Canvaslet is an independent educational project. It is not affiliated with, endorsed
+by, or sponsored by Microsoft. Microsoft and Paint are trademarks of Microsoft
+Corporation. No Microsoft code, artwork, icons, sounds, or other proprietary assets are
+used. The shape outlines are hand-drawn SVG and the remaining icons come from Font
+Awesome Free under its own license.

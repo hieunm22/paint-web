@@ -119,6 +119,34 @@ export interface EditColorsForm extends EditColorsValue {
 /** a click or drag anywhere in a color field, as fractions of its box. */
 export type FieldPick = (across: number, down: number) => void
 
+/** what Image Properties measures the paper in. */
+export type SizeUnit = "inches" | "centimeters" | "pixels"
+
+export type ColorMode = "color" | "black-and-white"
+
+export interface UnitOption {
+	id: SizeUnit
+	labelKey: string
+}
+
+export interface ColorModeOption {
+	id: ColorMode
+	labelKey: string
+}
+
+/** what Image Properties collects; only OK hands it to the engine. */
+export interface ImagePropertiesForm {
+	unit: SizeUnit
+	colors: ColorMode
+	width: number
+	height: number
+	setUnit(unit: SizeUnit): void
+	setColors(mode: ColorMode): void
+	setWidth(value: number): void
+	setHeight(value: number): void
+	apply(): void
+}
+
 /** Resize takes either a percentage of the current size or a pixel count. */
 export type ResizeUnit = "percent" | "pixels"
 

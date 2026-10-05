@@ -196,11 +196,12 @@
 			"save": "Lưu",
 			"undo": "Hoàn tác",
 			"redo": "Làm lại",
+			"print": "In",
 			"print-preview": "Xem trước khi in",
 			"customize": "Tuỳ chỉnh thanh truy cập nhanh"
 		},
 		"window": {
-			"title": "{0} - Paint Web",
+			"title": "{0} - Canvaslet",
 			"maximize": "Phóng to (toàn màn hình)",
 			"close": "Đóng"
 		}
@@ -246,7 +247,7 @@
 			"from-camera-note": "Dùng getUserMedia - tối đa khoảng 4K",
 			"copy-image": "Chép ảnh",
 			"properties": "Thuộc tính",
-			"about": "Giới thiệu Paint Web",
+			"about": "Giới thiệu Canvaslet",
 			"exit": "Thoát"
 		},
 		"save-as": {
@@ -277,14 +278,14 @@
 			"close": "Đóng"
 		},
 		"about": {
-			"title": "Giới thiệu Paint Web",
-			"app-name": "Paint Web 0.1.0",
-			"body": "Bản dựng lại giao diện Ribbon của Microsoft Paint (Windows 10) trên nền web, chạy hoàn toàn client-side.",
-			"disclaimer": "Không liên kết với Microsoft. Giao diện lấy cảm hứng từ Microsoft Paint. Icon dùng Font Awesome Pro theo license riêng; không sử dụng asset gốc của Paint.",
+			"title": "Giới thiệu Canvaslet",
+			"app-name": "Canvaslet 0.1.0",
+			"body": "Ứng dụng vẽ độc lập trên trình duyệt, phục vụ việc học tập và thử nghiệm. Ứng dụng chạy hoàn toàn trên thiết bị của bạn.",
+			"disclaimer": "Canvaslet là dự án giáo dục độc lập. Dự án không liên kết, được chứng thực hoặc được tài trợ bởi Microsoft. Microsoft và Paint là các nhãn hiệu của Microsoft Corporation. Dự án không sử dụng mã nguồn, hình ảnh, biểu tượng, âm thanh hoặc tài sản độc quyền nào của Microsoft.",
 			"intro-link": "Đọc trang giới thiệu công khai"
 		},
 		"confirm-discard": {
-			"title": "Paint Web",
+			"title": "Canvaslet",
 			"message": "Bạn có muốn lưu thay đổi cho {0} không?",
 			"save": "Lưu",
 			"dont-save": "Không lưu"
@@ -382,7 +383,8 @@
 			"hint-jpeg": "JPEG không có alpha: nền trong suốt sẽ thành trắng.",
 			"hint-bmp": "BMP ghi bằng encoder tự viết, 24-bit không nén - alpha hợp nhất với nền trắng.",
 			"hint-gif": "GIF lượng tử hoá về 256 màu, alpha 1-bit.",
-			"hint-webp": "WEBP giữ alpha; Safari 16 trở lên."
+			"hint-webp": "WEBP giữ alpha; Safari 16 trở lên.",
+			"hint-ico": "ICO chứa một ảnh PNG tối đa 256 điểm ảnh mỗi chiều: ảnh lớn hơn sẽ được thu nhỏ cho vừa."
 		}
 	},
 	"document": {
@@ -450,6 +452,7 @@
 			"flip": "Lật",
 			"resize": "Đổi cỡ",
 			"canvas": "Cỡ trang vẽ",
+			"monochrome": "Đen trắng",
 			"text": "Văn bản"
 		}
 	}

@@ -13,7 +13,12 @@ import {
 	pickSaveTarget,
 	writeFile,
 } from "common/fileSystem"
-import { formatOfMime, stemOf, withExtension } from "common/format"
+import {
+	formatOfMime,
+	isReadOnlyImage,
+	stemOf,
+	withExtension,
+} from "common/format"
 import { printImage } from "common/print"
 import { rememberRecent } from "common/recents"
 import { readSettings } from "common/settings"
@@ -115,7 +120,9 @@ export function useFileCommands(): FileCommands {
 
 				paint.loadImage(bitmap)
 				const format = formatOfMime(file.type)
-				setActiveHandle(handle)
+				// save would write png bytes over the heic file; save as asks first
+				const fsHandle = isReadOnlyImage(file) ? null : handle
+				setActiveHandle(fsHandle)
 				dispatch(
 					documentOpened({
 						width,

@@ -16,6 +16,7 @@ import {
 } from "common/camera"
 import { stemOf } from "common/format"
 import { printLayout } from "common/print"
+import { writeSettings } from "common/settings"
 import { documentName } from "store/common"
 import {
 	clampDragOffset,
@@ -23,10 +24,12 @@ import {
 	clampRgba,
 	clampScale,
 	clampSkew,
+	fromPixels,
 	levelAt,
 	linkedValue,
 	scaleOf,
 	toneAt,
+	toPixels,
 	wholeOf,
 } from "./common"
 import { imageObjectUrl } from "engine/codec"
@@ -38,21 +41,25 @@ import {
 } from "engine/color"
 import { paint } from "engine/PaintEngine"
 import { useAppDispatch, useAppSelector } from "store/hooks"
+import { setMonochrome } from "store/slices/docSlice"
 import { closeDialog } from "store/slices/uiSlice"
 import type { RGBA, Size, WinHsl } from "types/engine.types"
 import type { ImageFormat } from "types/store.types"
 import type {
 	CameraCapture,
 	CameraSession,
+	ColorMode,
 	DragSession,
 	EditColorsForm,
 	EditColorsValue,
 	FieldPick,
+	ImagePropertiesForm,
 	Point,
 	PrintPreview,
 	ResizeSkewForm,
 	ResizeUnit,
 	SaveAsForm,
+	SizeUnit,
 } from "./types"
 
 const NO_OFFSET: Point = { x: 0, y: 0 }
@@ -347,6 +354,58 @@ export function useFieldPick(onPick: FieldPick) {
 
 function within(fraction: number): number {
 	return Math.max(0, Math.min(1, fraction))
+}
+
+export function useImagePropertiesForm(
+	size: Size,
+	dpi: number,
+	monochrome: boolean,
+): ImagePropertiesForm {
+	const dispatch = useAppDispatch()
+	const [unit, setUnitState] = useState<SizeUnit>("pixels")
+	const [colors, setColors] = useState<ColorMode>(
+		monochrome ? "black-and-white" : "color",
+	)
+	const [width, setWidth] = useState(size.width)
+	const [height, setHeight] = useState(size.height)
+
+	const setUnit = (next: SizeUnit) => {
+		if (next === unit) return
+
+		const pxWidth = toPixels(width, unit, dpi)
+		const pxHeight = toPixels(height, unit, dpi)
+		setUnitState(next)
+		setWidth(fromPixels(pxWidth, next, dpi))
+		setHeight(fromPixels(pxHeight, next, dpi))
+	}
+
+	return {
+		unit,
+		colors,
+		width,
+		height,
+		setUnit,
+		setColors,
+		setWidth,
+		setHeight,
+
+		apply: () => {
+			const paper = {
+				width: toPixels(width, unit, dpi),
+				height: toPixels(height, unit, dpi),
+			}
+			// a paper the browser cannot hold leaves the dialog up to be corrected
+			if (!paint.resizeCanvas(paper)) return
+
+			const toMono = colors === "black-and-white"
+			if (toMono && !monochrome) paint.toBlackAndWhite()
+			// back to color leaves the pixels as they are, as Paint does
+			if (!toMono && monochrome) dispatch(setMonochrome(false))
+			// like a handle drag, the size chosen here is what New opens on
+			writeSettings({ pageSize: paper })
+			dispatch(closeDialog())
+		},
+	}
 }
 
 /**

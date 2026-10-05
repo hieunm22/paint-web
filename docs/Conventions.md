@@ -1,4 +1,4 @@
-# Paint Web - repo-specific conventions
+# Canvaslet - repo-specific conventions
 
 The general rules are global and live outside this repo:
 
@@ -123,8 +123,9 @@ src/components/ rendering.
 
 ## 5. Icons
 
-- **Every glyph is registered once** in `src/components/Icon/constant.tsx` and used
-  through `<Icon name="..." />`.
+- **Every glyph is registered once** in `src/components/Icon/constant.ts` and used
+  through `<Icon name="..." />`. A glyph the font lacks registers its width there and
+  draws itself in `Icon/components.tsx`: the constants file never holds JSX.
 - **Class names are generated from the packages, never hand-typed.** `faVectorSquare`
   resolves to `fa-draw-square`, and aliases like that are why.
 - **`main.tsx` imports only the styles in use** (`solid`, `regular`). `all.css` pulls
@@ -137,7 +138,7 @@ src/components/ rendering.
 - **A canvas cursor takes path data** from `@fortawesome/free-solid-svg-icons`, and only
   the solid style of that package is installed.
 - **Hand-written SVG is for outlines that must be exact** - the 23 gallery shapes, the
-  app icons, and the `SVG_ICONS` entries in the registry for glyphs the font lacks.
+  app icons, and the `SvgGlyph` drawings for glyphs the font lacks.
 - **Never extract or reuse artwork from Microsoft binaries.**
 
 ---
@@ -147,8 +148,9 @@ src/components/ rendering.
 - **An API `lib.dom` does not declare is an ordinary interface in
   `types/common.types.ts`**, reached with one cast at the call site - not an ambient
   `.d.ts` that widens `Window`. That keeps a missing feature a runtime check rather
-  than a silent `undefined` call. The single ambient declaration is `engine/gifenc.d.ts`,
-  because `gifenc` ships no types at all.
+  than a silent `undefined` call. The only ambient declarations are `engine/gifenc.d.ts`,
+  because `gifenc` ships no types at all, and `engine/libheif.d.ts`, because
+  `libheif-js` types its raw module and not the decoder it exports.
 - **Every overlay takes its `z-index` from a token** in `styles/tokens.scss`. A
   hard-coded `z-index` is how the Save as flyout ended up hidden behind the backstage.
 
@@ -206,7 +208,7 @@ cell still highlighted reads as a live choice.
   and a clipped label is exactly what a screenshot catches and a unit test cannot.
 - **The allowance is 40 pixels, not a percentage.** A tenth of a percent of a
   1280x688 panel is some 900 pixels of license: renaming a menu row from "About Paint"
-  to "About Paint Web" moved 53 and passed. The ratio stays as a second bound for a
+  to "About Canvaslet" moved 53 and passed. The ratio stays as a second bound for a
   bigger capture; the absolute count is what holds.
 - **Baselines are committed, and re-blessed only after looking at the diff.**
   `yarn test:visual:update` is never a reflex.

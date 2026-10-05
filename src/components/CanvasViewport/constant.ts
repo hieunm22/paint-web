@@ -27,6 +27,12 @@ export const TOOL_CURSORS: Record<ToolId, string> = {
 /** canvas is offset 6px from the viewport edge, anchored top-left. */
 export const CANVAS_MARGIN = 6
 
+/**
+ * wheel travel in pixels that counts as one notch. a mouse sends a whole
+ * notch at a time; a trackpad pinch sends many small ones that add up here.
+ */
+export const WHEEL_NOTCH = 50
+
 /** the width the floating thumbnail opens at, in css pixels. */
 export const THUMBNAIL_WIDTH = 336
 
@@ -61,9 +67,11 @@ export const THUMBNAIL_FRAME = "#d00000"
  */
 export const THUMBNAIL_INTERVAL_MS = 100
 
-/** ruler tick spacing in image pixels. */
-export const RULER_MAJOR_STEP = 100
-export const RULER_MINOR_STEP = 10
+/** minor tick spacings in image pixels, finest first; a major tick is ten. */
+export const RULER_STEPS = [10, 20, 50, 100, 200, 500, 1000]
+
+/** the fewest screen pixels between minor ticks before the ruler steps up. */
+export const RULER_MIN_SPACING = 5
 export const RULER_SIZE = 20
 
 /** from this zoom the grid draws one cell per image pixel, as Paint does. */

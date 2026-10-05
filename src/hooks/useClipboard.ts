@@ -1,5 +1,6 @@
 import { useEffect } from "react"
 import { isTypingTarget } from "common/dom"
+import { isImageFile } from "common/format"
 import { useFileCommands } from "hooks/useFileCommands"
 
 /**
@@ -13,11 +14,8 @@ export function useClipboard(): void {
 		const onPaste = (e: ClipboardEvent) => {
 			if (isTypingTarget(e.target)) return
 
-			const items = Array.from(e.clipboardData?.items ?? [])
-			const image = items.find(
-				item => item.kind === "file" && item.type.startsWith("image/"),
-			)
-			const file = image?.getAsFile()
+			const files = Array.from(e.clipboardData?.files ?? [])
+			const file = files.find(isImageFile)
 			if (!file) return
 
 			e.preventDefault()

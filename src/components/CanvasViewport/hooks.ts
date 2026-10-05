@@ -16,6 +16,7 @@ import {
 	THUMBNAIL_FRAME,
 	THUMBNAIL_INTERVAL_MS,
 	THUMBNAIL_PULL,
+	WHEEL_NOTCH,
 } from "./constant"
 import { isSecondaryButton } from "common/platform"
 import { writeSettings } from "common/settings"
@@ -32,6 +33,8 @@ import { getCursor, reportCursor, subscribeCursor } from "engine/cursor"
 import { getOverlayState, subscribeOverlay } from "engine/overlay"
 import { paint } from "engine/PaintEngine"
 import { penPressure, penTilt, smoothPressure } from "engine/pressure"
+import { useAppDispatch } from "store/hooks"
+import { zoomAround } from "store/slices/viewSlice"
 import type {
 	Modifiers,
 	OverlayState,
@@ -42,6 +45,7 @@ import type {
 	Point,
 	Rect,
 	ToolId,
+	ZoomDirection,
 	ZoomFocus,
 } from "types/store.types"
 import type {
@@ -294,10 +298,6 @@ function discardFrame(held: PointerBatch): void {
 	held.frame = null
 }
 
-/**
- * scrolls the clicked pixel to the middle after the magnifier changes zoom.
- * a layout effect, because doing it after paint shows the old corner first.
- */
 export function useZoomFocus(focus: ZoomFocus | null) {
 	const viewportRef = useRef<HTMLDivElement>(null)
 
@@ -305,11 +305,54 @@ export function useZoomFocus(focus: ZoomFocus | null) {
 		const el = viewportRef.current
 		if (!el || !focus) return
 
-		el.scrollLeft = focus.x * focus.zoom + CANVAS_MARGIN - el.clientWidth / 2
-		el.scrollTop = focus.y * focus.zoom + CANVAS_MARGIN - el.clientHeight / 2
+		const anchor = focus.anchor ?? {
+			x: el.clientWidth / 2,
+			y: el.clientHeight / 2,
+		}
+		el.scrollLeft = focus.x * focus.zoom + CANVAS_MARGIN - anchor.x
+		el.scrollTop = focus.y * focus.zoom + CANVAS_MARGIN - anchor.y
 	}, [focus])
 
 	return viewportRef
+}
+
+/**
+ * Ctrl+wheel, or Cmd+wheel, steps the zoom about the pixel under the pointer.
+ */
+export function useWheelZoom(
+	viewportRef: RefObject<HTMLDivElement>,
+	zoom: number,
+): void {
+	const dispatch = useAppDispatch()
+
+	useEffect(() => {
+		const el = viewportRef.current
+		if (!el) return
+
+		let travel = 0
+		const onWheel = (e: WheelEvent) => {
+			if (!e.ctrlKey && !e.metaKey) return
+
+			e.preventDefault()
+			// a wheel reporting in lines or pages is a notch on its own
+			const notch = e.deltaMode === WheelEvent.DOM_DELTA_PIXEL ? WHEEL_NOTCH : 1
+			travel += e.deltaY
+			if (Math.abs(travel) < notch) return
+
+			const direction: ZoomDirection = travel < 0 ? "in" : "out"
+			travel = 0
+			const rect = el.getBoundingClientRect()
+			const anchor = { x: e.clientX - rect.left, y: e.clientY - rect.top }
+			const at = {
+				x: (el.scrollLeft + anchor.x - CANVAS_MARGIN) / zoom,
+				y: (el.scrollTop + anchor.y - CANVAS_MARGIN) / zoom,
+			}
+			dispatch(zoomAround({ direction, at, anchor }))
+		}
+
+		el.addEventListener("wheel", onWheel, { passive: false })
+		return () => el.removeEventListener("wheel", onWheel)
+	}, [viewportRef, zoom, dispatch])
 }
 
 /** guidance one tool drew must not outlive the switch to another. */

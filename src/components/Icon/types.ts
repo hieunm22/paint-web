@@ -1,11 +1,11 @@
-import type { ICONS, SVG_ICONS } from "./constant"
+import type { ICONS, SVG_ICON_WIDTHS } from "./constant"
 
-export type IconName = keyof typeof ICONS | keyof typeof SVG_ICONS
+export type SvgIconName = keyof typeof SVG_ICON_WIDTHS
 
-export interface SvgIcon {
-	/** viewBox width in units; the height is always 16. */
-	width: number
-	glyph: JSX.Element
+export type IconName = keyof typeof ICONS | SvgIconName
+
+export interface SvgGlyphProps {
+	name: SvgIconName
 }
 
 export interface IconProps {

@@ -1,12 +1,12 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
-import { ICONS, SVG_ICONS } from "./constant"
+import { ICONS, SVG_ICON_WIDTHS } from "./constant"
 import { Icon } from "components/Icon"
 import type { IconName } from "./types"
 
 /** the registry read as a list, which is what the gallery walks. */
 const ICON_NAMES = [
 	...Object.keys(ICONS),
-	...Object.keys(SVG_ICONS),
+	...Object.keys(SVG_ICON_WIDTHS),
 ] as IconName[]
 
 const meta = {

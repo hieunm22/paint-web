@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react"
+import { isImageFile } from "common/format"
 import { useFileCommands } from "hooks/useFileCommands"
 import { useAppDispatch } from "store/hooks"
 import { endFileDrag, showToast, startFileDrag } from "store/slices/uiSlice"
@@ -70,7 +71,7 @@ export function useFileDrop(): void {
 			const files = e.dataTransfer?.files
 			const file = files?.[0]
 			if (!file) return
-			if (!file.type.startsWith("image/")) {
+			if (!isImageFile(file)) {
 				dispatch(showToast("toast.file.not-a-picture"))
 				return
 			}

@@ -1,4 +1,4 @@
-import { CAN_SAVE_IN_PLACE, MIME_TYPES } from "common/constant"
+import { CAN_SAVE_IN_PLACE } from "common/constant"
 import { acceptAnyImage, acceptFor } from "common/format"
 import type {
 	FilePickerWindow,
@@ -27,7 +27,8 @@ function promptWithInput(): Promise<File | null> {
 	return new Promise(resolve => {
 		const input = document.createElement("input")
 		input.type = "file"
-		input.accept = Object.values(MIME_TYPES).join(",")
+		// extensions as well as types: heic has no type on windows
+		input.accept = Object.entries(acceptAnyImage()).flat(2).join(",")
 		input.hidden = true
 
 		const finish = (file: File | null) => {

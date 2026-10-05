@@ -1,10 +1,10 @@
 import type { ShapeKind } from "types/store.types"
+import type { ShapePathProps } from "./types"
 
 /**
  * the 23 gallery shapes, drawn in a 0 0 24 24 viewBox.
- * Deliberately not Font Awesome: these are real geometry the user draws.
  */
-export const SHAPE_PATHS: Record<ShapeKind, JSX.Element> = {
+const SHAPE_PATHS: Record<ShapeKind, JSX.Element> = {
 	line: <path d="M4 20 L20 4" />,
 	curve: <path d="M4 18 C8 4, 16 4, 20 18" />,
 	oval: <ellipse cx="12" cy="12" rx="9" ry="6.5" />,
@@ -51,55 +51,7 @@ export const SHAPE_PATHS: Record<ShapeKind, JSX.Element> = {
 	lightning: <path d="M13 2 L5 13 h5 l-2 9 l9 -12 h-5.5 l2.5 -8 z" />,
 }
 
-/** same order as Paint's gallery. */
-export const SHAPE_ORDER: ShapeKind[] = [
-	"line",
-	"curve",
-	"oval",
-	"rect",
-	"rounded-rect",
-	"polygon",
-	"right-triangle",
-	"triangle",
-	"diamond",
-	"pentagon",
-	"hexagon",
-	"arrow-right",
-	"arrow-left",
-	"arrow-up",
-	"arrow-down",
-	"star-4",
-	"star-5",
-	"star-6",
-	"callout-rounded",
-	"callout-oval",
-	"callout-cloud",
-	"heart",
-	"lightning",
-]
-
-export const SHAPE_LABEL_KEYS: Record<ShapeKind, string> = {
-	line: "ribbon.shapes.line",
-	curve: "ribbon.shapes.curve",
-	oval: "ribbon.shapes.oval",
-	rect: "ribbon.shapes.rect",
-	"rounded-rect": "ribbon.shapes.rounded-rect",
-	polygon: "ribbon.shapes.polygon",
-	"right-triangle": "ribbon.shapes.right-triangle",
-	triangle: "ribbon.shapes.triangle",
-	diamond: "ribbon.shapes.diamond",
-	pentagon: "ribbon.shapes.pentagon",
-	hexagon: "ribbon.shapes.hexagon",
-	"arrow-right": "ribbon.shapes.arrow-right",
-	"arrow-left": "ribbon.shapes.arrow-left",
-	"arrow-up": "ribbon.shapes.arrow-up",
-	"arrow-down": "ribbon.shapes.arrow-down",
-	"star-4": "ribbon.shapes.star-4",
-	"star-5": "ribbon.shapes.star-5",
-	"star-6": "ribbon.shapes.star-6",
-	"callout-rounded": "ribbon.shapes.callout-rounded",
-	"callout-oval": "ribbon.shapes.callout-oval",
-	"callout-cloud": "ribbon.shapes.callout-cloud",
-	heart: "ribbon.shapes.heart",
-	lightning: "ribbon.shapes.lightning",
+/** one shape's outline; the parent draws the svg element around it. */
+export function ShapePath({ kind }: ShapePathProps) {
+	return SHAPE_PATHS[kind]
 }

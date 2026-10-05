@@ -1,21 +1,6 @@
-import type { SVGProps } from "react"
-import type { SvgIcon } from "./types"
-
-const LENS_STROKE: SVGProps<SVGGElement> = {
-	fill: "none",
-	stroke: "currentColor",
-	strokeWidth: 1.5,
-	strokeLinecap: "round",
-}
-
-/** one id serves every copy: each mask it names is drawn the same. */
-const PREVIEW_MASK = "icon-print-preview-lens"
-
 /**
- * icon registry of Font Awesome Pro webfont classes, keyed by meaning.
- * Shape gallery geometry is not from FA; see ShapeIcon/constant.tsx.
+ * icon registry of Font Awesome Free webfont classes, keyed by meaning.
  */
-
 export const ICONS = {
 	// Quick Access Toolbar + title bar
 	save: "fa-solid fa-floppy-disk",
@@ -111,69 +96,13 @@ export const ICONS = {
 	recent: "fa-solid fa-images",
 } satisfies Record<string, string>
 
-/** glyphs Font Awesome Free does not carry, drawn 16 units tall. */
-export const SVG_ICONS = {
-	select: {
-		width: 20,
-		glyph: (
-			<rect
-				x="1.25"
-				y="1"
-				width="17.5"
-				height="14"
-				fill="none"
-				stroke="currentColor"
-				strokeWidth="1"
-				strokeDasharray="2 1.5"
-				strokeDashoffset="1"
-			/>
-		),
-	},
-	zoomIn: {
-		width: 16,
-		glyph: (
-			<g {...LENS_STROKE}>
-				<circle cx="6.5" cy="6.5" r="5" />
-				<path d="M10.2 10.2 L14.5 14.5 M4.25 6.5 H8.75 M6.5 4.25 V8.75" />
-			</g>
-		),
-	},
-	zoomOut: {
-		width: 16,
-		glyph: (
-			<g {...LENS_STROKE}>
-				<circle cx="6.5" cy="6.5" r="5" />
-				<path d="M10.2 10.2 L14.5 14.5 M4.25 6.5 H8.75" />
-			</g>
-		),
-	},
-	printPreview: {
-		width: 16,
-		glyph: (
-			<>
-				<mask id={PREVIEW_MASK}>
-					<rect width="16" height="16" fill="#fff" />
-					<g fill="#000" stroke="#000" strokeWidth="3.5" strokeLinecap="round">
-						<circle cx="12.5" cy="12" r="2.5" />
-						<path d="M14.3 13.8 L15.25 14.75" />
-					</g>
-				</mask>
-				<path
-					fill="currentColor"
-					fillRule="evenodd"
-					mask={`url(#${PREVIEW_MASK})`}
-					d="M2 5 V2 A2 2 0 0 1 4 0 H11.1 L14 2.9 V5 H12 V2.9 L11.1 2 H4 V5 Z M2 12 H1 A1 1 0 0 1 0 11 V8 A2 2 0 0 1 2 6 H14 A2 2 0 0 1 16 8 V11 A1 1 0 0 1 15 12 H14 V14 A2 2 0 0 1 12 16 H4 A2 2 0 0 1 2 14 Z M4 11 V14 H12 V11 Z"
-				/>
-				<g
-					fill="none"
-					stroke="currentColor"
-					strokeWidth="1.5"
-					strokeLinecap="round"
-				>
-					<circle cx="12.5" cy="12" r="2.5" />
-					<path d="M14.3 13.8 L15.25 14.75" />
-				</g>
-			</>
-		),
-	},
-} satisfies Record<string, SvgIcon>
+/**
+ * glyphs Font Awesome Free does not carry, by viewBox width; every one is
+ * 16 units tall. the drawing itself is markup and lives in components.tsx.
+ */
+export const SVG_ICON_WIDTHS = {
+	select: 20,
+	zoomIn: 16,
+	zoomOut: 16,
+	printPreview: 16,
+} satisfies Record<string, number>

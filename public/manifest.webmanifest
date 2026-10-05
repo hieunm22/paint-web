@@ -1,7 +1,7 @@
 {
-	"name": "Paint Web",
-	"short_name": "Paint",
-	"description": "A web rebuild of the Microsoft Paint ribbon interface, running entirely on your own machine.",
+	"name": "Canvaslet",
+	"short_name": "Canvaslet",
+	"description": "An independent browser-based drawing app that runs entirely on your own machine.",
 	"id": "/",
 	"start_url": "/",
 	"scope": "/",
@@ -33,7 +33,10 @@
 				"image/jpeg": [".jpg", ".jpeg"],
 				"image/bmp": [".bmp", ".dib"],
 				"image/gif": [".gif"],
-				"image/webp": [".webp"]
+				"image/webp": [".webp"],
+				"image/x-icon": [".ico"],
+				"image/heic": [".heic"],
+				"image/heif": [".heif"]
 			}
 		}
 	]
