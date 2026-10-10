@@ -147,7 +147,7 @@ titlebar.qat.redo;Redo;Làm lại
 titlebar.qat.print;Print;In
 titlebar.qat.print-preview;Print preview;Xem trước khi in
 titlebar.qat.customize;Customize Quick Access Toolbar;Tuỳ chỉnh thanh truy cập nhanh
-titlebar.window.title;{0} - Canvaslet;{0} - Canvaslet
+titlebar.window.title;{0} - Paint web;{0} - Paint web
 titlebar.window.maximize;Maximize (full screen);Phóng to (toàn màn hình)
 titlebar.window.close;Close;Đóng
 statusbar.cell.cursor-position;{0}, {1}px;{0}, {1}px
@@ -173,7 +173,7 @@ filemenu.item.from-camera;From camera;Từ máy ảnh
 filemenu.item.from-camera-note;Uses getUserMedia - about 4K at most;Dùng getUserMedia - tối đa khoảng 4K
 filemenu.item.copy-image;Copy image;Chép ảnh
 filemenu.item.properties;Properties;Thuộc tính
-filemenu.item.about;About Canvaslet;Giới thiệu Canvaslet
+filemenu.item.about;About Paint web;Giới thiệu Paint web
 filemenu.item.exit;Exit;Thoát
 filemenu.save-as.option;{0} ({1});{0} ({1})
 filemenu.save-as.other;Other formats...;Định dạng khác...
@@ -190,12 +190,12 @@ filemenu.language.vi;Tiếng Việt;Tiếng Việt
 dialog.common.ok;OK;OK
 dialog.common.cancel;Cancel;Huỷ
 dialog.common.close;Close;Đóng
-dialog.about.title;About Canvaslet;Giới thiệu Canvaslet
-dialog.about.app-name;Canvaslet 0.1.0;Canvaslet 0.1.0
+dialog.about.title;About Paint web;Giới thiệu Paint web
+dialog.about.app-name;Paint web 0.1.0;Paint web 0.1.0
 dialog.about.body;An independent browser-based drawing app for learning and experimentation. It runs entirely on your device.;Ứng dụng vẽ độc lập trên trình duyệt, phục vụ việc học tập và thử nghiệm. Ứng dụng chạy hoàn toàn trên thiết bị của bạn.
-dialog.about.disclaimer;Canvaslet is an independent educational project. It is not affiliated with, endorsed by, or sponsored by Microsoft. Microsoft and Paint are trademarks of Microsoft Corporation. No Microsoft code, artwork, icons, sounds, or other proprietary assets are used.;Canvaslet là dự án giáo dục độc lập. Dự án không liên kết, được chứng thực hoặc được tài trợ bởi Microsoft. Microsoft và Paint là các nhãn hiệu của Microsoft Corporation. Dự án không sử dụng mã nguồn, hình ảnh, biểu tượng, âm thanh hoặc tài sản độc quyền nào của Microsoft.
+dialog.about.disclaimer;Paint web is an independent educational project. It is not affiliated with, endorsed by, or sponsored by Microsoft. Microsoft and Paint are trademarks of Microsoft Corporation. No Microsoft code, artwork, icons, sounds, or other proprietary assets are used.;Paint web là dự án giáo dục độc lập. Dự án không liên kết, được chứng thực hoặc được tài trợ bởi Microsoft. Microsoft và Paint là các nhãn hiệu của Microsoft Corporation. Dự án không sử dụng mã nguồn, hình ảnh, biểu tượng, âm thanh hoặc tài sản độc quyền nào của Microsoft.
 dialog.about.intro-link;Read the public introduction;Đọc trang giới thiệu công khai
-dialog.confirm-discard.title;Canvaslet;Canvaslet
+dialog.confirm-discard.title;Paint web;Paint web
 dialog.confirm-discard.message;Do you want to save changes to {0}?;Bạn có muốn lưu thay đổi cho {0} không?
 dialog.confirm-discard.save;Save;Lưu
 dialog.confirm-discard.dont-save;Don't Save;Không lưu

@@ -1,6 +1,6 @@
 {
-	"name": "Canvaslet",
-	"short_name": "Canvaslet",
+	"name": "Paint web",
+	"short_name": "Paint web",
 	"description": "An independent browser-based drawing app that runs entirely on your own machine.",
 	"id": "/",
 	"start_url": "/",

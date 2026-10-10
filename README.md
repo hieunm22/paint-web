@@ -1,4 +1,4 @@
-# Canvaslet
+# Paint web
 
 An independent browser-based drawing app for learning and experimentation, built with
 React and TypeScript. Everything runs client-side - no backend, and images never leave
@@ -235,7 +235,7 @@ ignored.
 | Value | Destination | Required configuration |
 | --- | --- | --- |
 | `pages` | GitHub Pages | Enable GitHub Pages for the repository with GitHub Actions as its source. |
-| `cloudflare` | Cloudflare Worker `canvaslet` | Variable `CLOUDFLARE_ACCOUNT_ID`, secret `CLOUDFLARE_API_TOKEN`. |
+| `cloudflare` | Cloudflare Worker `paint-web` | Variable `CLOUDFLARE_ACCOUNT_ID`, secret `CLOUDFLARE_API_TOKEN`. |
 | `vps` | VPS Docker container | Variables `SERVER_IP`, `SSH_PORT`; secret `SSH_PRIVATE_KEY`. The server needs Git, Docker, Make, and nvm/Node, with this repo checked out at `/root/projects/tax-calculator`. |
 
 To change automatic deploys, go to **Settings > Secrets and variables > Actions >
@@ -370,7 +370,7 @@ formatter entry point.
 
 ## Project independence
 
-Canvaslet is an independent educational project. It is not affiliated with, endorsed
+Paint web is an independent educational project. It is not affiliated with, endorsed
 by, or sponsored by Microsoft. Microsoft and Paint are trademarks of Microsoft
 Corporation. No Microsoft code, artwork, icons, sounds, or other proprietary assets are
 used. The shape outlines are hand-drawn SVG and the remaining icons come from Font

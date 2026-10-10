@@ -1,4 +1,4 @@
-# Canvaslet - repo-specific conventions
+# Paint web - repo-specific conventions
 
 The general rules are global and live outside this repo:
 
@@ -208,7 +208,7 @@ cell still highlighted reads as a live choice.
   and a clipped label is exactly what a screenshot catches and a unit test cannot.
 - **The allowance is 40 pixels, not a percentage.** A tenth of a percent of a
   1280x688 panel is some 900 pixels of license: renaming a menu row from "About Paint"
-  to "About Canvaslet" moved 53 and passed. The ratio stays as a second bound for a
+  to "About Paint web" moved 53 and passed. The ratio stays as a second bound for a
   bigger capture; the absolute count is what holds.
 - **Baselines are committed, and re-blessed only after looking at the diff.**
   `yarn test:visual:update` is never a reflex.

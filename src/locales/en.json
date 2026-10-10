@@ -201,7 +201,7 @@
 			"customize": "Customize Quick Access Toolbar"
 		},
 		"window": {
-			"title": "{0} - Canvaslet",
+			"title": "{0} - Paint web",
 			"maximize": "Maximize (full screen)",
 			"close": "Close"
 		}
@@ -247,7 +247,7 @@
 			"from-camera-note": "Uses getUserMedia - about 4K at most",
 			"copy-image": "Copy image",
 			"properties": "Properties",
-			"about": "About Canvaslet",
+			"about": "About Paint web",
 			"exit": "Exit"
 		},
 		"save-as": {
@@ -278,14 +278,14 @@
 			"close": "Close"
 		},
 		"about": {
-			"title": "About Canvaslet",
-			"app-name": "Canvaslet 0.1.0",
+			"title": "About Paint web",
+			"app-name": "Paint web 0.1.0",
 			"body": "An independent browser-based drawing app for learning and experimentation. It runs entirely on your device.",
-			"disclaimer": "Canvaslet is an independent educational project. It is not affiliated with, endorsed by, or sponsored by Microsoft. Microsoft and Paint are trademarks of Microsoft Corporation. No Microsoft code, artwork, icons, sounds, or other proprietary assets are used.",
+			"disclaimer": "Paint web is an independent educational project. It is not affiliated with, endorsed by, or sponsored by Microsoft. Microsoft and Paint are trademarks of Microsoft Corporation. No Microsoft code, artwork, icons, sounds, or other proprietary assets are used.",
 			"intro-link": "Read the public introduction"
 		},
 		"confirm-discard": {
-			"title": "Canvaslet",
+			"title": "Paint web",
 			"message": "Do you want to save changes to {0}?",
 			"save": "Save",
 			"dont-save": "Don't Save"

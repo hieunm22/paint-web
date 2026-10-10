@@ -201,7 +201,7 @@
 			"customize": "Tuỳ chỉnh thanh truy cập nhanh"
 		},
 		"window": {
-			"title": "{0} - Canvaslet",
+			"title": "{0} - Paint web",
 			"maximize": "Phóng to (toàn màn hình)",
 			"close": "Đóng"
 		}
@@ -247,7 +247,7 @@
 			"from-camera-note": "Dùng getUserMedia - tối đa khoảng 4K",
 			"copy-image": "Chép ảnh",
 			"properties": "Thuộc tính",
-			"about": "Giới thiệu Canvaslet",
+			"about": "Giới thiệu Paint web",
 			"exit": "Thoát"
 		},
 		"save-as": {
@@ -278,14 +278,14 @@
 			"close": "Đóng"
 		},
 		"about": {
-			"title": "Giới thiệu Canvaslet",
-			"app-name": "Canvaslet 0.1.0",
+			"title": "Giới thiệu Paint web",
+			"app-name": "Paint web 0.1.0",
 			"body": "Ứng dụng vẽ độc lập trên trình duyệt, phục vụ việc học tập và thử nghiệm. Ứng dụng chạy hoàn toàn trên thiết bị của bạn.",
-			"disclaimer": "Canvaslet là dự án giáo dục độc lập. Dự án không liên kết, được chứng thực hoặc được tài trợ bởi Microsoft. Microsoft và Paint là các nhãn hiệu của Microsoft Corporation. Dự án không sử dụng mã nguồn, hình ảnh, biểu tượng, âm thanh hoặc tài sản độc quyền nào của Microsoft.",
+			"disclaimer": "Paint web là dự án giáo dục độc lập. Dự án không liên kết, được chứng thực hoặc được tài trợ bởi Microsoft. Microsoft và Paint là các nhãn hiệu của Microsoft Corporation. Dự án không sử dụng mã nguồn, hình ảnh, biểu tượng, âm thanh hoặc tài sản độc quyền nào của Microsoft.",
 			"intro-link": "Đọc trang giới thiệu công khai"
 		},
 		"confirm-discard": {
-			"title": "Canvaslet",
+			"title": "Paint web",
 			"message": "Bạn có muốn lưu thay đổi cho {0} không?",
 			"save": "Lưu",
 			"dont-save": "Không lưu"
