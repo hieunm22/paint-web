@@ -134,8 +134,8 @@ export function useDialogDrag() {
 }
 
 /**
- * keeps the keyboard inside the open dialog: Tab wraps at either end, Escape
- * closes, and whatever was focused before gets the focus back afterwards.
+ * keeps the keyboard inside the open dialog: Tab wraps at either end, Enter
+ * confirms, Escape cancels, and whatever was focused before gets focus back.
  */
 export function useDialogFocus(dialogRef: RefObject<HTMLElement>): void {
 	const dispatch = useAppDispatch()
@@ -149,14 +149,28 @@ export function useDialogFocus(dialogRef: RefObject<HTMLElement>): void {
 			[...dialog.querySelectorAll<HTMLElement>(FOCUSABLE)].filter(
 				el => !el.hasAttribute("disabled"),
 			)
+		const footerButtons = () =>
+			[...dialog.querySelectorAll<HTMLButtonElement>(
+				".dialog__footer .dialog__btn",
+			)].filter(button => !button.disabled)
 
 		reachable()[0]?.focus()
 
 		const onKeyDown = (e: KeyboardEvent) => {
 			if (e.key === "Escape") {
 				// the canvas listens for Escape as well, and must not also act
+				e.preventDefault()
 				e.stopPropagation()
-				dispatch(closeDialog())
+				const buttons = footerButtons()
+				buttons[buttons.length - 1]?.click()
+				return
+			}
+			if (e.key === "Enter") {
+				e.preventDefault()
+				e.stopPropagation()
+				footerButtons()
+					.find(button => button.classList.contains("dialog__btn--primary"))
+					?.click()
 				return
 			}
 			if (e.key !== "Tab") return
