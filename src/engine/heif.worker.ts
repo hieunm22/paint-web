@@ -1,4 +1,7 @@
-import libheif, { type HeifImage, type HeifPixels } from "libheif-js"
+import libheif, {
+	type HeifImage,
+	type HeifPixels,
+} from "libheif-js/libheif-wasm/libheif-bundle.mjs"
 import type { HeifRequest, HeifResponse } from "types/engine.types"
 
 /**

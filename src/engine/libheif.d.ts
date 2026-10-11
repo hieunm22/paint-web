@@ -1,5 +1,5 @@
-/** libheif-js types its raw module only; this covers the decoder wrapper it exports. */
-declare module "libheif-js" {
+/** the browser bundle needs the decoder wrapper types it does not ship. */
+declare module "libheif-js/libheif-wasm/libheif-bundle.mjs" {
 	export interface HeifPixels {
 		data: Uint8ClampedArray
 		width: number
