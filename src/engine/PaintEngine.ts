@@ -526,6 +526,10 @@ class PaintEngine {
 		return this.history.undoLabels
 	}
 
+	get redoLabels(): string[] {
+		return this.history.redoLabels
+	}
+
 	undo(steps = 1): void {
 		// the held object is the newest thing on screen; Ctrl+Z drops that first
 		if (this.held) {
@@ -539,8 +543,11 @@ class PaintEngine {
 		}
 	}
 
-	redo(): void {
-		if (this.history.redo()) this.markUnsaved()
+	redo(steps = 1): void {
+		for (let step = 0; step < steps; step++) {
+			if (!this.history.redo()) return
+			this.markUnsaved()
+		}
 	}
 
 	private get textTool(): TextTool | null {

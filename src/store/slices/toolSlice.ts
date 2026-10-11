@@ -17,7 +17,7 @@ const initialState: ToolState = {
 	shape: "line",
 	size: 3,
 	outline: "solid",
-	fill: "solid",
+	fill: "none",
 	text: {
 		fontFamily: "Calibri",
 		fontSize: 12,

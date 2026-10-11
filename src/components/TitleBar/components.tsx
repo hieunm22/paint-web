@@ -12,8 +12,13 @@ import { toggleFullscreen } from "common/dom"
 import { paint } from "engine/PaintEngine"
 import { useFileCommands } from "hooks/useFileCommands"
 import { useAppDispatch, useAppSelector } from "store/hooks"
-import { useQatItems, useQatPersistence, useUndoLabels } from "./hooks"
-import { toggleMenu, toggleQat } from "store/slices/uiSlice"
+import {
+	useQatItems,
+	useQatPersistence,
+	useRedoLabels,
+	useUndoLabels,
+} from "./hooks"
+import { closeMenu, toggleMenu, toggleQat } from "store/slices/uiSlice"
 import { EmptyVoid } from "types/common.types"
 import type { WindowButtonId } from "./types"
 
@@ -25,8 +30,9 @@ export function QuickAccessToolbar() {
 	const items = useQatItems()
 	const shown = useAppSelector(s => s.ui.qat)
 	const open = useAppSelector(s => s.ui.openMenu) === "qat"
-	const undoOpen = useAppSelector(s => s.ui.openMenu) === "undo"
+	const openMenu = useAppSelector(s => s.ui.openMenu)
 	const undoLabels = useUndoLabels()
+	const redoLabels = useRedoLabels()
 	useQatPersistence(shown)
 
 	return (
@@ -36,7 +42,20 @@ export function QuickAccessToolbar() {
 				.map((item, i) => {
 					// Paint numbers the bar from the left
 					const keyTip = String(i + 1)
-					if (item.id === "undo")
+					if (item.id === "undo" || item.id === "redo") {
+						const historyOpen = openMenu === item.id
+						const labels = item.id === "undo" ? undoLabels : redoLabels
+						const run = (steps: number) => {
+							if (item.id === "undo")
+								paint.undo(steps)
+							else
+								paint.redo(steps)
+						}
+						const runOne = () => {
+							run(1)
+							if (labels.length === 1) dispatch(closeMenu())
+						}
+
 						return (
 							<MenuAnchor key={item.id} className="title-bar__qat-split">
 								<button
@@ -45,7 +64,7 @@ export function QuickAccessToolbar() {
 									title={item.title}
 									disabled={item.disabled}
 									data-keytip={keyTip}
-									onClick={item.onClick}
+									onClick={runOne}
 								>
 									<Icon name={item.icon} size={14} />
 								</button>
@@ -54,26 +73,27 @@ export function QuickAccessToolbar() {
 									className="title-bar__qat-btn title-bar__qat-btn--caret"
 									title={item.title}
 									aria-label={item.title}
-									aria-expanded={undoOpen}
+									aria-expanded={historyOpen}
 									aria-haspopup="menu"
 									disabled={item.disabled}
-									onClick={() => dispatch(toggleMenu("undo"))}
+									onClick={() => dispatch(toggleMenu(item.id))}
 								>
 									<Icon name="caretDown" size={9} />
 								</button>
-								{undoOpen && (
+								{historyOpen && (
 									<Menu width={220}>
-										{undoLabels.map((label, steps) => (
+										{labels.map((label, steps) => (
 											<MenuItem
 												key={`${label}-${steps}`}
 												label={label}
-												onClick={() => paint.undo(steps + 1)}
+												onClick={() => run(steps + 1)}
 											/>
 										))}
 									</Menu>
 								)}
 							</MenuAnchor>
 						)
+					}
 
 					return (
 						<button

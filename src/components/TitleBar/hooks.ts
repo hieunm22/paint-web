@@ -23,6 +23,12 @@ export function useUndoLabels(): string[] {
 	return paint.undoLabels
 }
 
+/** history entries are held by the engine, while revision tells React to read them. */
+export function useRedoLabels(): string[] {
+	useAppSelector(s => s.history.revision)
+	return paint.redoLabels
+}
+
 /**
  * every button the toolbar can show, in its fixed order. Undo and Redo follow
  * the engine's stacks; the file commands are always available.

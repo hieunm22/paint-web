@@ -47,6 +47,11 @@ export class History {
 		return [...this.undoStack].reverse().map(entry => entry.label)
 	}
 
+	/** redo choices, next first. the bitmap data remains private to History. */
+	get redoLabels(): string[] {
+		return [...this.redoStack].reverse().map(entry => entry.label)
+	}
+
 	/** true once the current gesture has snapshotted something. */
 	get hasPending(): boolean {
 		return this.backup.size > 0
