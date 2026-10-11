@@ -17,6 +17,12 @@ export function useQatPersistence(items: QatItemId[]): void {
 	useEffect(() => writeSettings({ qat: items }), [items])
 }
 
+/** history entries are held by the engine, while revision tells React to read them. */
+export function useUndoLabels(): string[] {
+	useAppSelector(s => s.history.revision)
+	return paint.undoLabels
+}
+
 /**
  * every button the toolbar can show, in its fixed order. Undo and Redo follow
  * the engine's stacks; the file commands are always available.

@@ -9,9 +9,10 @@ import {
 	MenuSectionLabel,
 } from "components/Menu/components"
 import { toggleFullscreen } from "common/dom"
+import { paint } from "engine/PaintEngine"
 import { useFileCommands } from "hooks/useFileCommands"
 import { useAppDispatch, useAppSelector } from "store/hooks"
-import { useQatItems, useQatPersistence } from "./hooks"
+import { useQatItems, useQatPersistence, useUndoLabels } from "./hooks"
 import { toggleMenu, toggleQat } from "store/slices/uiSlice"
 import { EmptyVoid } from "types/common.types"
 import type { WindowButtonId } from "./types"
@@ -24,6 +25,8 @@ export function QuickAccessToolbar() {
 	const items = useQatItems()
 	const shown = useAppSelector(s => s.ui.qat)
 	const open = useAppSelector(s => s.ui.openMenu) === "qat"
+	const undoOpen = useAppSelector(s => s.ui.openMenu) === "undo"
+	const undoLabels = useUndoLabels()
 	useQatPersistence(shown)
 
 	return (
@@ -33,6 +36,44 @@ export function QuickAccessToolbar() {
 				.map((item, i) => {
 					// Paint numbers the bar from the left
 					const keyTip = String(i + 1)
+					if (item.id === "undo")
+						return (
+							<MenuAnchor key={item.id} className="title-bar__qat-split">
+								<button
+									type="button"
+									className="title-bar__qat-btn"
+									title={item.title}
+									disabled={item.disabled}
+									data-keytip={keyTip}
+									onClick={item.onClick}
+								>
+									<Icon name={item.icon} size={14} />
+								</button>
+								<button
+									type="button"
+									className="title-bar__qat-btn title-bar__qat-btn--caret"
+									title={item.title}
+									aria-label={item.title}
+									aria-expanded={undoOpen}
+									aria-haspopup="menu"
+									disabled={item.disabled}
+									onClick={() => dispatch(toggleMenu("undo"))}
+								>
+									<Icon name="caretDown" size={9} />
+								</button>
+								{undoOpen && (
+									<Menu width={220}>
+										{undoLabels.map((label, steps) => (
+											<MenuItem
+												key={`${label}-${steps}`}
+												label={label}
+												onClick={() => paint.undo(steps + 1)}
+											/>
+										))}
+									</Menu>
+								)}
+							</MenuAnchor>
+						)
 
 					return (
 						<button

@@ -42,6 +42,11 @@ export class History {
 		return this.redoStack.length > 0
 	}
 
+	/** undo choices, newest first. the bitmap data remains private to History. */
+	get undoLabels(): string[] {
+		return [...this.undoStack].reverse().map(entry => entry.label)
+	}
+
 	/** true once the current gesture has snapshotted something. */
 	get hasPending(): boolean {
 		return this.backup.size > 0

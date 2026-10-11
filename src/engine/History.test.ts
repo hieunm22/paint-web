@@ -97,6 +97,16 @@ describe("a committed stroke", () => {
 		expect(at(1, 1)).toBe(40)
 	})
 
+	it("lists undo choices from newest to oldest", () => {
+		stroke(1, 1, 40, "Pencil")
+		stroke(2, 2, 50, "Brush")
+
+		expect(history.undoLabels).toEqual(["Brush", "Pencil"])
+
+		history.undo()
+		expect(history.undoLabels).toEqual(["Pencil"])
+	})
+
 	it("notifies once per change", () => {
 		stroke(1, 1, 40)
 		history.undo()

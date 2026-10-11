@@ -522,13 +522,21 @@ class PaintEngine {
 		this.syncSelection()
 	}
 
-	undo(): void {
+	get undoLabels(): string[] {
+		return this.history.undoLabels
+	}
+
+	undo(steps = 1): void {
 		// the held object is the newest thing on screen; Ctrl+Z drops that first
 		if (this.held) {
 			this.discardHeld()
 			return
 		}
-		if (this.history.undo()) this.markUnsaved()
+
+		for (let step = 0; step < steps; step++) {
+			if (!this.history.undo()) return
+			this.markUnsaved()
+		}
 	}
 
 	redo(): void {
