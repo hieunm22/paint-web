@@ -1,4 +1,9 @@
-import { BOX_CURSORS, MOVE_CURSOR, SHAPE_DEFS } from "common/constant"
+import {
+	BOX_CURSORS,
+	MOVE_CURSOR,
+	SHAPE_DEFS,
+	SHAPE_LABEL_KEYS,
+} from "common/constant"
 import { fillStyledPath, strokeStyledPath, styleSpec } from "engine/brushes"
 import {
 	boundsOfPoints,
@@ -48,7 +53,12 @@ export class ShapeTool implements Tool {
 	readonly id: ToolId = "shape"
 
 	get label(): string {
-		return translate("history.label.shape")
+		const kind = this.draft?.kind
+		if (!kind) return translate("history.label.shape")
+
+		return translate("history.label.shape-detail", {
+			0: translate(SHAPE_LABEL_KEYS[kind]),
+		})
 	}
 
 	private draft: ShapeDraft | null = null

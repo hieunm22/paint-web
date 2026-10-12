@@ -1,6 +1,7 @@
 import {
 	BRUSH_DRY_LENGTH,
 	BRUSH_FULL_SPEED,
+	BRUSH_LABEL_KEYS,
 	BRUSH_SPECS,
 	SPRAY_INTERVAL_MS,
 } from "common/constant"
@@ -15,6 +16,7 @@ import type {
 	Tool,
 	ToolContext,
 } from "types/engine.types"
+import type { BrushKind } from "types/store.types"
 
 const ORIGIN: StrokePoint = { x: 0, y: 0, pressure: null, tilt: null }
 
@@ -24,9 +26,12 @@ const ORIGIN: StrokePoint = { x: 0, y: 0, pressure: null, tilt: null }
  */
 export class BrushTool implements Tool {
 	readonly id = "brush"
+	private kind: BrushKind = "brush"
 
 	get label(): string {
-		return translate("history.label.brush")
+		return translate("history.label.brush-detail", {
+			0: translate(BRUSH_LABEL_KEYS[this.kind]),
+		})
 	}
 	private last: StrokePoint = ORIGIN
 	/** stroke length so far, which is what dries an oil brush out. */
@@ -34,6 +39,7 @@ export class BrushTool implements Tool {
 	private spraying: ReturnType<typeof setInterval> | null = null
 
 	begin(pt: StrokePoint, mods: Modifiers, ctx: ToolContext): void {
+		this.kind = ctx.brush
 		this.last = pt
 		this.travelled = 0
 		this.paint(pt, pt, mods, ctx)

@@ -1,6 +1,6 @@
 import classnames from "classnames"
 import { useTranslation } from "react-i18next"
-import { SHAPE_LABEL_KEYS } from "components/ShapeIcon/constant"
+import { SHAPE_LABEL_KEYS } from "common/constant"
 import { ShapeIcon } from "components/ShapeIcon"
 import type { ShapeCellProps } from "../types"
 

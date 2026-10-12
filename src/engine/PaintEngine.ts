@@ -320,6 +320,11 @@ class PaintEngine {
 		this.active = null
 		tool.end?.(pt, this.withButton(mods), ctx)
 
+		if (this.selection.isFloating) {
+			this.commitSelection(tool.label)
+			return
+		}
+
 		// a shape or a selection stays on preview until something bakes it
 		if (tool.isPending?.(ctx)) {
 			this.held = tool
@@ -516,10 +521,12 @@ class PaintEngine {
 		if (!tool || !ctx || !this.selection.isActive) return
 
 		this.hold(tool)
+		if (!this.heldLabel)
+			this.heldLabel = translate("history.label.move-selection")
 		if (!this.selection.isFloating) this.selection.lift(ctx, true)
 		this.selection.moveBy(ctx, dx, dy)
 		reportSelectionBox(this.selection.bounds, this.selection.lasso)
-		this.syncSelection()
+		this.commitSelection()
 	}
 
 	get undoLabels(): string[] {
@@ -568,9 +575,10 @@ class PaintEngine {
 			if (!tool) return
 
 			this.hold(tool)
+			this.heldLabel = label
 			this.selection.reshape(ctx, make)
 			reportSelectionBox(this.selection.bounds, this.selection.lasso)
-			this.syncSelection()
+			this.commitSelection()
 			return
 		}
 
@@ -636,6 +644,21 @@ class PaintEngine {
 			this.heldLabel = null
 		}
 		this.held = tool
+	}
+
+	/** bakes floating selection pixels while leaving their boundary active. */
+	private commitSelection(
+		label = this.heldLabel ?? this.held?.label,
+	): void {
+		const ctx = this.context()
+		if (!ctx || !this.selection.isFloating) return
+
+		this.held = null
+		this.heldLabel = null
+		this.selection.commit(ctx)
+		this.surface.commitPreview()
+		if (label && this.history.commitStroke(label)) this.markUnsaved()
+		this.syncSelection()
 	}
 
 	/**

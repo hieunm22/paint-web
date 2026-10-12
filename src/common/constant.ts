@@ -55,6 +55,46 @@ export const QAT_ORDER: QatItemId[] = [
 /** the three a first visit shows, which is what Paint puts there. */
 export const QAT_DEFAULT: QatItemId[] = ["save", "undo", "redo"]
 
+/** labels shared by the brush gallery and history. */
+export const BRUSH_LABEL_KEYS: Record<BrushKind, string> = {
+	brush: "ribbon.brushes.brush",
+	calligraphy1: "ribbon.brushes.calligraphy1",
+	calligraphy2: "ribbon.brushes.calligraphy2",
+	airbrush: "ribbon.brushes.airbrush",
+	oil: "ribbon.brushes.oil",
+	crayon: "ribbon.brushes.crayon",
+	marker: "ribbon.brushes.marker",
+	"natural-pencil": "ribbon.brushes.natural-pencil",
+	watercolor: "ribbon.brushes.watercolor",
+}
+
+/** labels shared by the shape gallery and history. */
+export const SHAPE_LABEL_KEYS: Record<ShapeKind, string> = {
+	line: "ribbon.shapes.line",
+	curve: "ribbon.shapes.curve",
+	oval: "ribbon.shapes.oval",
+	rect: "ribbon.shapes.rect",
+	"rounded-rect": "ribbon.shapes.rounded-rect",
+	polygon: "ribbon.shapes.polygon",
+	"right-triangle": "ribbon.shapes.right-triangle",
+	triangle: "ribbon.shapes.triangle",
+	diamond: "ribbon.shapes.diamond",
+	pentagon: "ribbon.shapes.pentagon",
+	hexagon: "ribbon.shapes.hexagon",
+	"arrow-right": "ribbon.shapes.arrow-right",
+	"arrow-left": "ribbon.shapes.arrow-left",
+	"arrow-up": "ribbon.shapes.arrow-up",
+	"arrow-down": "ribbon.shapes.arrow-down",
+	"star-4": "ribbon.shapes.star-4",
+	"star-5": "ribbon.shapes.star-5",
+	"star-6": "ribbon.shapes.star-6",
+	"callout-rounded": "ribbon.shapes.callout-rounded",
+	"callout-oval": "ribbon.shapes.callout-oval",
+	"callout-cloud": "ribbon.shapes.callout-cloud",
+	heart: "ribbon.shapes.heart",
+	lightning: "ribbon.shapes.lightning",
+}
+
 export const FALLBACK_LANGUAGE: Language = "en"
 
 /** the order the language switcher lists them in. */

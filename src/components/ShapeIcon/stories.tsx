@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
 import { useTranslation } from "react-i18next"
-import { SHAPE_LABEL_KEYS, SHAPE_ORDER } from "./constant"
+import { SHAPE_LABEL_KEYS } from "common/constant"
+import { SHAPE_ORDER } from "./constant"
 import { ShapeIcon } from "components/ShapeIcon"
 
 const meta = {

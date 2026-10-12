@@ -37,13 +37,14 @@ type Mode = "marquee" | "move" | "resize" | null
  */
 export class SelectTool implements Tool {
 	readonly id: ToolId
+	private historyLabel = "history.label.selection"
 
 	constructor(id: Extract<ToolId, "select-rect" | "select-free">) {
 		this.id = id
 	}
 
 	get label(): string {
-		return translate("history.label.selection")
+		return translate(this.historyLabel)
 	}
 
 	private mode: Mode = null
@@ -66,6 +67,7 @@ export class SelectTool implements Tool {
 		const grip = selection.isActive ? this.gripAt(at, ctx) : -1
 		if (grip >= 0) {
 			this.mode = "resize"
+			this.historyLabel = "history.label.resize-selection"
 			this.grip = grip
 			selection.lift(ctx, true)
 			this.origin = selection.bounds ?? NO_BOX
@@ -76,6 +78,10 @@ export class SelectTool implements Tool {
 		if (selection.isActive && selection.contains(at)) {
 			const box = selection.bounds
 			this.mode = "move"
+			this.historyLabel =
+				mods.alt || mods.ctrl
+					? "history.label.copy-selection"
+					: "history.label.move-selection"
 			this.anchor = at
 			this.grabbed = { x: box?.x ?? at.x, y: box?.y ?? at.y }
 			// Alt or Ctrl leaves the original pixels behind, duplicating them
@@ -87,6 +93,7 @@ export class SelectTool implements Tool {
 		selection.clear()
 		ctx.surface.clearPreview()
 		this.mode = "marquee"
+		this.historyLabel = "history.label.selection"
 		this.anchor = at
 		this.trace = [at]
 		reportSelectionBox(null)
