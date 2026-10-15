@@ -102,9 +102,6 @@ ribbon.font.strikethrough;Strikethrough;Gạch ngang
 ribbon.background.label;Background;Nền
 ribbon.background.transparent;Transparent;Trong suốt
 ribbon.background.opaque;Opaque;Đục
-ribbon.extras.label;Extras;Khác
-ribbon.extras.copy;Copy to clipboard;Chép ra bảng tạm
-ribbon.extras.copy-tooltip;Copy the whole image or the selection to the system clipboard;Chép toàn ảnh hoặc vùng chọn ra bảng tạm của hệ thống
 ribbon.zoom.label;Zoom;Thu phóng
 ribbon.zoom.in;Zoom in;Phóng to
 ribbon.zoom.out;Zoom out;Thu nhỏ

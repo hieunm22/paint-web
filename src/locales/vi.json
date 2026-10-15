@@ -127,11 +127,6 @@
 			"transparent": "Trong suốt",
 			"opaque": "Đục"
 		},
-		"extras": {
-			"label": "Khác",
-			"copy": "Chép ra bảng tạm",
-			"copy-tooltip": "Chép toàn ảnh hoặc vùng chọn ra bảng tạm của hệ thống"
-		},
 		"zoom": {
 			"label": "Thu phóng",
 			"in": "Phóng to",

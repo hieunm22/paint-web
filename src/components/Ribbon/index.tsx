@@ -5,7 +5,6 @@ import { Icon } from "components/Icon"
 import { BrushesGroup } from "./components/BrushesGroup"
 import { ClipboardGroup } from "./components/ClipboardGroup"
 import { ColorsGroup } from "./components/ColorsGroup"
-import { ExtrasGroup } from "./components/ExtrasGroup"
 import { ImageGroup } from "./components/ImageGroup"
 import { ShapesGroup } from "./components/ShapesGroup"
 import { SizeGroup } from "./components/SizeGroup"
@@ -140,7 +139,6 @@ export function Ribbon() {
 							<ShapesGroup />
 							<SizeGroup />
 							<ColorsGroup />
-							<ExtrasGroup />
 						</>
 					)}
 					{tab === "view" && <ViewTabGroups />}

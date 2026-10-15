@@ -127,11 +127,6 @@
 			"transparent": "Transparent",
 			"opaque": "Opaque"
 		},
-		"extras": {
-			"label": "Extras",
-			"copy": "Copy to clipboard",
-			"copy-tooltip": "Copy the whole image or the selection to the system clipboard"
-		},
 		"zoom": {
 			"label": "Zoom",
 			"in": "Zoom in",
